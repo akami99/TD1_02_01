@@ -1,7 +1,7 @@
 #include <Novice.h>
 
 const char kWindowTitle[] = "1221_霊障退治";
-
+//おはようございます。
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
