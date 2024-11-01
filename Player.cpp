@@ -2,6 +2,9 @@
 #include "Data.h"
 #include "Player.h"
 
+const float leftWall = 0.0f;
+const float rightWall = 1280.0f;
+
 void Player::Move(Player_& player, Line& line, const char* keys, const char* preKeys) {
 	if (keys[DIK_D] || keys[DIK_RIGHT]) {
 		player.pos.x += player.speed;
@@ -9,6 +12,14 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 
 	if (keys[DIK_A] || keys[DIK_LEFT]) {
 		player.pos.x -= player.speed;
+	}
+
+	if (player.pos.x <leftWall) {
+		player.pos.x = leftWall;
+	}
+
+	if (player.pos.x > rightWall - player.radius) {
+		player.pos.x = rightWall-player.radius;
 	}
 
 	//jump
@@ -53,5 +64,5 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 
 void Player::Draw(Player_& player) {
 	Novice::DrawBox(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y),
-		player.radius, player.radius, 0.0f, WHITE, kFillModeSolid);
+		static_cast<int>(player.radius), static_cast<int>(player.radius), 0.0f, WHITE, kFillModeSolid);
 }
