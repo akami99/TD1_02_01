@@ -1,4 +1,9 @@
 #include <Novice.h>
+#include <math.h>
+#include "Data.h"
+#include "Player.h"
+
+
 
 const char kWindowTitle[] = "1221_霊障退治";
 //おはようございます。
@@ -11,6 +16,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	// キー入力結果を受け取る箱
 	char keys[256] = {0};
 	char preKeys[256] = {0};
+
+	Player_ player_;
+	Player player;
+	Line line;
+
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -25,6 +35,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		/// ↓更新処理ここから
 		///
 
+		player.Move(player_,line,keys,preKeys);
+
 		///
 		/// ↑更新処理ここまで
 		///
@@ -32,6 +44,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 		///
 		/// ↓描画処理ここから
 		///
+
+		player.Draw(player_);
 
 		///
 		/// ↑描画処理ここまで
