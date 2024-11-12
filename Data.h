@@ -13,7 +13,7 @@ struct Player_ {
 	int isFlash=false;
 	int isJanp=false;
 	int janpNum =0;
-	float speed = 8.0f;
+	float speed = 2.0f;
 	int isJanpSpeed = false;
 };
 
