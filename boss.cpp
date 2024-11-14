@@ -47,10 +47,10 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (shortDist.attakTime == 30) {
 				// プレイヤーとボスの距離を計算
 				float distanceX = player.pos.x - boss.pos.x;
-				float distanceY = player.pos.y - boss.pos.y;
+				float distanceY = player.pos.y - boss.pos.y-64.0f;
 				float distance = std::sqrt(distanceX * distanceX + distanceY * distanceY);
 
-				float stopDistance = 100.0f; // プレイヤーからこの距離で停止
+				float stopDistance = 80.0f; // プレイヤーからこの距離で停止
 
 				if (distance > stopDistance) {
 					 if (shortDist.isEase) {
@@ -70,7 +70,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 						// プレイヤーが右側にいる場合、右側に攻撃判定
 						shortDist.pos.x = boss.pos.x + boss.size.x;
 					}
-					shortDist.pos.y = boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 - 32.0f;
+					shortDist.pos.y = boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 ;
 
 					shortDist.isEase = false;
 
