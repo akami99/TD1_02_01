@@ -35,7 +35,7 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 		}
 	}
 
-	if (!keys[DIK_W] && !preKeys[DIK_W] && !keys[DIK_UP] && !preKeys[DIK_UP]) {
+	if (!keys[DIK_SPACE] && !preKeys[DIK_SPACE] ) {
 		player.isJanp = false;
 	}
 

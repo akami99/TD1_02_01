@@ -1,10 +1,8 @@
-#pragma once
+﻿#pragma once
 #include<Vector2.h>
 #include<Novice.h>
 
-//nannka nihongode .h no komento utenaikara yorosiku nihongoni kaetoitene
-
-//player
+//プレイヤー
 struct Player_ {
 	Vector2 pos = { 32.0f,600.0f };
 	Vector2 velocity = { 0.0f,0.0f };
