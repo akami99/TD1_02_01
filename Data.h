@@ -29,21 +29,22 @@ struct Boss_ {
 struct BossRengeAttak_ {
     Vector2 pos = { -32.0f, 0.0f };
     Vector2 size = { 480.0f, 700.0f };
-    int attakTime = 90;
+    int attakTime = 0;
     int attakStandTime = 60;
     int isAttak = false;
 };
 
 // 近距離攻撃
 struct ShortDistansAttak_ {
-    Vector2 pos = { 0.0f, 0.0f };
-    Vector2 targetPos = { 0.0f, 0.0f };  // 目的地（プレイヤーの近く）
-    float easeSpeed = 0.05f;  // イージング速度
-    int isAttak = false;
-    int attakTime = 90;
+    Vector2 pos = { 0.0f, 0.0f };  // 攻撃判定の位置
+    Vector2 size = { 64.0f, 64.0f };  // 攻撃判定のサイズ
+    int attakTime = 30;  // 攻撃の持続時間
+    int isAttak = false;  // 攻撃フラグ
+    int isEase = true;
+    float easeSpeed = 0.05f;  // イージングのスピード
 };
 
-// line (地面)
+// 地面ライン
 struct Line {
     Vector2 pos = { 0.0f, 600.0f };
 };
