@@ -1,11 +1,11 @@
-#pragma once
+﻿#pragma once
 #include <Novice.h>
 #include "Data.h"
 
 class Player{
 public:
 
-	/// <summary>
+/// <summary>
 /// Function for moving the player
 /// </summary>
 /// <param name="player">Player's values</param>
