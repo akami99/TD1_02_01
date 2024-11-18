@@ -63,6 +63,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         //近距離攻撃の描画
         boss.DrawShortDistansAttak(shortDistAttak_);
 
+        // ビーム攻撃の描画
+        boss.DrawBeams(boss_);
 
         ///
         /// ↑描画処理ここまで

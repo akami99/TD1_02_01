@@ -2,6 +2,8 @@
 #include <Vector2.h>
 #include <Novice.h>
 
+const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
+
 // プレイヤー
 struct Player_ {
     Vector2 pos = { 32.0f, 600.0f };
@@ -15,33 +17,45 @@ struct Player_ {
     int isJanpSpeed = false;
 };
 
+// ビーム攻撃用構造体
+struct Beam_ {
+    Vector2 pos = { 0.0f, 0.0f };         // ビームの位置
+    Vector2 direction = { 0.0f, 1.0f };   // ビームの進行方向
+    Vector2 size = { 100.0f, 800.0f };      // ビームのサイズ
+    float speed = 5.0f;                   // ビームのスピード
+    int attakTime = 100;                  // ビームの持続時間
+    int isAttak = false;                  // 攻撃中かどうか
+};
+
 // ボス
 struct Boss_ {
-    Vector2 pos = { 1000.0f, 600.0f - 128.0f };
+    Vector2 pos = { 1000.0f, 472.0f };    // ボスの初期位置
     Vector2 size = { 64.0f, 128.0f };
     int hp = 200;
     int attakNo = 0;
     int attakStandTime = 120;
     int isAttak = false;
+
+    Beam_ beams[MAX_BEAMS];// ビーム攻撃用の配列
 };
 
 // 範囲攻撃
 struct BossRengeAttak_ {
     Vector2 pos = { -32.0f, 0.0f };
     Vector2 size = { 480.0f, 700.0f };
-    int attakTime = 0;
-    int attakStandTime = 60;
+    int attakTime = 90;
+    int attakStandTime = 120;
     int isAttak = false;
 };
 
 // 近距離攻撃
 struct ShortDistansAttak_ {
-    Vector2 pos = { 0.0f, 0.0f };  // 攻撃判定の位置
-    Vector2 size = { 64.0f, 64.0f };  // 攻撃判定のサイズ
-    int attakTime = 30;  // 攻撃の持続時間
-    int isAttak = false;  // 攻撃フラグ
+    Vector2 pos = { 0.0f, 0.0f };
+    Vector2 size = { 128.0f, 64.0f };
+    float easeSpeed = 0.05f;
+    int attakTime = 10;
     int isEase = true;
-    float easeSpeed = 0.05f;  // イージングのスピード
+    int isAttak = false;
 };
 
 // 地面ライン

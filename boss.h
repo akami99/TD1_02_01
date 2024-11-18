@@ -4,18 +4,20 @@
 
 class Boss {
 public:
-    // ボスの動き
-    void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player);
+    void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_&player);
 
-    // ボスを描画する
     void BossDraw(Boss_ boss);
 
-    // 範囲攻撃を描画する
     void DrawBossRengeAttak(BossRengeAttak_ renge);
 
-    // 近距離攻撃を描画する
+    void BeamAttack(Boss_& boss);  // ビーム攻撃開始
+
+    void DrawBeams(Boss_& boss);   // ビームを描画
+
+    void BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easingSpeed);  // 目標位置にイージングで移動
+
     void DrawShortDistansAttak(ShortDistansAttak_ shortDist);
 
 private:
-    // メンバ変数はここに追加する（必要なら）
+    
 };
