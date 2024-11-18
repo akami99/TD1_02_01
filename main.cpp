@@ -19,6 +19,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Player_ player_;
     Player player;
     Line line;
+    Flash_ flash_;
     Boss boss;
     Boss_ boss_;
     BossRengeAttak_ rengeAttak_;
@@ -39,6 +40,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
         // プレイヤーの更新処理
         player.Move(player_, line, keys, preKeys);
+        player.Attack(player_, flash_, keys, preKeys);
 
         // ボスの更新処理（範囲攻撃と近距離攻撃を含む）
         boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_);
@@ -50,6 +52,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         ///
         /// ↓描画処理ここから
         ///
+
+        // フラッシュライトの描画
+        player.DrawFlash(player_.isFlash, flash_);
 
         // プレイヤーの描画
         player.Draw(player_);
