@@ -14,13 +14,15 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	// ボスの攻撃が有効になったら
 	if (boss.isAttak) {
 		if (boss.hp > 100) {
-			boss.attakNo = 2;  // 近距離攻撃
+			boss.attakNo = 1;  // 近距離攻撃
 		}
 	}
 
 	// 範囲攻撃処理
 	if (boss.attakNo == 1) {
 		renge.isAttak = true;
+		renge.pos.x = boss.pos.x-230.0f;
+		renge.pos.y = boss.pos.y-500.0f;
 		if (renge.isAttak) {
 			if (renge.attakStandTime > 0) {
 				renge.attakStandTime--;
@@ -32,6 +34,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				boss.attakNo = 0;
 				boss.attakStandTime = 120;
 				renge.attakStandTime = 120;
+				renge.attakTime = 90;
 			}
 		}
 	}

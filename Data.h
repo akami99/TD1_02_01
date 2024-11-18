@@ -38,8 +38,8 @@ struct Boss_ {
 // 範囲攻撃
 struct BossRengeAttak_ {
 	Vector2 pos = { -32.0f, 0.0f };
-	Vector2 size = { 480.0f, 700.0f };
-	int attakTime = 0;
+	Vector2 size = { 500.0f, 700.0f };
+	int attakTime = 90;
 	int attakStandTime = 60;
 	int isAttak = false;
 };
@@ -47,7 +47,7 @@ struct BossRengeAttak_ {
 // 近距離攻撃
 struct ShortDistansAttak_ {
 	Vector2 pos = { 0.0f, 0.0f };  // 攻撃判定の位置
-	Vector2 size = { 64.0f, 64.0f };  // 攻撃判定のサイズ
+	Vector2 size = { 128.0f, 64.0f };  // 攻撃判定のサイズ
 	int attakTime = 30;  // 攻撃の持続時間
 	int isAttak = false;  // 攻撃フラグ
 	int isEase = true;
