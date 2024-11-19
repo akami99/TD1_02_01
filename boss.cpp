@@ -24,7 +24,9 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		boss.isAttak = true;
 	}
 
-	// ボスの攻撃が有効になったら
+	//HPが50%以上ならattakNo1~3
+	//%50%以下なら3~6
+	//25%以下なら5~8
 	if (boss.isAttak) {
 		if (boss.hp > 100) {
 			boss.attakNo = 4;
