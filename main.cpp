@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         ///
 
         // フラッシュライトの描画
-        player.DrawFlash(player_.isFlash, flash_);
+        player.DrawFlash(player_, flash_);
 
         // プレイヤーの描画
         player.Draw(player_);

@@ -84,11 +84,22 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 }
 
 void Player::Attack(Player_& player, Flash_& flash, const char* keys, const char* preKeys) {
+	// 通常ライト
 	if (keys[DIK_J] && !preKeys[DIK_J]) {
 		if (!player.isFlash) {
 			player.isFlash = true;
+			player.isHighFlash = false;
 		} else {
 			player.isFlash = false;
+		}
+	}
+	// 強化ライト
+	if (keys[DIK_K] && !preKeys[DIK_K]) {
+		if (!player.isHighFlash) {
+			player.isHighFlash = true;
+			player.isFlash = false;
+		} else {
+			player.isHighFlash = false;
 		}
 	}
 
@@ -106,8 +117,9 @@ void Player::Draw(Player_& player) {
 		static_cast<int>(player.radius), static_cast<int>(player.radius), 0.0f, WHITE, kFillModeSolid);
 }
 
-void Player::DrawFlash(int& isFlash, Flash_& flash) {
-	if (isFlash) {
+void Player::DrawFlash(Player_& player, Flash_& flash) {
+	// 通常ライト
+	if (player.isFlash) {
 		if (flash.direction.y > 0) {                                   //上
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x + flash.width), static_cast<int>(flash.pos.y + flash.range),
@@ -130,6 +142,32 @@ void Player::DrawFlash(int& isFlash, Flash_& flash) {
 				static_cast<int>(flash.pos.x - flash.range), static_cast<int>(flash.pos.y + flash.width),
 				static_cast<int>(flash.pos.x - flash.range), static_cast<int>(flash.pos.y - flash.width),
 				0xe0dd8780, kFillModeSolid);
+		}
+	}
+	// 強化ライト
+	if (player.isHighFlash) {
+		if (flash.direction.y > 0) {                                   //上
+			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
+				static_cast<int>(flash.pos.x + flash.highWidth), static_cast<int>(flash.pos.y + flash.highRange),
+				static_cast<int>(flash.pos.x - flash.highWidth), static_cast<int>(flash.pos.y + flash.highRange),
+				0xe0dd87d0, kFillModeSolid);
+		} else if (flash.direction.y < 0) {                            //下
+			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
+				static_cast<int>(flash.pos.x + flash.highWidth), static_cast<int>(flash.pos.y - flash.highRange),
+				static_cast<int>(flash.pos.x - flash.highWidth), static_cast<int>(flash.pos.y - flash.highRange),
+				0xe0dd87d0, kFillModeSolid);
+		}
+
+		if (flash.direction.x > 0 && flash.direction.y == 0) {         //右
+			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
+				static_cast<int>(flash.pos.x + flash.highRange), static_cast<int>(flash.pos.y + flash.highWidth),
+				static_cast<int>(flash.pos.x + flash.highRange), static_cast<int>(flash.pos.y - flash.highWidth),
+				0xe0dd87d0, kFillModeSolid);
+		} else if (flash.direction.x < 0 && flash.direction.y == 0) {  //左
+			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
+				static_cast<int>(flash.pos.x - flash.highRange), static_cast<int>(flash.pos.y + flash.highWidth),
+				static_cast<int>(flash.pos.x - flash.highRange), static_cast<int>(flash.pos.y - flash.highWidth),
+				0xe0dd87d0, kFillModeSolid);
 		}
 	}
 }
