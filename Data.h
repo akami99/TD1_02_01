@@ -11,6 +11,7 @@ struct Player_ {
     Vector2 acceleration = { 0.0f, 0.5f };
     float radius = 32;
     int isFlash = false;
+    int isHighFlash = false;
     int isJanp = false;
     int janpNum = 0;
     float speed = 2.0f;
@@ -22,7 +23,9 @@ struct Flash_ {
     Vector2 pos = { 0.0f,0.0f };
     Vector2 direction = { 0.0f, 0.0f };
     float range = 192;
+    float highRange = 288;
     float width = 50;
+    float highWidth = 100;
     int damage = 1;
 };
 

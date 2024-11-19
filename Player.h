@@ -31,7 +31,7 @@ public:
 	/// </summary>
 	/// <param name="isFlash">isFlash flag</param>
 	/// <param name="flash">Flash's values</param>
-	void DrawFlash(int& isFlash, Flash_& flash);
+	void DrawFlash(Player_& player, Flash_& flash);
 };
 
 
