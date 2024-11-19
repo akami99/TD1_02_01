@@ -49,7 +49,8 @@ struct Boss_ {
 	int attakNo = 0;
 	int attakStandTime = 120;
 	int isAttak = false;
-
+	int secondHp = 200;
+	int isEase = false;
 	Beam_ beams[MAX_BEAMS];// ビーム攻撃用の配列
 };
 
@@ -78,14 +79,26 @@ struct ShortDistansAttak_ {
 	int isShortAttak = false;
 };
 
+
+////チャージ攻撃
+//	// Objectの初期設定（Bossの周囲で回転）
+//Object object = {
+//	{ boss.pos.x + 100.0f, boss.pos.y }, // 初期位置（Bossの右側）
+//	50.0f,                               // 浮遊高さ
+//	true,                                // 浮遊状態
+//	15.0f,                               // 初期投げ飛ばしスピード
+//	0.0f,                                // 初期回転角度
+//	100.0f                               // 円運動の半径
+//};
+
 // チャージ攻撃
 struct Object {
-    Vector2 pos;
-    float floatHeight;
-    bool isFloating;
-    float throwSpeed;
-    float rotation;
-    float orbitRadius;
+    Vector2 pos= { 0.0f, 0.0f };
+    float floatHeight=50.0f;
+	bool isFloating = true;
+	float throwSpeed=15.0f;
+    float rotation=0.0f;
+    float orbitRadius=100.0f;
     int isAttak = false;
     int attakTime = 360;
     int attakStandTime = 30;

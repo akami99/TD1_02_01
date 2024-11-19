@@ -7,6 +7,17 @@
 
 const char kWindowTitle[] = "1221_霊障退治";
 
+enum Scene {
+
+    TITLE,
+    SELECT,
+    GUIDE,
+    FASTBOSS,
+    SECONDBOSS,
+    CLEAR,
+    GAMEOVER,
+};
+
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
@@ -26,6 +37,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     BossRengeAttak_ rengeAttak_;
     ShortDistansAttak_ shortDistAttak_;  // 近距離攻撃用
     Ui ui;
+    Object object_;
+
+    int scene = FASTBOSS;
 
     // ウィンドウの×ボタンが押されるまでループ
     while (Novice::ProcessMessage() == 0) {
@@ -36,47 +50,60 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         memcpy(preKeys, keys, 256);
         Novice::GetHitKeyStateAll(keys);
 
-        ///
-        /// ↓更新処理ここから
-        ///
+        switch (scene) {
 
-        // プレイヤーの更新処理
-        player.Move(player_, line, keys, preKeys);
-        player.Attack(player_, flash_, keys, preKeys);
+        case FASTBOSS:
 
-        // ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-        boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_);
+            ///
+            /// ↓更新処理ここから
+            ///
 
-        ///
-        /// ↑更新処理ここまで
-        ///
+            // プレイヤーの更新処理
+            player.Move(player_, line, keys, preKeys);
+            player.Attack(player_, flash_, keys, preKeys);
 
-        ///
-        /// ↓描画処理ここから
-        ///
+            // ボスの更新処理（範囲攻撃と近距離攻撃を含む）
+            boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_,object_);
+
+            ///
+            /// ↑更新処理ここまで
+            ///
+
+            ///
+            /// ↓描画処理ここから
+            ///
 
         // フラッシュライトの描画
         player.DrawFlash(player_, flash_);
 
-        // プレイヤーの描画
-        player.Draw(player_);
+            // プレイヤーの描画
+            player.Draw(player_);
 
-        // ボスの範囲攻撃描画
-        boss.DrawBossRengeAttak(rengeAttak_);
+            // ボスの範囲攻撃描画
+            boss.DrawBossRengeAttak(rengeAttak_);
 
-        // ボスの描画
-        boss.BossDraw(boss_);
+            // ボスの描画
+            boss.BossDraw(boss_);
 
-        //近距離攻撃の描画
-        boss.DrawShortDistansAttak(shortDistAttak_);
+            //近距離攻撃の描画
+            boss.DrawShortDistansAttak(shortDistAttak_);
 
-        // UIの描画
-        ui.DrawHpBar(340, 30, boss_.hp, 0);
+            // UIの描画
+            ui.DrawHpBar(340, 30, boss_.hp, 0);
 
-        ///
-        /// ↑描画処理ここまで
-        ///
+            ///
+            /// ↑描画処理ここまで
+            ///
+          
+            break;
 
+        case SECONDBOSS:
+
+            break;
+
+
+
+        }
         // フレームの終了
         Novice::EndFrame();
 
