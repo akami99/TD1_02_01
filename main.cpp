@@ -3,6 +3,7 @@
 #include "Data.h"
 #include "Player.h"
 #include "boss.h"
+#include "Ui.h"
 
 const char kWindowTitle[] = "1221_霊障退治";
 
@@ -24,6 +25,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Boss_ boss_;
     BossRengeAttak_ rengeAttak_;
     ShortDistansAttak_ shortDistAttak_;  // 近距離攻撃用
+    Ui ui;
 
     // ウィンドウの×ボタンが押されるまでループ
     while (Novice::ProcessMessage() == 0) {
@@ -67,6 +69,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
         //近距離攻撃の描画
         boss.DrawShortDistansAttak(shortDistAttak_);
+
+        // UIの描画
+        ui.DrawHpBar(340, 30, boss_.hp, 0);
 
         ///
         /// ↑描画処理ここまで
