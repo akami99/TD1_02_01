@@ -26,11 +26,11 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	}
 
 	//HPが50%以上ならattakNo1~3
-	//%50%以下なら3~6
-	//25%以下なら5~8
+	//%50%以下なら3~6(仮)
+	//25%以下なら5~8(仮)
 	if (boss.isAttak) {
 		if (boss.hp > 100) {
-			boss.attakNo = 4;
+			boss.attakNo = 5;
 		}
 	}
 
@@ -125,6 +125,88 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 	}
 
+	// 連続近距離攻撃処理
+	// 連続近距離攻撃処理
+	if (boss.attakNo == 5) {
+		shortDist.isAttak = true;
+
+		if (shortDist.isAttak) {
+			if (shortDist.attakCount == 0) {
+				// 最初の攻撃: プレイヤーにイージングで近づく
+				float distanceX = player.pos.x - boss.pos.x;
+				float stopDistance = 100.0f; // プレイヤーからこの距離で停止
+
+				if (std::abs(distanceX) > stopDistance) {
+					// プレイヤーに近づく
+					if (shortDist.isEase) {
+						boss.pos.x += distanceX * shortDist.easeSpeed;
+					}
+					shortDist.attakTime = 10; // 攻撃判定をリセット
+					shortDist.isShortAttak = false;
+				} else {
+					// 一定距離まで近づいたら攻撃
+					if (shortDist.attakTime == 10) {
+						if (player.pos.x < boss.pos.x) {
+							shortDist.pos.x = boss.pos.x - shortDist.size.x;
+							shortDist.expandDirection = -1; // 左方向
+						} else {
+							shortDist.pos.x = boss.pos.x + boss.size.x;
+							shortDist.expandDirection = 1;  // 右方向
+						}
+						shortDist.pos.y = boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2;
+					}
+
+					if (shortDist.attakTime > 0) {
+						shortDist.isShortAttak = true;
+						shortDist.attakTime--;
+					} else {
+						shortDist.attakCount++;
+						shortDist.attakTime = 10; // 次回攻撃の準備
+					}
+				}
+
+			} else if (shortDist.attakCount == 1) {
+				// 2回目の攻撃: 横方向に攻撃範囲を拡大
+				if (shortDist.attakTime == 10) {
+					shortDist.size.x = shortDist.baseSizeX; // サイズをリセットして拡大開始
+				}
+
+				if (shortDist.size.x < shortDist.maxExpandSize) {
+					shortDist.size.x += 20.0f; // 攻撃範囲を拡大
+					if (shortDist.expandDirection == -1) {
+						// 左方向に拡大
+						shortDist.pos.x = boss.pos.x - shortDist.size.x;
+					} else {
+						// 右方向に拡大
+						shortDist.pos.x = boss.pos.x + boss.size.x;
+					}
+				}
+
+				if (shortDist.attakTime > 0) {
+					shortDist.isShortAttak = true;
+					shortDist.attakTime--;
+				} else {
+					// 攻撃終了
+					shortDist.isShortAttak = false;
+					shortDist.isAttak = false;
+					shortDist.attakCount = 0;
+					shortDist.size.x = shortDist.baseSizeX; // サイズをリセット
+					boss.isAttak = false;
+					boss.attakNo = 0;
+					boss.attakStandTime = 120; // クールダウン
+				}
+			}
+		}
+	}
+
+
+
+
+
+
+
+
+
 
 	// デバッグ用出力
 	Novice::ScreenPrintf(32, 32, "attakNo::%d", boss.attakNo);
@@ -205,8 +287,8 @@ void Boss::DrawBossRengeAttak(BossRengeAttak_ renge) {
 
 // 近距離攻撃の描画
 void Boss::DrawShortDistansAttak(ShortDistansAttak_ shortDist) {
-	if (shortDist.isAttak) {
-		if (!shortDist.isEase) {
+	if (shortDist.isShortAttak) {
+		if (shortDist.attakTime>0) {
 			Novice::DrawBox(static_cast<int>(shortDist.pos.x), static_cast<int>(shortDist.pos.y),
 				static_cast<int>(shortDist.size.x), static_cast<int>(shortDist.size.y), 0.0f, BLUE, kFillModeSolid);
 		}
@@ -228,14 +310,14 @@ void Boss::BeamAttack(Boss_& boss) {
 			boss.beams[i].attakStandTime--;
 			boss.beams[i].attakTime = 60;
 		} else if (boss.beams[i].attakStandTime <= 0) {
-				if (boss.beams[i].attakTime > 0) {
+			if (boss.beams[i].attakTime > 0) {
 
-					boss.beams[i].attakTime--;
-				} else {
-					boss.beams[i].isAttak = false;
-					boss.isAttak = false;
-					boss.attakNo = 0;
-					boss.attakStandTime = 120;
+				boss.beams[i].attakTime--;
+			} else {
+				boss.beams[i].isAttak = false;
+				boss.isAttak = false;
+				boss.attakNo = 0;
+				boss.attakStandTime = 120;
 			}
 		}
 
