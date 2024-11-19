@@ -117,6 +117,9 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		if (boss.pos.x == targetPos.x && boss.pos.y == targetPos.y) {
 			BeamAttack(boss);  // ビーム攻撃開始
 		}
+
+		DrawBeams(boss);
+
 	}
 
 
@@ -172,18 +175,14 @@ void Boss::BeamAttack(Boss_& boss) {
 			boss.beams[i].attakStandTime--;
 			boss.beams[i].attakTime = 60;
 		} else if (boss.beams[i].attakStandTime <= 0) {
-			if (boss.beams[i].attakStandTime <= 0) {
 				if (boss.beams[i].attakTime > 0) {
+
 					boss.beams[i].attakTime--;
 				} else {
-
 					boss.beams[i].isAttak = false;
 					boss.isAttak = false;
 					boss.attakNo = 0;
 					boss.attakStandTime = 120;
-
-
-				}
 			}
 		}
 
@@ -201,6 +200,10 @@ void Boss::DrawBeams(Boss_& boss) {
 					static_cast<int>(boss.beams[i].size.x), static_cast<int>(boss.beams[i].size.y),
 					0.0f, RED, kFillModeSolid);
 			}
+		} else if (boss.beams[i].attakStandTime > 0) {
+			Novice::DrawBox(static_cast<int>(boss.beams[i].pos.x), static_cast<int>(boss.beams[i].pos.y),
+				static_cast<int>(boss.beams[i].size.x), static_cast<int>(boss.beams[i].size.y),
+				0.0f, 0xFFFFFF50, kFillModeSolid);
 		}
 	}
 }

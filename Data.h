@@ -33,7 +33,7 @@ struct Beam_ {
     Vector2 direction = { 0.0f, 1.0f };   // ビームの進行方向
     Vector2 size = { 100.0f, 800.0f };    // ビームのサイズ
     float speed = 5.0f;                   // ビームのスピード
-    int attakTime = 0;                  // ビームの持続時間
+    int attakTime = 60;                  // ビームの持続時間
     int attakStandTime = 120;
     int isAttak = false;                  // 攻撃中かどうか
 };
