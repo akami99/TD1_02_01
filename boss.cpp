@@ -254,12 +254,8 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				boss.attakStandTime = 120;  // 攻撃後のクールダウン
 				object.attakTime = 360;
 			}
-
-		
-
 		}
 	}
-
 }
 
 // ボスを描画する
