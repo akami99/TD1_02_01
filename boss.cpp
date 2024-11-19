@@ -1,8 +1,9 @@
 ﻿#include "Novice.h"
 #include "Data.h"
 #include "boss.h"
-#include <cmath> // 距離計算のために必要
 
+#include <cmath> // 距離計算のために必要
+int timer = 0;  // timer をここで定義
 // ボスのイージング移動処理
 void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easingSpeed) {
 	// イージングによる位置更新
@@ -134,6 +135,56 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	Novice::ScreenPrintf(32, 256, "ShortDist pos.y::%.1f", shortDist.pos.y);
 	Novice::ScreenPrintf(32, 288, "ShortDist pos.x::%.1f", shortDist.pos.x);
 	Novice::ScreenPrintf(32, 320, "ShortDist pos.y::%.1f", shortDist.pos.y);
+
+
+
+
+
+
+	//チャージ攻撃
+	// Objectの初期設定（Bossの周囲で回転）
+	Object object = {
+		{ boss.pos.x + 100.0f, boss.pos.y }, // 初期位置（Bossの右側）
+		50.0f,                               // 浮遊高さ
+		true,                                // 浮遊状態
+		15.0f,                               // 初期投げ飛ばしスピード
+		0.0f,                                // 初期回転角度
+		100.0f                               // 円運動の半径
+	};
+
+	if (boss.attakNo == 3) {
+		object.isAttak = true;
+		if (object.isAttak) {
+			// `object`が5秒後に投げ飛ばされる準備
+			timer++;
+			if (timer >= 300) { // 約5秒後
+				object.isFloating = false;
+			}
+
+			// アニメーション処理
+			if (object.isFloating) {
+				// `Boss_`の周りを回転する
+				object.rotation += 0.05f; // 回転速度を調整
+				object.pos.x = boss.pos.x + object.orbitRadius * cos(object.rotation);
+				object.pos.y = boss.pos.y + object.orbitRadius * sin(object.rotation);
+			} else {
+				// 左に投げ飛ばすアニメーション
+				object.pos.x -= object.throwSpeed;
+				object.throwSpeed += 1.0f;  // 徐々に加速
+			}
+
+			if (object.attakTime > 0) {
+				object.attakTime--;
+			} else {
+				object.isAttak = false;
+				boss.isAttak = false;
+				boss.attakNo = 0;
+				boss.attakStandTime = 120;  // 攻撃後のクールダウン
+				object.attakTime = 360;
+			}
+		}
+	}
+
 }
 
 // ボスを描画する
@@ -188,9 +239,6 @@ void Boss::BeamAttack(Boss_& boss) {
 			}
 		}
 
-
-		Novice::ScreenPrintf(200, 32, "%d", boss.beams[i].attakStandTime);
-		Novice::ScreenPrintf(200, 64, "%d", boss.beams[i].attakTime);
 	}
 }
 
@@ -208,4 +256,10 @@ void Boss::DrawBeams(Boss_& boss) {
 				0.0f, 0xFFFFFF50, kFillModeSolid);
 		}
 	}
+}
+
+// チャージ攻撃の描画
+void Boss::DrawBossChargeAttak(const Object& object) {
+    Novice::DrawBox(static_cast<int>(object.pos.x), static_cast<int>(object.pos.y),
+        100, 100, object.rotation, BLUE, kFillModeSolid);
 }

@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <Vector2.h>
-#include <Novice.h>
 
 const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
 
@@ -69,7 +68,23 @@ struct ShortDistansAttak_ {
     int isAttak = false;
 };
 
-// 地面ライン
+// チャージ攻撃
+struct Object {
+    Vector2 pos;
+    float floatHeight;
+    bool isFloating;
+    float throwSpeed;
+    float rotation;
+    float orbitRadius;
+    int isAttak = false;
+    int attakTime = 360;
+    int attakStandTime = 30;
+};
+
+// 地面
 struct Line {
     Vector2 pos = { 0.0f, 600.0f };
 };
+
+// timer の宣言（定義はソースファイルに）
+extern int timer;

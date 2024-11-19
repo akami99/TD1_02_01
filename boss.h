@@ -9,6 +9,7 @@ public:
     void BossDraw(Boss_ boss);
 
     void DrawBossRengeAttak(BossRengeAttak_ renge);
+    void DrawBossChargeAttak(const Object& object);
 
     void BeamAttack(Boss_& boss);  // ビーム攻撃開始
 
