@@ -11,6 +11,9 @@ struct Player_ {
     Vector2 velocity = { 0.0f, 0.0f };
     Vector2 acceleration = { 0.0f, 0.5f };
     float radius = 32;
+	int hp = 300;    // ゲージの描画はUi.cpp内で調整してるので注意
+	int energy = 600;// 同上
+	const int kMaxEnergy = 600;
     int isFlash = false;
     int isHighFlash = false;
     int isJanp = false;
@@ -45,7 +48,7 @@ struct Beam_ {
 struct Boss_ {
 	Vector2 pos = { 1000.0f, 472.0f };    // ボスの初期位置
 	Vector2 size = { 64.0f, 128.0f };
-	int hp = 200;
+	int hp = 200;                         // ゲージの描画Ui.cpp内で調整してるので注意
 	int attakNo = 0;
 	int attakStandTime = 120;
 	int isAttak = false;

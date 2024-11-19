@@ -103,6 +103,21 @@ void Player::Attack(Player_& player, Flash_& flash, const char* keys, const char
 		}
 	}
 
+	if (player.isFlash) {
+		player.energy -= 2;;
+	} else if (player.isHighFlash) {
+		player.energy -= 3;
+	}
+
+	if (player.energy <= 0) {
+		player.isFlash = false;
+		player.isHighFlash = false;
+	}
+
+	if (player.energy < player.kMaxEnergy) {
+		player.energy++;
+	}
+
 	//フラッシュライトの位置を現在のプレイヤーの位置にする
 	flash.pos = { player.pos.x + player.radius / 2.0f, player.pos.y + player.radius / 2.0f };
 
