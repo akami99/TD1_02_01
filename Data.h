@@ -1,9 +1,8 @@
 ﻿#pragma once
 #include <Vector2.h>
 
-//同時に存在できる最大ビーム数
-const int MAX_BEAMS = 10;
-
+const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
+const int MAX_PROJECTILES = 3;
 // プレイヤー
 struct Player_ {
     Vector2 pos = { 32.0f,600.0f };
@@ -112,6 +111,7 @@ struct Object {
     int attakTime = 360;
     int attakStandTime = 30;
 };
+
 
 // 地面
 struct Line {

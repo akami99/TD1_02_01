@@ -1,4 +1,5 @@
-﻿#include "Novice.h"
+﻿
+#include "Novice.h"
 #include "Data.h"
 #include "boss.h"
 #include <cmath> // 距離計算のために必要
@@ -17,7 +18,7 @@ void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easin
 
 
 // ボスの動き
-void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object) {
+void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Projectile* projectiles, Player_& player) {
 	if (boss.attakStandTime > 0) {
 		boss.attakStandTime--;
 	} else {
@@ -255,7 +256,10 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			}
 		}
 	}
+
+	
 }
+
 
 // ボスを描画する
 void Boss::BossDraw(Boss_ boss) {
