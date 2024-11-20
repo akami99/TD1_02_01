@@ -39,7 +39,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
     Ui ui;
     Object object_;
 
-    int scene = FASTBOSS;
+    int scene = TITLE;
 
     // ウィンドウの×ボタンが押されるまでループ
     while (Novice::ProcessMessage() == 0) {
@@ -51,6 +51,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
         Novice::GetHitKeyStateAll(keys);
 
         switch (scene) {
+
+        case TITLE:
+            if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+                scene = FASTBOSS;
+            }
+            break;
 
         case FASTBOSS:
 
@@ -73,8 +79,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
             /// ↓描画処理ここから
             ///
 
-        // フラッシュライトの描画
-        player.DrawFlash(player_, flash_);
+            // フラッシュライトの描画
+            player.DrawFlash(player_, flash_);
 
             // プレイヤーの描画
             player.Draw(player_);
