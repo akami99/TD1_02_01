@@ -30,8 +30,8 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	if (!boss.isAttak) {
 		if (boss.attakNo == 0) {
 			if (boss.attakStandTime <= 0) {
-				boss.attakNo = rand() % 5 + 1;
-			//	boss.attakNo = 3;
+				//boss.attakNo = rand() % 5 + 1;
+				boss.attakNo = 2;
 				/*if (boss.hp > 100) {
 					boss.attakNo = 5;
 				}*/
@@ -115,7 +115,6 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				shortDist.isEase = true;    //次回のイージングの準備
 			}
 		}
-
 	}
 
 	// ビーム攻撃処理 (attakNo == 4)
@@ -260,8 +259,10 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 // ボスを描画する
 void Boss::BossDraw(Boss_ boss) {
-	Novice::DrawBox(static_cast<int>(boss.pos.x), static_cast<int>(boss.pos.y),
-		static_cast<int>(boss.size.x), static_cast<int>(boss.size.y), 0.0f, WHITE, kFillModeSolid);
+	/*Novice::DrawBox(static_cast<int>(boss.pos.x), static_cast<int>(boss.pos.y),
+		static_cast<int>(boss.size.x), static_cast<int>(boss.size.y), 0.0f, WHITE, kFillModeSolid);*/
+	Novice::DrawSprite(static_cast<int>(boss.pos.x), static_cast<int>(boss.pos.y),
+		boss.image, 1, 1, 0.0f, WHITE);
 }
 
 // 範囲攻撃を描画する
@@ -327,9 +328,6 @@ void Boss::BeamAttack(Boss_& boss) {
 	}
 }
 
-
-
-
 void Boss::DrawBeams(Boss_& boss) {
 	for (int i = 0; i < MAX_BEAMS; i++) {
 		if (boss.beams[i].attakStandTime <= 0) {
@@ -348,8 +346,9 @@ void Boss::DrawBeams(Boss_& boss) {
 
 // チャージ攻撃の描画
 void Boss::DrawBossChargeAttak(const Object& object) {
-	
+	if (object.isAttak) {
 		Novice::DrawBox(static_cast<int>(object.pos.x), static_cast<int>(object.pos.y),
 			100, 100, object.rotation, BLUE, kFillModeSolid);
 	}
+}
 

@@ -128,8 +128,11 @@ void Player::Attack(Player_& player, Flash_& flash, const char* keys, const char
 }
 
 void Player::Draw(Player_& player) {
-	Novice::DrawBox(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y),
-		static_cast<int>(player.radius), static_cast<int>(player.radius), 0.0f, WHITE, kFillModeSolid);
+	//Novice::DrawBox(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y),
+	//	static_cast<int>(player.radius), static_cast<int>(player.radius), 0.0f, WHITE, kFillModeSolid);
+
+	Novice::DrawSprite(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y), player.image, 1, 1, 0.0f, WHITE);
+
 }
 
 void Player::DrawFlash(Player_& player, Flash_& flash) {

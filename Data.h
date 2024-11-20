@@ -20,6 +20,9 @@ struct Player_ {
     int janpNum = 0;
     float speed = 2.0f;
     int isJanpSpeed = false;
+
+	int image = Novice::LoadTexture("./Resources/images/player_01.png");
+
 };
 
 //フラッシュライト
@@ -55,6 +58,9 @@ struct Boss_ {
 	int secondHp = 200;
 	int isEase = false;
 	Beam_ beams[MAX_BEAMS];// ビーム攻撃用の配列
+
+	int image = Novice::LoadTexture("./Resources/images/boss_01.png");
+
 };
 
 // 範囲攻撃

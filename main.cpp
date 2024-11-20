@@ -9,119 +9,121 @@ const char kWindowTitle[] = "1221_霊障退治";
 
 enum Scene {
 
-    TITLE,
-    SELECT,
-    GUIDE,
-    FASTBOSS,
-    SECONDBOSS,
-    CLEAR,
-    GAMEOVER,
+	TITLE,
+	SELECT,
+	GUIDE,
+	FASTBOSS,
+	SECONDBOSS,
+	CLEAR,
+	GAMEOVER,
 };
 
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-    // ライブラリの初期化
-    Novice::Initialize(kWindowTitle, 1280, 720);
+	// ライブラリの初期化
+	Novice::Initialize(kWindowTitle, 1280, 720);
 
-    // キー入力結果を受け取る箱
-    char keys[256] = { 0 };
-    char preKeys[256] = { 0 };
+	// キー入力結果を受け取る箱
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
 
-    Player_ player_;
-    Player player;
-    Line line;
-    Flash_ flash_;
-    Boss boss;
-    Boss_ boss_;
-    BossRengeAttak_ rengeAttak_;
-    ShortDistansAttak_ shortDistAttak_;  // 近距離攻撃用
-    Ui ui;
-    Object object_;
+	Player_ player_;
+	Player player;
+	Line line;
+	Flash_ flash_;
+	Boss boss;
+	Boss_ boss_;
+	BossRengeAttak_ rengeAttak_;
+	ShortDistansAttak_ shortDistAttak_;  // 近距離攻撃用
+	Ui ui;
+	Object object_;
 
-    int scene = TITLE;
+	int scene = TITLE;
 
-    // ウィンドウの×ボタンが押されるまでループ
-    while (Novice::ProcessMessage() == 0) {
-        // フレームの開始
-        Novice::BeginFrame();
+	// ウィンドウの×ボタンが押されるまでループ
+	while (Novice::ProcessMessage() == 0) {
+		// フレームの開始
+		Novice::BeginFrame();
 
-        // キー入力を受け取る
-        memcpy(preKeys, keys, 256);
-        Novice::GetHitKeyStateAll(keys);
+		// キー入力を受け取る
+		memcpy(preKeys, keys, 256);
+		Novice::GetHitKeyStateAll(keys);
 
-        switch (scene) {
+		switch (scene) {
 
-        case TITLE:
-            if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-                scene = FASTBOSS;
-            }
-            break;
+		case TITLE:
+			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				scene = FASTBOSS;
+			}
+			break;
 
-        case FASTBOSS:
+		case FASTBOSS:
 
-            ///
-            /// ↓更新処理ここから
-            ///
+			///
+			/// ↓更新処理ここから
+			///
 
-            // プレイヤーの更新処理
-            player.Move(player_, line, keys, preKeys);
-            player.Attack(player_, flash_, keys, preKeys);
+			// プレイヤーの更新処理
+			player.Move(player_, line, keys, preKeys);
+			player.Attack(player_, flash_, keys, preKeys);
 
-            // ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-            boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_,object_);
+			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_);
 
-            ///
-            /// ↑更新処理ここまで
-            ///
+			///
+			/// ↑更新処理ここまで
+			///
 
-            ///
-            /// ↓描画処理ここから
-            ///
+			///
+			/// ↓描画処理ここから
+			///
 
-            // フラッシュライトの描画
-            player.DrawFlash(player_, flash_);
+			// フラッシュライトの描画
+			player.DrawFlash(player_, flash_);
 
-            // プレイヤーの描画
-            player.Draw(player_);
+			// プレイヤーの描画
+			player.Draw(player_);
 
-            // ボスの範囲攻撃描画
-            boss.DrawBossRengeAttak(rengeAttak_);
+			// ボスの範囲攻撃描画
+			boss.DrawBossRengeAttak(rengeAttak_);
 
-            // ボスの描画
-            boss.BossDraw(boss_);
+			// ボスの描画
+			boss.BossDraw(boss_);
 
-            //近距離攻撃の描画
-            boss.DrawShortDistansAttak(shortDistAttak_);
+			//近距離攻撃の描画
+			boss.DrawShortDistansAttak(shortDistAttak_);
 
-        // UIの描画
-        ui.DrawGauge(340, 30, boss_.hp, 0);
-        ui.DrawGauge(100, 620, player_.hp, 1);
-        ui.DrawGauge(100, 670, player_.energy, 2);
+			// UIの描画
+			ui.DrawGauge(340, 30, boss_.hp, 0);
+			ui.DrawGauge(100, 620, player_.hp, 1);
+			ui.DrawGauge(100, 670, player_.energy, 2);
 
-            ///
-            /// ↑描画処理ここまで
-            ///
-          
-            break;
+			boss.DrawBossChargeAttak(object_);
 
-        case SECONDBOSS:
+			///
+			/// ↑描画処理ここまで
+			///
 
-            break;
+			break;
+
+		case SECONDBOSS:
+
+			break;
 
 
 
-        }
-        // フレームの終了
-        Novice::EndFrame();
+		}
+		// フレームの終了
+		Novice::EndFrame();
 
-        // ESCキーが押されたらループを抜ける
-        if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
-            break;
-        }
-    }
+		// ESCキーが押されたらループを抜ける
+		if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
+			break;
+		}
+	}
 
-    // ライブラリの終了
-    Novice::Finalize();
-    return 0;
+	// ライブラリの終了
+	Novice::Finalize();
+	return 0;
 }
