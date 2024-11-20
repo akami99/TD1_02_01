@@ -31,8 +31,8 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	if (!boss.isAttak) {
 		if (boss.attakNo == 0) {
 			if (boss.attakStandTime <= 0) {
-				boss.attakNo = rand() % 5 + 1;
-				//boss.attakNo = 2;
+				//boss.attakNo = rand() % 5 + 1;
+				boss.attakNo = 4;
 				/*if (boss.hp > 100) {
 					boss.attakNo = 5;
 				}*/
@@ -49,8 +49,12 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		if (renge.isAttak) {
 			if (renge.attakStandTime > 0) {
 				renge.attakStandTime--;
+				boss.shakePos.x = static_cast<float>(rand() % 20 - 10);
+				boss.shakePos.y = static_cast<float>(rand() % 20 - 10);
 				renge.attakTime = 90;
 			} else if (renge.attakTime > 0) {
+				boss.shakePos.x = static_cast<float>(rand() % 40 - 20);
+				boss.shakePos.y = static_cast<float>(rand() % 40 - 20);
 				renge.attakTime--;
 			} else {
 				renge.isAttak = false;
@@ -58,9 +62,12 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				boss.attakNo = 0;
 				boss.attakStandTime = 120;
 				renge.attakStandTime = 120;
+				boss.shakePos = { 0.0f,0.0f };
 			}
 		}
 	}
+
+	
 
 	// 近距離攻撃処理
 	if (boss.attakNo == 2) {
@@ -267,7 +274,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 void Boss::BossDraw(Boss_ boss) {
 	/*Novice::DrawBox(static_cast<int>(boss.pos.x), static_cast<int>(boss.pos.y),
 		static_cast<int>(boss.size.x), static_cast<int>(boss.size.y), 0.0f, WHITE, kFillModeSolid);*/
-	Novice::DrawSprite(static_cast<int>(boss.pos.x), static_cast<int>(boss.pos.y),
+	Novice::DrawSprite(static_cast<int>(boss.pos.x+boss.shakePos.x), static_cast<int>(boss.pos.y+boss.shakePos.y),
 		boss.image, 1, 1, 0.0f, WHITE);
 }
 
@@ -313,12 +320,17 @@ void Boss::BeamAttack(Boss_& boss) {
 		}
 
 		if (boss.beams[i].attakStandTime > 0) {
+			boss.shakePos.x = static_cast<float>(rand() % 20 - 10);
+			boss.shakePos.y = static_cast<float>(rand() % 20 - 10);
 			boss.beams[i].attakStandTime--;
 			boss.beams[i].attakTime = 60;
 		} else if (boss.beams[i].attakStandTime <= 0) {
 			if (boss.beams[i].attakTime > 0) {
+				boss.shakePos.x = static_cast<float>(rand() % 30 - 15);
+				boss.shakePos.y = static_cast<float>(rand() % 30 - 15);
 				boss.beams[i].attakTime--;
 			} else {
+				boss.shakePos = { 0.0f,0.0f };
 				boss.beams[i].isAttak = false;
 			}
 		}

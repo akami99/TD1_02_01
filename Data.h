@@ -50,6 +50,7 @@ struct Beam_ {
 struct Boss_ {
 	Vector2 pos = { 1000.0f, 472.0f };    // ボスの初期位置
 	Vector2 size = { 64.0f, 128.0f };
+	Vector2 shakePos = { 0.0f,0.0f };
 	int hp = 200;                         // ゲージの描画Ui.cpp内で調整してるので注意
 	int attakNo = 0;
 	int attakStandTime = 120;
