@@ -39,6 +39,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Ui ui;
 	Object object_;
 	ShortDubleDistansAttak_ doubleShort;
+	Shake shake;
 
 	int scene = TITLE;
 
@@ -70,7 +71,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, flash_, keys, preKeys);
 
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort);
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort,shake);
 
 			///
 			/// ↑更新処理ここまで
@@ -80,28 +81,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			/// ↓描画処理ここから
 			///
 
+			player.DrawBackGround(line, shake);
+
+			// UIの描画
+			ui.DrawGauge(340, 30, boss_.hp, 0);
+			ui.DrawGauge(100, 620, player_.hp, 1);
+			ui.DrawGauge(100, 670, player_.energy, 2);
+
 			// フラッシュライトの描画
 			player.DrawFlash(player_, flash_);
 
 			// プレイヤーの描画
 			player.Draw(player_);
 
+			boss.DrawBeams(boss_);
+
 			// ボスの範囲攻撃描画
 			boss.DrawBossRengeAttak(rengeAttak_);
 
 			// ボスの描画
-			boss.BossDraw(boss_);
+			boss.BossDraw(boss_,shake);
 
 			//近距離攻撃の描画
 			boss.DrawShortDistansAttak(shortDistAttak_);
 
 			//連続攻撃の描画
 			boss.DrawDoubleShortDistansAttak(doubleShort);
-
-			// UIの描画
-			ui.DrawGauge(340, 30, boss_.hp, 0);
-			ui.DrawGauge(100, 620, player_.hp, 1);
-			ui.DrawGauge(100, 670, player_.energy, 2);
 
 			boss.DrawBossChargeAttak(object_);
 

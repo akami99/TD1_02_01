@@ -37,7 +37,7 @@ struct Flash_ {
 
 // ビーム攻撃用構造体
 struct Beam_ {
-	Vector2 pos = { 0.0f, 0.0f };         // ビームの位置
+	Vector2 pos = { -1000.0f, -1000.0f };         // ビームの位置
 	Vector2 direction = { 0.0f, 1.0f };   // ビームの進行方向
 	Vector2 size = { 100.0f, 800.0f };    // ビームのサイズ
 	float speed = 5.0f;                   // ビームのスピード
@@ -126,10 +126,17 @@ struct Object {
     int attakStandTime = 30;
 };
 
+struct  Shake{
+	Vector2 pos = { 0.0f,0.0f };
+};
 
 // 地面
 struct Line {
 	Vector2 pos = { 0.0f, 600.0f };
+	Vector2 endPos = { 1280.0f,600 };
+
+	int backGround = Novice::LoadTexture("./Resources/images/haikei.png");
+
 };
 
 // timer の宣言（定義はソースファイルに）

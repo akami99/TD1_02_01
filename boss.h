@@ -4,15 +4,16 @@
 
 class Boss {
 public:
-	void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object,ShortDubleDistansAttak_& doubleShort);
+	void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, 
+		Object& object,ShortDubleDistansAttak_& doubleShort,Shake& shake);
 
-	void BossDraw(Boss_ boss);
+	void BossDraw(Boss_ boss,Shake& shake);
 
 	void DrawBossRengeAttak(BossRengeAttak_ renge);
 
 	void DrawBossChargeAttak(const Object& object);
 
-	void BeamAttack(Boss_& boss);  // ビーム攻撃開始
+	void BeamAttack(Boss_& boss,Shake& shake);  // ビーム攻撃開始
 
 	void DrawBeams(Boss_& boss);   // ビームを描画
 

@@ -189,3 +189,8 @@ void Player::DrawFlash(Player_& player, Flash_& flash) {
 		}
 	}
 }
+
+//背景の描画
+void Player::DrawBackGround(Line& backGround, Shake shake) {
+	Novice::DrawSprite(static_cast<int>(0 + shake.pos.x), static_cast<int>(0 + shake.pos.y),backGround.backGround ,1, 1, 0.0f, WHITE);
+}

@@ -18,7 +18,7 @@ void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easin
 
 
 // ボスの動き
-void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object,ShortDubleDistansAttak_& doubleShort) {
+void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake) {
 	if (boss.attakStandTime > 0) {
 		boss.attakStandTime--;
 	} else {
@@ -31,8 +31,8 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	if (!boss.isAttak) {
 		if (boss.attakNo == 0) {
 			if (boss.attakStandTime <= 0) {
-				//boss.attakNo = rand() % 5 + 1;
-				boss.attakNo = 4;
+				boss.attakNo = rand() % 5 + 1;
+				//boss.attakNo = 1;
 				/*if (boss.hp > 100) {
 					boss.attakNo = 5;
 				}*/
@@ -49,12 +49,12 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		if (renge.isAttak) {
 			if (renge.attakStandTime > 0) {
 				renge.attakStandTime--;
-				boss.shakePos.x = static_cast<float>(rand() % 20 - 10);
-				boss.shakePos.y = static_cast<float>(rand() % 20 - 10);
+				shake.pos.x = static_cast<float>(rand() % 20 - 10);
+				shake.pos.y = static_cast<float>(rand() % 20 - 10);
 				renge.attakTime = 90;
 			} else if (renge.attakTime > 0) {
-				boss.shakePos.x = static_cast<float>(rand() % 40 - 20);
-				boss.shakePos.y = static_cast<float>(rand() % 40 - 20);
+				shake.pos.x = static_cast<float>(rand() % 40 - 20);
+				shake.pos.y = static_cast<float>(rand() % 40 - 20);
 				renge.attakTime--;
 			} else {
 				renge.isAttak = false;
@@ -62,12 +62,12 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				boss.attakNo = 0;
 				boss.attakStandTime = 120;
 				renge.attakStandTime = 120;
-				boss.shakePos = { 0.0f,0.0f };
+				shake.pos = { 0.0f,0.0f };
 			}
 		}
 	}
 
-	
+
 
 	// 近距離攻撃処理
 	if (boss.attakNo == 2) {
@@ -77,43 +77,43 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			// 攻撃中はボスを動かさない
 		//	if (shortDist.attakTime == 10) {
 				// プレイヤーとボスの距離を計算
-				float distanceX = player.pos.x - boss.pos.x;
-				float distanceY = player.pos.y - boss.pos.y;
-				float distance = std::sqrt(distanceX * distanceX + distanceY * distanceY);
+			float distanceX = player.pos.x - boss.pos.x;
+			float distanceY = player.pos.y - boss.pos.y;
+			float distance = std::sqrt(distanceX * distanceX + distanceY * distanceY);
 
-				float stopDistance = 150.0f; // プレイヤーからこの距離で停止
+			float stopDistance = 150.0f; // プレイヤーからこの距離で停止
 
-				if (distance > stopDistance) {
-					if (shortDist.isEase) {
-						// ボスがプレイヤーに近づく（一定距離以上の場合）
-						boss.pos.x += distanceX * shortDist.easeSpeed;
-						boss.pos.y += distanceY * shortDist.easeSpeed;
+			if (distance > stopDistance) {
+				if (shortDist.isEase) {
+					// ボスがプレイヤーに近づく（一定距離以上の場合）
+					boss.pos.x += distanceX * shortDist.easeSpeed;
+					boss.pos.y += distanceY * shortDist.easeSpeed;
 
-						// 攻撃判定をリセットして攻撃をまだ開始しない
-						shortDist.attakTime = 10;
-					}
-				} else {
-					// 一定距離まで近づき停止した後、攻撃判定を1度だけ設定
-					if (player.pos.x < boss.pos.x) {
-						// プレイヤーが左側にいる場合、左側に攻撃判定
-						shortDist.pos.x = boss.pos.x - shortDist.size.x;
-					} else {
-						// プレイヤーが右側にいる場合、右側に攻撃判定
-						shortDist.pos.x = boss.pos.x + boss.size.x;
-					}
-					shortDist.pos.y = boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 - 32.0f;
-
-					shortDist.isEase = false;
-
+					// 攻撃判定をリセットして攻撃をまだ開始しない
+					shortDist.attakTime = 10;
 				}
-		//	}
+			} else {
+				// 一定距離まで近づき停止した後、攻撃判定を1度だけ設定
+				if (player.pos.x < boss.pos.x) {
+					// プレイヤーが左側にいる場合、左側に攻撃判定
+					shortDist.pos.x = boss.pos.x - shortDist.size.x;
+				} else {
+					// プレイヤーが右側にいる場合、右側に攻撃判定
+					shortDist.pos.x = boss.pos.x + boss.size.x;
+				}
+				shortDist.pos.y = boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 - 32.0f;
 
-			//攻撃判定を維持しつつ、時間を減らす
+				shortDist.isEase = false;
+
+			}
+			//	}
+
+				//攻撃判定を維持しつつ、時間を減らす
 			if (shortDist.attakTime > 0) {
 				if (!shortDist.isEase) {
 					shortDist.attakTime--;
-				//近距離攻撃の描画
-				DrawShortDistansAttak(shortDist);
+					//近距離攻撃の描画
+					DrawShortDistansAttak(shortDist);
 				}
 			} else {
 				// 攻撃終了
@@ -130,17 +130,15 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	// ビーム攻撃処理 (attakNo == 4)
 	if (boss.attakNo == 4) {
 
-			Vector2 targetPos = { 640.0f, 100.0f };  // 画面中央上部
-			if (!boss.isEase) {
+		Vector2 targetPos = { 640.0f, 100.0f };  // 画面中央上部
+		if (!boss.isEase) {
 			BossMoveToPosition(boss, targetPos, 0.05f);
 		}
 
 		if (boss.pos.x == targetPos.x && boss.pos.y == targetPos.y) {
 			boss.isEase = true;
-			BeamAttack(boss);  // ビーム攻撃開始
+			BeamAttack(boss, shake);  // ビーム攻撃開始
 		}
-
-		DrawBeams(boss);
 
 	}
 
@@ -266,15 +264,15 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		}
 	}
 
-	
+
 }
 
 
 // ボスを描画する
-void Boss::BossDraw(Boss_ boss) {
+void Boss::BossDraw(Boss_ boss, Shake& shake) {
 	/*Novice::DrawBox(static_cast<int>(boss.pos.x), static_cast<int>(boss.pos.y),
 		static_cast<int>(boss.size.x), static_cast<int>(boss.size.y), 0.0f, WHITE, kFillModeSolid);*/
-	Novice::DrawSprite(static_cast<int>(boss.pos.x+boss.shakePos.x), static_cast<int>(boss.pos.y+boss.shakePos.y),
+	Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
 		boss.image, 1, 1, 0.0f, WHITE);
 }
 
@@ -308,7 +306,7 @@ void Boss::DrawDoubleShortDistansAttak(ShortDubleDistansAttak_ dobleShort) {
 	}
 }
 
-void Boss::BeamAttack(Boss_& boss) {
+void Boss::BeamAttack(Boss_& boss, Shake& shake) {
 	for (int i = 0; i < MAX_BEAMS; i++) {
 		if (!boss.beams[i].isAttak) {
 			boss.beams[i].isAttak = true;
@@ -320,17 +318,17 @@ void Boss::BeamAttack(Boss_& boss) {
 		}
 
 		if (boss.beams[i].attakStandTime > 0) {
-			boss.shakePos.x = static_cast<float>(rand() % 20 - 10);
-			boss.shakePos.y = static_cast<float>(rand() % 20 - 10);
+			shake.pos.x = static_cast<float>(rand() % 20 - 10);
+			shake.pos.y = static_cast<float>(rand() % 20 - 10);
 			boss.beams[i].attakStandTime--;
 			boss.beams[i].attakTime = 60;
 		} else if (boss.beams[i].attakStandTime <= 0) {
 			if (boss.beams[i].attakTime > 0) {
-				boss.shakePos.x = static_cast<float>(rand() % 30 - 15);
-				boss.shakePos.y = static_cast<float>(rand() % 30 - 15);
+				shake.pos.x = static_cast<float>(rand() % 30 - 15);
+				shake.pos.y = static_cast<float>(rand() % 30 - 15);
 				boss.beams[i].attakTime--;
 			} else {
-				boss.shakePos = { 0.0f,0.0f };
+				shake.pos = { 0.0f,0.0f };
 				boss.beams[i].isAttak = false;
 			}
 		}

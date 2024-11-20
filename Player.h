@@ -32,6 +32,8 @@ public:
 	/// <param name="isFlash">isFlash flag</param>
 	/// <param name="flash">Flash's values</param>
 	void DrawFlash(Player_& player, Flash_& flash);
+
+	void DrawBackGround(Line& backGround, Shake shake);
 };
 
 
