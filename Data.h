@@ -77,6 +77,18 @@ struct ShortDistansAttak_ {
 	Vector2 size = { 128.0f, 64.0f };    // 攻撃範囲のサイズ
 	float easeSpeed = 0.05f;             // イージング速度
 	float linearSpeed = 20.0f;            // 直線的な移動速度
+	int attakTime = 0;                  // 攻撃判定の時間
+	int isEase = true;                   // イージング状態かどうか
+	int isAttak = false;                 // 攻撃中かどうか
+	int isShortAttak = false;
+};
+
+//連続攻撃
+struct ShortDubleDistansAttak_ {
+	Vector2 pos = { 0.0f, 0.0f };        // 攻撃の位置
+	Vector2 size = { 128.0f, 64.0f };    // 攻撃範囲のサイズ
+	float easeSpeed = 0.05f;             // イージング速度
+	float linearSpeed = 20.0f;            // 直線的な移動速度
 	int attakTime = 10;                  // 攻撃判定の時間
 	int isEase = true;                   // イージング状態かどうか
 	int isAttak = false;                 // 攻撃中かどうか
@@ -86,6 +98,7 @@ struct ShortDistansAttak_ {
 	float baseSizeX = 128.0f;            // 元のX方向のサイズ
 	int isShortAttak = false;
 };
+
 
 
 ////チャージ攻撃

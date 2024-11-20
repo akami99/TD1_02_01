@@ -38,6 +38,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	ShortDistansAttak_ shortDistAttak_;  // 近距離攻撃用
 	Ui ui;
 	Object object_;
+	ShortDubleDistansAttak_ doubleShort;
 
 	int scene = TITLE;
 
@@ -69,7 +70,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, flash_, keys, preKeys);
 
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_);
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort);
 
 			///
 			/// ↑更新処理ここまで
@@ -93,6 +94,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//近距離攻撃の描画
 			boss.DrawShortDistansAttak(shortDistAttak_);
+
+			//連続攻撃の描画
+			boss.DrawDoubleShortDistansAttak(doubleShort);
 
 			// UIの描画
 			ui.DrawGauge(340, 30, boss_.hp, 0);
