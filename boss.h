@@ -24,9 +24,16 @@ public:
 
 	void DrawDoubleShortDistansAttak(ShortDubleDistansAttak_ shortDobleDist);
 
+	void DrawBeam2(Beam2& beam2);
+
+	//第二形態の攻撃
+
 	static void UpdateProjectiles(Projectile* projectiles);
 	
 private:
 
 };
 
+
+
+ 

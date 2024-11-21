@@ -30,18 +30,24 @@ if (boss.attakStandTime > 0) {
 		boss.isAttak = true;
 	}
 
-	//HPが50%以上ならattakNo1~3
-	//%50%以下なら3~6(仮)
-	//25%以下なら5~8(仮)
-	if (!boss.isAttak) {
-		if (boss.attakNo == 0) {
-			if (boss.attakStandTime <= 0) {
-				boss.attakNo = rand() % 5 + 1;
-				//boss.attakNo = 1;
-				/*if (boss.hp > 100) {
-					boss.attakNo = 5;
-				}*/
-				boss.isEase = false;
+	if (boss.vanishTime > 0) {
+		boss.vanishTime--;
+	}
+
+	if (boss.vanishTime == 0) {
+		//HPが50%以上ならattakNo1~3
+		//%50%以下なら3~6(仮)
+		//25%以下なら5~8(仮)
+		if (!boss.isAttak) {
+			if (boss.attakNo == 0) {
+				if (boss.attakStandTime <= 0) {
+					//boss.attakNo = rand() % 5 + 1;
+					boss.attakNo = 10;
+					/*if (boss.hp > 100) {
+						boss.attakNo = 5;
+					}*/
+					boss.isEase = false;
+				}
 			}
 		}
 	}
@@ -287,6 +293,66 @@ if (boss.attakStandTime > 0) {
 		}
 	}
 
+	if (boss.attakNo == 10) {
+		if (!beam2.isEase) {
+			Vector2 targetPos = { 640.0f, 100.0f };  // 画面中央上部
+		
+			boss.pos.x += (targetPos.x - boss.pos.x) * 0.05f;
+			boss.pos.y += (targetPos.y - boss.pos.y) * 0.05f;
+			boss.vanishTime = 2;
+			if (std::abs(targetPos.x - boss.pos.x) < 0.5f && std::abs(targetPos.y - boss.pos.y) < 0.5f) {
+				boss.pos = targetPos;
+				beam2.pos = boss.pos;
+				beam2.isEase = true;
+			}
+
+			beam2.attakStandTime = 60;
+			beam2.attakTime = 300;
+
+		} else if (beam2.isEase) {
+
+			if (beam2.attakStandTime > 0) {
+				beam2.attakStandTime--;
+				beam2.pos = { boss.pos.x,boss.pos.y};
+			} else {
+				beam2.isAttak = true;
+			}
+
+			if (beam2.isAttak) {
+				if (beam2.attakTime > 0) {
+					beam2.attakTime--;
+					boss.pos.x += beam2.speed;
+					beam2.pos.x += beam2.speed;
+
+					if (boss.pos.x > 1280.0f - boss.size.x||boss.pos.x<0) {
+						beam2.speed *= -1;
+					}
+					shake.pos.x = static_cast<float>(rand() % 20 -10);
+					shake.pos.y = static_cast<float>(rand() % 20 - 10);
+				} else{
+					Vector2 endPos = { 1000.0f,472.0f };
+					boss.pos.x += (endPos.x - boss.pos.x) * 0.05f;
+					boss.pos.y += (endPos.y - boss.pos.y) * 0.05f;
+					shake.pos.x = 0.0f;
+					shake.pos.y = 0.0f;
+					boss.vanishTime = 2;
+
+					if (std::abs(endPos.x - boss.pos.x) < 0.5f && std::abs(endPos.y - boss.pos.y) < 0.5f) {
+						boss.pos = endPos;
+						beam2.isEase = false;
+						boss.isAttak = false;
+						boss.attakNo = 0;
+						boss.attakStandTime = 120; // クールダウン
+
+					}
+				}
+			}
+		}
+		
+	}
+	Novice::ScreenPrintf(32, 352, "attakStandTime: %d", beam2.attakStandTime);
+	Novice::ScreenPrintf(32, 384, "attakTime: %d", beam2.attakTime);
+	Novice::ScreenPrintf(32, 416, "pos.x: %.1f, pos.y: %.1f", beam2.pos.x, beam2.pos.y);
 
 	localTimer = 0;
 	if (!boss.isFloating) {
@@ -325,8 +391,19 @@ if (boss.attakStandTime > 0) {
 void Boss::BossDraw(Boss_ boss, Shake& shake) {
 	/*Novice::DrawBox(static_cast<int>(boss.pos.x), static_cast<int>(boss.pos.y),
 		static_cast<int>(boss.size.x), static_cast<int>(boss.size.y), 0.0f, WHITE, kFillModeSolid);*/
-	Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-		boss.image, 1, 1, 0.0f, WHITE);
+	if (boss.vanishTime == 0) {
+		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
+			boss.image, 1, 1, 0.0f, WHITE);
+	} else if(boss.vanishTime<10){
+		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
+			boss.image, 1, 1, 0.0f, 0xFFFFFF50);
+	} else if (20>boss.vanishTime&&boss.vanishTime>10) {
+		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
+			boss.image, 1, 1, 0.0f, 0xFFFFFF40);
+	} else if (30 > boss.vanishTime && boss.vanishTime > 20) {
+		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
+			boss.image, 1, 1, 0.0f, 0xFFFFFF30);
+	}
 }
 
 // 範囲攻撃を描画する
@@ -381,11 +458,12 @@ void Boss::BeamAttack(Boss_& boss, Shake& shake) {
 				shake.pos.y = static_cast<float>(rand() % 30 - 15);
 				boss.beams[i].attakTime--;
 			} else {
-				shake.pos = { 0.0f,0.0f };
-				boss.beams[i].isAttak = false;
+				
+					boss.beams[i].isAttak = false;
+				}
 			}
 		}
-	}
+	
 
 	// すべてのビームが終了しているか確認
 	bool allBeamsFinished = true;
@@ -400,7 +478,9 @@ void Boss::BeamAttack(Boss_& boss, Shake& shake) {
 		// ボスを初期位置に戻すリセット処理
 		static Vector2 originalPosition = { 1000.0f, 472.0f }; // ボスの初期位置を設定
 		boss.pos = originalPosition;
-
+		shake.pos.x = 0.0f;
+		shake.pos.y =0.0f;
+		boss.vanishTime = 60;
 		boss.isAttak = false;
 		boss.attakNo = 0;
 		boss.attakStandTime = 120; // クールダウン時間をリセット
@@ -452,5 +532,12 @@ void Boss::UpdateProjectiles(Projectile* projectiles) {
 	}
 }
 
-
-
+//第2形態のビーム
+void Boss::DrawBeam2(Beam2& beam2) {
+	if (beam2.attakStandTime <= 0) {
+		if (beam2.attakTime > 0) {
+			Novice::DrawBox(static_cast<int>(beam2.pos.x), static_cast<int>(beam2.pos.y),
+				static_cast<int>(beam2.size.x), static_cast<int>(beam2.size.y), 0.0f, RED, kFillModeSolid);
+		}
+	}
+}
