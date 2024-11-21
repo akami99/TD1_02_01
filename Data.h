@@ -99,6 +99,17 @@ struct Beam2 {
 	int isEase = false;
 };
 
+struct Beam2 {
+	Vector2 pos = { -1000.0f, -1000.0f };         // ビームの位置
+	Vector2 direction = { 0.0f, 1.0f };   // ビームの進行方向
+	Vector2 size = { 100.0f, 800.0f };    // ビームのサイズ
+	float speed = 5.0f;                   // ビームのスピード
+	int attakTime = 0;                  // ビームの持続時間
+	int attakStandTime = 0;
+	int isAttak = false;                  // 攻撃中かどうか
+	int isEase = false;
+};
+
 // ボス
 struct Boss_ {
 	Vector2 pos = { 1000.0f, 472.0f };    // ボスの初期位置
