@@ -124,6 +124,7 @@ struct ShortDubleDistansAttak_ {
 struct Object {
     Vector2 pos= { 0.0f, 0.0f };
 	Vector2 size = { 100,100 };
+	Vector2 velocity = { 10.0f,10.0f };
     float floatHeight=50.0f;
 	bool isFloating = true;
 	float throwSpeed=15.0f;
@@ -138,6 +139,7 @@ struct Object {
 struct Projectile {
 	Vector2 pos = { 0.0f,0.0f };
 	Vector2 velocity = { 0.0f,0.0f };
+	int radius = 20;
 	bool isActive = false;
 	int localTimer = 0;
 
