@@ -87,6 +87,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			player.DrawBackGround(line, shake);
 
+			Novice::DrawLine(0, 600, 1280, 600, WHITE);
+
 			// フラッシュライトの描画
 			player.DrawFlash(player_, flash_);
 

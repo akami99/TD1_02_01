@@ -30,6 +30,22 @@ public:
 
 	static void UpdateProjectiles(Projectile* projectiles);
 	
+	//=====================================================================
+	//当たり判定の作成(後でプレイヤーの向きによってバッグに当たり判定がないようにする)
+	//=====================================================================
+
+	//範囲攻撃
+	void PlayerRengeHitBox(Player_& player, BossRengeAttak_& renge);
+
+	//近距離攻撃
+	void PlayerShortAttakHitBox(Player_& player, ShortDistansAttak_& shortAttak);
+
+	//ビーム攻撃の当たり判定
+	void PlayerBeamsHitBox(Player_& player, Boss_& boss);
+
+	//連続攻撃の当たり判定
+	void PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_& doubleAttak);
+
 private:
 
 };
