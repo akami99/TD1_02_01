@@ -19,7 +19,7 @@ void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easin
 
 
 // ボスの動き
-void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist,Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,Projectile* projectiles, int& localTimer) {
+void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist,Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,Beam2& beam2,Projectile* projectiles, int& localTimer) {
 	// 関数内容
 
 
