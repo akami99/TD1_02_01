@@ -119,6 +119,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ui.DrawGauge(100, 670, player_.energy, 2);
 
 			boss.UpdateProjectiles(projectiles);
+
+
 			///
 			/// ↑描画処理ここまで
 			///

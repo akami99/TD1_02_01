@@ -238,60 +238,71 @@ if (boss.attakStandTime > 0) {
 
 
 
+
 	if (boss.attakNo == 3) {
 		object.isAttak = true;
 		if (object.isAttak) {
 			// タイマーの進行
 			timer++;
 
-			if (timer >= 300) { // 約5秒後
+			// 浮遊状態と飛ばす動きの切り替え
+			if (timer >= 300) { // 5秒後
 				object.isFloating = false;
 			}
 
-			// アニメーション処理
+			// 浮遊状態の処理
 			if (object.isFloating) {
-				// ボスの周囲を回転するアニメーション
-				object.rotation += 0.05f; // 回転速度を調整
+				// ボスの周囲を回転
+				object.rotation += 0.05f; // 回転速度
 				object.pos.x = boss.pos.x + object.orbitRadius * cos(object.rotation);
 				object.pos.y = boss.pos.y + object.orbitRadius * sin(object.rotation);
 			} else {
 				// プレイヤーに向かって飛ばす処理
-				Vector2 direction = {
-					player.pos.x - object.pos.x,
-					player.pos.y - object.pos.y
-				};
+				if (!object.isFloating) {
+					// プレイヤーの方向ベクトルを計算
+					Vector2 direction = { player.pos.x - object.pos.x, player.pos.y - object.pos.y };
+					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
-				// ベクトルの正規化（方向ベクトルの長さを1にする）
-				float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-				if (length != 0.0f) {
-					direction.x /= length;
-					direction.y /= length;
+					if (length != 0) {
+						// ベクトルの正規化
+						direction.x /= length;
+						direction.y /= length;
+					}
+
+					// チャージオブジェクトの速度を適用して移動
+					object.pos.x += direction.x * object.throwSpeed;
+					object.pos.y += direction.y * object.throwSpeed;
+
+					// プレイヤーに接近したら攻撃終了
+					float stopThreshold = 50.0f; // 近接判定のしきい値
+					if (length < stopThreshold) {
+						// 攻撃終了処理
+						object.isAttak = false;
+						boss.isAttak = false;
+						boss.attakNo = 0;
+						boss.attakStandTime = 120; // クールダウン時間
+						timer = 0;
+					}
+
+
+					timer = 0;
+					object.rotation = 0.0f;
+					object.throwSpeed = 15.0f; // 初期スピードに戻す
+					object.pos.x = boss.pos.x + object.orbitRadius;
+					object.pos.y = boss.pos.y + object.orbitRadius;
+					object.isAttak = false;
+					object.isFloating = true;
+					boss.isAttak = false;
+					boss.attakNo = 0;
+					boss.attakStandTime = 120;  // 攻撃後のクールダウン
+					object.attakTime = 360;
 				}
-
-				// 移動処理
-				object.pos.x += direction.x * object.throwSpeed;
-				object.pos.y += direction.y * object.throwSpeed;
-			}
-
-			// 一定時間が経過した場合のリセット処理
-			if (object.attakTime > 0) {
-				object.attakTime--;
-			} else {
-				// リセット処理
-				timer = 0;
-				object.rotation = 0.0f;
-				object.throwSpeed = 15.0f; // 初期スピードに戻す
-				object.pos.x = boss.pos.x + object.orbitRadius;
-				object.pos.y = boss.pos.y + object.orbitRadius;
-				object.isAttak = false;
-				object.isFloating = true;
-				boss.isAttak = false;
-				boss.attakNo = 0;
-				boss.attakStandTime = 120;  // 攻撃後のクールダウン
-				object.attakTime = 360;
 			}
 		}
-	}
+}
+
+
+
 
 	if (boss.attakNo == 10) {
 		if (!beam2.isEase) {

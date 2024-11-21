@@ -132,6 +132,9 @@ struct Object {
 
 
 
+
+
+
 };
 struct Projectile {
 	Vector2 pos;
@@ -159,7 +162,6 @@ struct Line {
 	int backGround = Novice::LoadTexture("./Resources/images/backGround.png");
 
 };
-
 
 
 // timer の宣言（定義はソースファイルに）
