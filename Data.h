@@ -123,6 +123,7 @@ struct ShortDubleDistansAttak_ {
 // チャージ攻撃
 struct Object {
     Vector2 pos= { 0.0f, 0.0f };
+	Vector2 size = { 100,100 };
     float floatHeight=50.0f;
 	bool isFloating = true;
 	float throwSpeed=15.0f;

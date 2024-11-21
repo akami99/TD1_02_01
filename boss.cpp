@@ -7,6 +7,7 @@
 int timer = 0;  // timer をここで定義
 
 int globalTimer = 0;  // グローバル変数の名前を変更
+
 // ボスのイージング移動処理
 void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easingSpeed) {
 	boss.pos.x += (targetPos.x - boss.pos.x) * easingSpeed;
@@ -251,9 +252,12 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 
 
-
+	timer = 0;
 	if (boss.attakNo == 3) {
 		object.isAttak = true;
+		
+		timer++;
+
 		if (object.isAttak) {
 			// タイマーの進行
 			timer++;
@@ -271,8 +275,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				object.pos.y = boss.pos.y + object.orbitRadius * sin(object.rotation);
 			} else {
 				// プレイヤーに向かって飛ばす処理
-				if (!object.isFloating) {
-					// プレイヤーの方向ベクトルを計算
+
 					Vector2 direction = { player.pos.x - object.pos.x, player.pos.y - object.pos.y };
 					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
@@ -309,7 +312,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 					boss.attakNo = 0;
 					boss.attakStandTime = 120;  // 攻撃後のクールダウン
 					object.attakTime = 360;
-				}
+				
 			}
 		}
 }
@@ -379,33 +382,35 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	Novice::ScreenPrintf(32, 416, "pos.x: %.1f, pos.y: %.1f", beam2.pos.x, beam2.pos.y);
 
 	localTimer = 0;
-	if (!boss.isFloating) {
-		if (localTimer >= 5) {
-			boss.isFloating = true;
-			localTimer = 0;
-		}
-	} else {
-		if (boss.pos.y > 400.0f && boss.attackCount < MAX_PROJECTILES) {
-			boss.pos.y -= 2.0f;
-		} else if (boss.attackCount < MAX_PROJECTILES) {
-			if (timer >= 20) {
-				projectiles[boss.attackCount].pos = boss.pos;
-				Vector2 direction = { player.pos.x - boss.pos.x, player.pos.y - boss.pos.y };
-				float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-				direction.x /= length;
-				direction.y /= length;
-
-				projectiles[boss.attackCount].velocity = { direction.x * 8.0f, direction.y * 8.0f };
-				projectiles[boss.attackCount].isActive = true;
-				boss.attackCount++;
-				timer = 0;
+	if (boss.attakNo == 11) {
+		if (!boss.isFloating) {
+			if (localTimer >= 5) {
+				boss.isFloating = true;
+				localTimer = 0;
 			}
 		} else {
-			if (boss.pos.y < 600.0f) {
-				boss.pos.y += 2.0f;
+			if (boss.pos.y > 400.0f && boss.attackCount < MAX_PROJECTILES) {
+				boss.pos.y -= 2.0f;
+			} else if (boss.attackCount < MAX_PROJECTILES) {
+				if (timer >= 20) {
+					projectiles[boss.attackCount].pos = boss.pos;
+					Vector2 direction = { player.pos.x - boss.pos.x, player.pos.y - boss.pos.y };
+					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+					direction.x /= length;
+					direction.y /= length;
+
+					projectiles[boss.attackCount].velocity = { direction.x * 8.0f, direction.y * 8.0f };
+					projectiles[boss.attackCount].isActive = true;
+					boss.attackCount++;
+					timer = 0;
+				}
 			} else {
-				boss.isFloating = false;
-				boss.attackCount = 0;
+				if (boss.pos.y < 600.0f) {
+					boss.pos.y += 2.0f;
+				} else {
+					boss.isFloating = false;
+					boss.attackCount = 0;
+				}
 			}
 		}
 	}
@@ -531,16 +536,12 @@ void Boss::DrawBeams(Boss_& boss) {
 
 // チャージ攻撃の描画
 void Boss::DrawBossChargeAttak(const Object& object) {
+	
 	if (object.isAttak) {
-		Novice::DrawBox(
-			static_cast<int>(object.pos.x) - 50,
-			static_cast<int>(object.pos.y) - 50,
-			100,
-			100,
-			0.0f,
-			WHITE,
-			kFillModeSolid
-		);
+		Novice::DrawBox(static_cast<int>(object.pos.x), static_cast<int>(object.pos.y),
+			static_cast<int>(object.size.x), static_cast<int>(object.size.y),
+			0.0f, RED, kFillModeSolid);
+
 
 	}
 }

@@ -122,7 +122,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			boss.UpdateProjectiles(projectiles);
 
-
+			Novice::ScreenPrintf(0, 0, "%d",timer);
 			///
 			/// ↑描画処理ここまで
 			///
