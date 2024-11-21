@@ -10,7 +10,7 @@ struct Player_ {
     Vector2 direction = { 0.0f, 0.0f };
     Vector2 velocity = { 0.0f, 0.0f };
     Vector2 acceleration = { 0.0f, 0.5f };
-    float radius = 32;
+    float radius = 64;
 	int hp = 300;    // ゲージの描画はUi.cpp内で調整してるので注意
 	int energy = 600;// 同上
 	const int kMaxEnergy = 600;
@@ -20,7 +20,7 @@ struct Player_ {
     int janpNum = 0;
     float speed = 2.0f;
     int isJanpSpeed = false;
-
+	int isHit=false;
 	int image = Novice::LoadTexture("./Resources/images/player_01.png");
 
 };
@@ -98,6 +98,7 @@ struct ShortDistansAttak_ {
 	int isEase = true;                   // イージング状態かどうか
 	int isAttak = false;                 // 攻撃中かどうか
 	int isShortAttak = false;
+	int isHit = false;
 };
 
 //連続攻撃
@@ -114,6 +115,7 @@ struct ShortDubleDistansAttak_ {
 	float maxExpandSize = 200.0f;        // 攻撃範囲の最大サイズ
 	float baseSizeX = 128.0f;            // 元のX方向のサイズ
 	int isShortAttak = false;
+	int isHit=false;
 };
 
 
@@ -136,6 +138,7 @@ struct Object {
 
 
 };
+
 struct Projectile {
 	Vector2 pos;
 	Vector2 velocity;

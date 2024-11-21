@@ -19,12 +19,12 @@ void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easin
 
 
 // ボスの動き
-void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist,Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,Beam2& beam2,Projectile* projectiles, int& localTimer) {
+void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake, Beam2& beam2, Projectile* projectiles, int& localTimer) {
 	// 関数内容
 
 
 
-if (boss.attakStandTime > 0) {
+	if (boss.attakStandTime > 0) {
 		boss.attakStandTime--;
 	} else {
 		boss.isAttak = true;
@@ -42,7 +42,7 @@ if (boss.attakStandTime > 0) {
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 10;
+					boss.attakNo = 5;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -76,6 +76,8 @@ if (boss.attakStandTime > 0) {
 				shake.pos = { 0.0f,0.0f };
 			}
 		}
+		PlayerRengeHitBox(player, renge);
+		Novice::ScreenPrintf(200, 500, "%d", player.isHit);
 	}
 
 
@@ -124,7 +126,7 @@ if (boss.attakStandTime > 0) {
 				if (!shortDist.isEase) {
 					shortDist.attakTime--;
 					//近距離攻撃の描画
-					
+
 				}
 			} else {
 				// 攻撃終了
@@ -134,11 +136,16 @@ if (boss.attakStandTime > 0) {
 				boss.attakStandTime = 120;  // 攻撃後のクールダウン
 				//shortDist.attakTime = 10;   // 次回攻撃の準備
 				shortDist.isEase = true;    //次回のイージングの準備
+				shortDist.isHit = false;
 			}
 		}
+
+		PlayerShortAttakHitBox(player, shortDist);
+		Novice::ScreenPrintf(200, 500, "%d", player.isHit);
+
 	}
 
-	// ビーム攻撃処理 (attakNo == 4)
+	// ビーム攻撃処理 
 	if (boss.attakNo == 4) {
 
 		Vector2 targetPos = { 640.0f, 100.0f };  // 画面中央上部
@@ -151,6 +158,8 @@ if (boss.attakStandTime > 0) {
 			BeamAttack(boss, shake);// ビーム攻撃開始
 		}
 
+		PlayerBeamsHitBox(player, boss);
+		Novice::ScreenPrintf(200, 500, "%d", player.isHit);
 	}
 
 	// 連続近距離攻撃処理
@@ -188,6 +197,7 @@ if (boss.attakStandTime > 0) {
 						doubleShort.attakTime--;
 					} else {
 						doubleShort.attakCount++;
+						doubleShort.isHit = false;
 						doubleShort.attakTime = 10; // 次回攻撃の準備
 					}
 				}
@@ -214,6 +224,7 @@ if (boss.attakStandTime > 0) {
 					doubleShort.attakTime--;
 				} else {
 					// 攻撃終了
+					doubleShort.isHit = false;
 					doubleShort.isShortAttak = false;
 					doubleShort.isAttak = false;
 					doubleShort.attakCount = 0;
@@ -224,6 +235,8 @@ if (boss.attakStandTime > 0) {
 				}
 			}
 		}
+		PlayerShortDobleAttakHitBox(player, doubleShort);
+		Novice::ScreenPrintf(200, 500, "%d", player.isHit);
 	}
 
 	// デバッグ用出力
@@ -307,7 +320,7 @@ if (boss.attakStandTime > 0) {
 	if (boss.attakNo == 10) {
 		if (!beam2.isEase) {
 			Vector2 targetPos = { 640.0f, 100.0f };  // 画面中央上部
-		
+
 			boss.pos.x += (targetPos.x - boss.pos.x) * 0.05f;
 			boss.pos.y += (targetPos.y - boss.pos.y) * 0.05f;
 			boss.vanishTime = 2;
@@ -324,7 +337,7 @@ if (boss.attakStandTime > 0) {
 
 			if (beam2.attakStandTime > 0) {
 				beam2.attakStandTime--;
-				beam2.pos = { boss.pos.x,boss.pos.y};
+				beam2.pos = { boss.pos.x,boss.pos.y };
 			} else {
 				beam2.isAttak = true;
 			}
@@ -335,12 +348,12 @@ if (boss.attakStandTime > 0) {
 					boss.pos.x += beam2.speed;
 					beam2.pos.x += beam2.speed;
 
-					if (boss.pos.x > 1280.0f - boss.size.x||boss.pos.x<0) {
+					if (boss.pos.x > 1280.0f - boss.size.x || boss.pos.x < 0) {
 						beam2.speed *= -1;
 					}
-					shake.pos.x = static_cast<float>(rand() % 20 -10);
+					shake.pos.x = static_cast<float>(rand() % 20 - 10);
 					shake.pos.y = static_cast<float>(rand() % 20 - 10);
-				} else{
+				} else {
 					Vector2 endPos = { 1000.0f,472.0f };
 					boss.pos.x += (endPos.x - boss.pos.x) * 0.05f;
 					boss.pos.y += (endPos.y - boss.pos.y) * 0.05f;
@@ -359,7 +372,7 @@ if (boss.attakStandTime > 0) {
 				}
 			}
 		}
-		
+
 	}
 	Novice::ScreenPrintf(32, 352, "attakStandTime: %d", beam2.attakStandTime);
 	Novice::ScreenPrintf(32, 384, "attakTime: %d", beam2.attakTime);
@@ -405,10 +418,10 @@ void Boss::BossDraw(Boss_ boss, Shake& shake) {
 	if (boss.vanishTime == 0) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
 			boss.image, 1, 1, 0.0f, WHITE);
-	} else if(boss.vanishTime<10){
+	} else if (boss.vanishTime < 10) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
 			boss.image, 1, 1, 0.0f, 0xFFFFFF50);
-	} else if (20>boss.vanishTime&&boss.vanishTime>10) {
+	} else if (20 > boss.vanishTime && boss.vanishTime > 10) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
 			boss.image, 1, 1, 0.0f, 0xFFFFFF40);
 	} else if (30 > boss.vanishTime && boss.vanishTime > 20) {
@@ -469,12 +482,12 @@ void Boss::BeamAttack(Boss_& boss, Shake& shake) {
 				shake.pos.y = static_cast<float>(rand() % 30 - 15);
 				boss.beams[i].attakTime--;
 			} else {
-				
-					boss.beams[i].isAttak = false;
-				}
+
+				boss.beams[i].isAttak = false;
 			}
 		}
-	
+	}
+
 
 	// すべてのビームが終了しているか確認
 	bool allBeamsFinished = true;
@@ -490,12 +503,14 @@ void Boss::BeamAttack(Boss_& boss, Shake& shake) {
 		static Vector2 originalPosition = { 1000.0f, 472.0f }; // ボスの初期位置を設定
 		boss.pos = originalPosition;
 		shake.pos.x = 0.0f;
-		shake.pos.y =0.0f;
+		shake.pos.y = 0.0f;
 		boss.vanishTime = 60;
 		boss.isAttak = false;
 		boss.attakNo = 0;
 		boss.attakStandTime = 120; // クールダウン時間をリセット
 	}
+
+
 }
 
 void Boss::DrawBeams(Boss_& boss) {
@@ -543,6 +558,88 @@ void Boss::UpdateProjectiles(Projectile* projectiles) {
 	}
 }
 
+//=========================
+//当たり判定の作成
+//=========================
+
+//範囲攻撃
+void Boss::PlayerRengeHitBox(Player_& player, BossRengeAttak_& renge) {
+	player.isHit = false;
+
+	// プレイヤーと範囲攻撃の矩形が重なっているかチェック
+	if (renge.attakStandTime <= 0) {
+		if (renge.attakTime > 0) {
+			if (player.pos.x < renge.pos.x + renge.size.x && // プレイヤーの右端が範囲の左端より右
+				player.pos.x + player.radius > renge.pos.x && // プレイヤーの左端が範囲の右端より左
+				player.pos.y < renge.pos.y + renge.size.y && // プレイヤーの下端が範囲の上端より下
+				player.pos.y + player.radius > renge.pos.y) { // プレイヤーの上端が範囲の下端より上
+				player.isHit = true;
+			}
+		}
+	}
+}
+
+//近距離攻撃
+void Boss::PlayerShortAttakHitBox(Player_& player, ShortDistansAttak_& shortAttak) {
+	player.isHit = false;
+
+	// プレイヤーと範囲攻撃の矩形が重なっているかチェック
+	if (!shortAttak.isHit) {
+		if (shortAttak.attakTime > 0) {
+			if (player.pos.x < shortAttak.pos.x + shortAttak.size.x && // プレイヤーの右端が範囲の左端より右
+				player.pos.x + player.radius > shortAttak.pos.x && // プレイヤーの左端が範囲の右端より左
+				player.pos.y < shortAttak.pos.y + shortAttak.size.y && // プレイヤーの下端が範囲の上端より下
+				player.pos.y + player.radius > shortAttak.pos.y) { // プレイヤーの上端が範囲の下端より上
+				player.isHit = true;
+
+			}
+		}
+	}
+}
+
+//ビームとボスの当たり判定
+void Boss::PlayerBeamsHitBox(Player_& player, Boss_& boss) {
+	player.isHit = false;
+	for (int i = 0; i < MAX_BEAMS; i++) {
+		if (boss.beams[i].attakStandTime <= 0) {
+			if (boss.beams[i].attakTime > 0) {
+				if (player.pos.x < boss.beams[i].pos.x + boss.beams[i].size.x && // プレイヤーの右端が範囲の左端より右
+					player.pos.x + player.radius > boss.beams[i].pos.x && // プレイヤーの左端が範囲の右端より左
+					player.pos.y < boss.beams[i].pos.y + boss.beams[i].size.y && // プレイヤーの下端が範囲の上端より下
+					player.pos.y + player.radius > boss.beams[i].pos.y) { // プレイヤーの上端が範囲の下端より上
+
+					player.isHit = true;
+				}
+			}
+		}
+	}
+}
+
+//連続攻撃
+void Boss::PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_& doubleAttak) {
+	player.isHit = false;
+	if (doubleAttak.isShortAttak) {
+		if (doubleAttak.attakTime > 0) {
+			if (player.pos.x < doubleAttak.pos.x + doubleAttak.size.x && // プレイヤーの右端が範囲の左端より右
+				player.pos.x + player.radius > doubleAttak.pos.x && // プレイヤーの左端が範囲の右端より左
+				player.pos.y < doubleAttak.pos.y + doubleAttak.size.y && // プレイヤーの下端が範囲の上端より下
+				player.pos.y + player.radius > doubleAttak.pos.y) { // プレイヤーの上端が範囲の下端より上
+
+				player.isHit = true;
+
+				doubleAttak.isHit = true;
+
+			}
+		}
+	}
+}
+
+
+
+//===================
+//第二形態の処理
+//===================
+
 //第2形態のビーム
 void Boss::DrawBeam2(Beam2& beam2) {
 	if (beam2.attakStandTime <= 0) {
@@ -552,3 +649,4 @@ void Boss::DrawBeam2(Beam2& beam2) {
 		}
 	}
 }
+
