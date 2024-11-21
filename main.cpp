@@ -111,6 +111,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// ボスの描画
 			boss.BossDraw(boss_, shake);
 
+			//オールレンジアタック
+			boss.DrawAllRangeAttack(boss_);
+
 			//近距離攻撃の描画
 			boss.DrawShortDistansAttak(shortDistAttak_);
 

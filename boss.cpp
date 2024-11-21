@@ -100,7 +100,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 					boss.pos.y += distanceY * shortDist.easeSpeed;
 
 					// 攻撃判定をリセットして攻撃をまだ開始しない
-					shortDist.attakTime = 10;
+					shortDist.attakTime = 20;
 				}
 			} else {
 				// 一定距離まで近づき停止した後、攻撃判定を1度だけ設定
@@ -251,7 +251,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	
 	if (boss.attakNo == 3) {
 		object.isAttak = true;
-		
+
 		object.timer++;
 
 		if (object.isAttak) {
@@ -281,6 +281,9 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 					direction.y /= length;
 				}
 
+				// チャージオブジェクトの速度を適用して移動
+				object.pos.x += direction.x * object.throwSpeed;
+				object.pos.y += direction.y * object.throwSpeed;
 				// 初回の速度設定
 				if (object.timer == 300) { // 飛ばすタイミングで設定
 					object.velocity = { direction.x * object.throwSpeed, direction.y * object.throwSpeed };
@@ -325,7 +328,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				}
 			}
 		}
-}
+	}
 
 
 
@@ -391,7 +394,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	Novice::ScreenPrintf(32, 384, "attakTime: %d", beam2.attakTime);
 	Novice::ScreenPrintf(32, 416, "pos.x: %.1f, pos.y: %.1f", beam2.pos.x, beam2.pos.y);
 
-	
+
 	if (boss.attakNo == 11) {
 		boss.localTimer++;
 		if (!boss.isFloating) {
@@ -425,7 +428,41 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			}
 		}
 	}
+
+
+	if (boss.attakNo == 20) { // 攻撃番号20を全方位攻撃に設定
+		static bool initialized = false;
+
+		// 初期化処理
+		if (!initialized) {
+			InitializeAllRangeAttack(boss); // 初期化関数でビームをセットアップ
+			initialized = true;
+		}
+
+		// 更新処理
+		UpdateAllRangeAttack(boss);
+
+		// すべてのビームが終了したら攻撃終了
+		bool allFinished = true;
+		for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
+			if (boss.allRangeBeams[i].isActive) {
+				allFinished = false;
+				break;
+			}
+		}
+
+		// 全てのビームが終了していたら、攻撃をリセット
+		if (allFinished) {
+			initialized = false;  // 初期化フラグをリセット
+			boss.attakNo = 0;     // 次の攻撃に移行
+			boss.attakStandTime = 120; // クールダウン時間
+			boss.isAttak = false;
+		}
+	}
+
 }
+
+
 
 // ボスを描画する
 void Boss::BossDraw(Boss_ boss, Shake& shake) {
@@ -547,7 +584,7 @@ void Boss::DrawBeams(Boss_& boss) {
 
 // チャージ攻撃の描画
 void Boss::DrawBossChargeAttak(const Object& object) {
-	
+
 	if (object.isAttak) {
 		Novice::DrawBox(static_cast<int>(object.pos.x), static_cast<int>(object.pos.y),
 			static_cast<int>(object.size.x), static_cast<int>(object.size.y),
@@ -664,6 +701,28 @@ void Boss::PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_&
 	}
 }
 
+void InitializeAllRangeAttack(AllRange* beams) {
+	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
+		beams[i].startPos = { static_cast<float>(rand() % 1280),  static_cast<float>(rand() % 720) }; // ランダムな開始位置
+		beams[i].endPos = { static_cast<float>(rand() % 1280),  static_cast<float>(rand() % 720) };   // ランダムな終了位置
+		beams[i].currentPos = beams[i].startPos;
+
+		// 進行方向を計算
+		beams[i].direction = {
+			beams[i].endPos.x - beams[i].startPos.x,
+			beams[i].endPos.y - beams[i].startPos.y
+		};
+
+		// 正規化して速度を掛ける
+		float length = std::sqrt(beams[i].direction.x * beams[i].direction.x + beams[i].direction.y * beams[i].direction.y);
+		beams[i].direction.x /= length;
+		beams[i].direction.y /= length;
+		beams[i].speed = 5.0f;
+
+		beams[i].isActive = 1;
+		beams[i].lifeTime = 120; // 寿命は2秒（60FPS）
+	}
+}
 
 
 //===================
@@ -676,6 +735,67 @@ void Boss::DrawBeam2(Beam2& beam2) {
 		if (beam2.attakTime > 0) {
 			Novice::DrawBox(static_cast<int>(beam2.pos.x), static_cast<int>(beam2.pos.y),
 				static_cast<int>(beam2.size.x), static_cast<int>(beam2.size.y), 0.0f, RED, kFillModeSolid);
+		}
+	}
+}
+
+//全体攻撃
+void Boss::InitializeAllRangeAttack(Boss_& allRange) {
+	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
+		allRange.allRangeBeams[i].startPos = { static_cast<float>(rand() % 1280),  static_cast<float>(rand() % 720) }; // ランダムな開始位置
+		allRange.allRangeBeams[i].endPos = { static_cast<float>(rand() % 1280),  static_cast<float>(rand() % 720) };   // ランダムな終了位置
+		allRange.allRangeBeams[i].currentPos = allRange.allRangeBeams[i].startPos;
+
+		// 進行方向を計算
+		allRange.allRangeBeams[i].direction = {
+			allRange.allRangeBeams[i].endPos.x - allRange.allRangeBeams[i].startPos.x,
+			allRange.allRangeBeams[i].endPos.y - allRange.allRangeBeams[i].startPos.y
+		};
+
+		// 正規化して速度を掛ける
+		float length = std::sqrt(allRange.allRangeBeams[i].direction.x * allRange.allRangeBeams[i].direction.x + allRange.allRangeBeams[i].direction.y * allRange.allRangeBeams[i].direction.y);
+		if (length != 0.0f) {
+			allRange.allRangeBeams[i].direction.x /= length;
+			allRange.allRangeBeams[i].direction.y /= length;
+		}
+	//	allRange.allRangeBeams[i].speed = 5.0f;
+		allRange.allRangeBeams[i].isActive = 1;
+		allRange.allRangeBeams[i].lifeTime = 120; // 寿命は2秒（60FPS）
+	}
+}
+
+//全体攻撃
+void Boss::UpdateAllRangeAttack(Boss_& allRange) {
+	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
+		if (allRange.allRangeBeams[i].isActive) {
+			// 現在位置を更新
+			allRange.allRangeBeams[i].currentPos.x += allRange.allRangeBeams[i].direction.x * allRange.allRangeBeams[i].speed;
+			allRange.allRangeBeams[i].currentPos.y += allRange.allRangeBeams[i].direction.y * allRange.allRangeBeams[i].speed;
+
+			// 寿命を減らす
+			allRange.allRangeBeams[i].lifeTime--;
+
+			// 寿命切れまたは目標地点に到達したら無効化
+			if (allRange.allRangeBeams[i].lifeTime <= 0 ||
+				(std::abs(allRange.allRangeBeams[i].currentPos.x - allRange.allRangeBeams[i].endPos.x) < 5.0f &&
+					std::abs(allRange.allRangeBeams[i].currentPos.y - allRange.allRangeBeams[i].endPos.y) < 5.0f)) {
+				allRange.allRangeBeams[i].isActive = 0;
+			}
+		}
+	}
+}
+
+void Boss::DrawAllRangeAttack(Boss_& allRange) {
+	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
+		if (allRange.allRangeBeams[i].isActive) {
+			// 開始位置から終了位置までの固定線を描画
+			Novice::DrawLine(
+				static_cast<int>(allRange.allRangeBeams[i].startPos.x),
+				static_cast<int>(allRange.allRangeBeams[i].startPos.y),
+				static_cast<int>(allRange.allRangeBeams[i].endPos.x),
+				static_cast<int>(allRange.allRangeBeams[i].endPos.y),
+				WHITE
+			);
 		}
 	}
 }

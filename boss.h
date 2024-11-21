@@ -46,6 +46,19 @@ public:
 	//連続攻撃の当たり判定
 	void PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_& doubleAttak);
 
+
+	// プロトタイプ宣言
+
+	// 全方位攻撃の初期化
+	void InitializeAllRangeAttack(Boss_& beams);
+
+	// 全方位攻撃の更新
+	void UpdateAllRangeAttack(Boss_& beams);
+
+	// 全方位攻撃の描画
+	void DrawAllRangeAttack(Boss_& beams);
+
+
 private:
 
 };
