@@ -39,8 +39,8 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 		player.pos.x = leftWall;
 	}
 
-	if (player.pos.x > rightWall - player.radius) {
-		player.pos.x = rightWall-player.radius;
+	if (player.pos.x > rightWall - player.radius * 2) {
+		player.pos.x = rightWall-player.radius * 2;
 	}
 
 	//jump
@@ -68,8 +68,8 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 	player.pos.x += player.velocity.x;
 	player.pos.y -= player.velocity.y;
 
-	if (player.pos.y >= line.pos.y - player.radius) {
-		player.pos.y = line.pos.y - player.radius;
+	if (player.pos.y >= line.pos.y - player.radius * 2) {
+		player.pos.y = line.pos.y - player.radius * 2;
 		player.isJanp = false;
 		player.isJanpSpeed = false;
 		player.janpNum = 0;
@@ -118,13 +118,17 @@ void Player::Attack(Player_& player, Flash_& flash, const char* keys, const char
 		player.energy++;
 	}
 
-	//フラッシュライトの位置を現在のプレイヤーの位置にする
-	flash.pos = { player.pos.x + player.radius / 2.0f, player.pos.y + player.radius / 2.0f };
-
 	//フラッシュライトの向きを最後にプレイヤーが向いていた方向にする
 	if (player.direction.x != 0 || player.direction.y != 0) {
-		flash.direction = player.direction;
+		if (player.direction.y != 0) { // 上が優先されるので左右情報は無くしておく
+			flash.direction.x = 0;
+			flash.direction.y = player.direction.y;
+		} else {
+			flash.direction = player.direction;
+		}
 	}
+	//フラッシュライトの位置を現在のプレイヤーのライトの位置にする
+	flash.pos = { player.pos.x + player.radius + player.radius / 2 * flash.direction.x, player.pos.y + player.radius + player.radius / 2 * flash.direction.y };
 }
 
 void Player::Draw(Player_& player) {
@@ -148,14 +152,12 @@ void Player::DrawFlash(Player_& player, Flash_& flash) {
 				static_cast<int>(flash.pos.x + flash.width), static_cast<int>(flash.pos.y - flash.range),
 				static_cast<int>(flash.pos.x - flash.width), static_cast<int>(flash.pos.y - flash.range),
 				0xe0dd8780, kFillModeSolid);
-		}
-
-		if (flash.direction.x > 0 && flash.direction.y == 0) {         //右
+		} else if (flash.direction.x > 0) {                            //右
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x + flash.range), static_cast<int>(flash.pos.y + flash.width),
 				static_cast<int>(flash.pos.x + flash.range), static_cast<int>(flash.pos.y - flash.width),
 				0xe0dd8780, kFillModeSolid);
-		} else if (flash.direction.x < 0 && flash.direction.y == 0) {  //左
+		} else if (flash.direction.x < 0) {                            //左
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x - flash.range), static_cast<int>(flash.pos.y + flash.width),
 				static_cast<int>(flash.pos.x - flash.range), static_cast<int>(flash.pos.y - flash.width),
@@ -174,14 +176,12 @@ void Player::DrawFlash(Player_& player, Flash_& flash) {
 				static_cast<int>(flash.pos.x + flash.highWidth), static_cast<int>(flash.pos.y - flash.highRange),
 				static_cast<int>(flash.pos.x - flash.highWidth), static_cast<int>(flash.pos.y - flash.highRange),
 				0xe0dd87d0, kFillModeSolid);
-		}
-
-		if (flash.direction.x > 0 && flash.direction.y == 0) {         //右
+		} else if (flash.direction.x > 0) {                            //右
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x + flash.highRange), static_cast<int>(flash.pos.y + flash.highWidth),
 				static_cast<int>(flash.pos.x + flash.highRange), static_cast<int>(flash.pos.y - flash.highWidth),
 				0xe0dd87d0, kFillModeSolid);
-		} else if (flash.direction.x < 0 && flash.direction.y == 0) {  //左
+		} else if (flash.direction.x < 0) {                            //左
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x - flash.highRange), static_cast<int>(flash.pos.y + flash.highWidth),
 				static_cast<int>(flash.pos.x - flash.highRange), static_cast<int>(flash.pos.y - flash.highWidth),

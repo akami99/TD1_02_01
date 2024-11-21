@@ -83,11 +83,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			player.DrawBackGround(line, shake);
 
-			// UIの描画
-			ui.DrawGauge(340, 30, boss_.hp, 0);
-			ui.DrawGauge(100, 620, player_.hp, 1);
-			ui.DrawGauge(100, 670, player_.energy, 2);
-
 			// フラッシュライトの描画
 			player.DrawFlash(player_, flash_);
 
@@ -109,6 +104,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			boss.DrawDoubleShortDistansAttak(doubleShort);
 
 			boss.DrawBossChargeAttak(object_);
+
+			// UIの描画
+			ui.DrawGauge(340, 30, boss_.hp, 0);
+			ui.DrawGauge(100, 620, player_.hp, 1);
+			ui.DrawGauge(100, 670, player_.energy, 2);
 
 			///
 			/// ↑描画処理ここまで
