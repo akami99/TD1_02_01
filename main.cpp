@@ -77,6 +77,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
 			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2,projectiles, timer);
 
+			if (boss_.hp <= 0) {
+				scene = SECONDBOSS;
+			}
+
 			///
 			/// ↑更新処理ここまで
 			///
@@ -131,11 +135,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case SECONDBOSS:
 
+			if (boss_.secondHp <= 0) {
+				scene = CLEAR;
+			}
+
 			break;
-
-
-
 		}
+
+		
+
 		// フレームの終了
 		Novice::EndFrame();
 
