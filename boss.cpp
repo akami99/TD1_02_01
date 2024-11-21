@@ -4,10 +4,6 @@
 #include "boss.h"
 #include <cmath> // 距離計算のために必要
 
-int timer = 0;  // timer をここで定義
-
-int globalTimer = 0;  // グローバル変数の名前を変更
-
 // ボスのイージング移動処理
 void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easingSpeed) {
 	boss.pos.x += (targetPos.x - boss.pos.x) * easingSpeed;
@@ -20,7 +16,7 @@ void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easin
 
 
 // ボスの動き
-void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake, Beam2& beam2, Projectile* projectiles, int& localTimer) {
+void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake, Beam2& beam2, Projectile* projectiles) {
 	// 関数内容
 
 
@@ -43,7 +39,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 5;
+					boss.attakNo = 3;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -252,18 +248,18 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 
 
-	timer = 0;
+
 	if (boss.attakNo == 3) {
 		object.isAttak = true;
 		
-		timer++;
+		object.timer++;
 
 		if (object.isAttak) {
 			// タイマーの進行
-			timer++;
+			object.timer++;
 
 			// 浮遊状態と飛ばす動きの切り替え
-			if (timer >= 300) { // 5秒後
+			if (object.timer >= 300) { // 5秒後
 				object.isFloating = false;
 			}
 
@@ -297,11 +293,11 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 						boss.isAttak = false;
 						boss.attakNo = 0;
 						boss.attakStandTime = 120; // クールダウン時間
-						timer = 0;
+						object.timer = 0;
 					}
 
 
-					timer = 0;
+					object.timer = 0;
 					object.rotation = 0.0f;
 					object.throwSpeed = 15.0f; // 初期スピードに戻す
 					object.pos.x = boss.pos.x + object.orbitRadius;
@@ -381,18 +377,18 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	Novice::ScreenPrintf(32, 384, "attakTime: %d", beam2.attakTime);
 	Novice::ScreenPrintf(32, 416, "pos.x: %.1f, pos.y: %.1f", beam2.pos.x, beam2.pos.y);
 
-	localTimer = 0;
+	
 	if (boss.attakNo == 11) {
 		if (!boss.isFloating) {
-			if (localTimer >= 5) {
+			if (boss.localTimer >= 5) {
 				boss.isFloating = true;
-				localTimer = 0;
+				boss.localTimer = 0;
 			}
 		} else {
 			if (boss.pos.y > 400.0f && boss.attackCount < MAX_PROJECTILES) {
 				boss.pos.y -= 2.0f;
 			} else if (boss.attackCount < MAX_PROJECTILES) {
-				if (timer >= 20) {
+				if (boss.localTimer >= 20) {
 					projectiles[boss.attackCount].pos = boss.pos;
 					Vector2 direction = { player.pos.x - boss.pos.x, player.pos.y - boss.pos.y };
 					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
@@ -402,7 +398,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 					projectiles[boss.attackCount].velocity = { direction.x * 8.0f, direction.y * 8.0f };
 					projectiles[boss.attackCount].isActive = true;
 					boss.attackCount++;
-					timer = 0;
+					boss.localTimer = 0;
 				}
 			} else {
 				if (boss.pos.y < 600.0f) {

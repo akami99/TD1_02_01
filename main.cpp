@@ -75,7 +75,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, flash_, keys, preKeys);
 
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2,projectiles, timer);
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2,projectiles);
 
 			if (boss_.hp <= 0) {
 				scene = SECONDBOSS;
@@ -126,7 +126,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			boss.UpdateProjectiles(projectiles);
 
-			Novice::ScreenPrintf(0, 0, "%d",timer);
+			//Novice::ScreenPrintf(0, 0, "%d",boss.time);
 			///
 			/// ↑描画処理ここまで
 			///

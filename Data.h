@@ -74,7 +74,7 @@ struct Boss_ {
 	bool isFloating = false;          // 浮上状態か
 	int attackCount = 0;              // 飛び道具の発射回数
 	Beam_ beams[MAX_BEAMS];// ビーム攻撃用の配列
-
+	int localTimer = 0;
 	int image = Novice::LoadTexture("./Resources/images/boss_01.png");
 
 };
@@ -132,19 +132,14 @@ struct Object {
     int isAttak = false;
     int attakTime = 360;
     int attakStandTime = 30;
-
-
-
-
-
-
+	int timer = 0;
 };
 
 struct Projectile {
-	Vector2 pos;
-	Vector2 velocity;
+	Vector2 pos = { 0.0f,0.0f };
+	Vector2 velocity = { 0.0f,0.0f };
 	bool isActive = false;
-
+	int localTimer = 0;
 
 };
 
@@ -166,11 +161,6 @@ struct Line {
 	int backGround = Novice::LoadTexture("./Resources/images/backGround.png");
 
 };
-
-
-// timer の宣言（定義はソースファイルに）
-extern int timer;
-
 
 
 

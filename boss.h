@@ -6,7 +6,7 @@ class Boss {
 public:
 	void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist,
 		Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,
-		Beam2& beam2,Projectile* projectiles, int& timer);
+		Beam2& beam2,Projectile* projectiles);
 
 	void BossDraw(Boss_ boss,Shake& shake);
 
