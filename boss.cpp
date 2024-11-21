@@ -6,6 +6,7 @@
 
 int timer = 0;  // timer をここで定義
 
+int globalTimer = 0;  // グローバル変数の名前を変更
 // ボスのイージング移動処理
 void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easingSpeed) {
 	boss.pos.x += (targetPos.x - boss.pos.x) * easingSpeed;
@@ -18,8 +19,12 @@ void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easin
 
 
 // ボスの動き
-void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake) {
-	if (boss.attakStandTime > 0) {
+void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist,Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,Projectile* projectiles, int& localTimer) {
+	// 関数内容
+
+
+
+if (boss.attakStandTime > 0) {
 		boss.attakStandTime--;
 	} else {
 		boss.isAttak = true;
@@ -113,7 +118,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				if (!shortDist.isEase) {
 					shortDist.attakTime--;
 					//近距離攻撃の描画
-					DrawShortDistansAttak(shortDist);
+					
 				}
 			} else {
 				// 攻撃終了
@@ -137,7 +142,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 		if (boss.pos.x == targetPos.x && boss.pos.y == targetPos.y) {
 			boss.isEase = true;
-			BeamAttack(boss, shake);  // ビーム攻撃開始
+			BeamAttack(boss, shake);// ビーム攻撃開始
 		}
 
 	}
@@ -226,43 +231,50 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	Novice::ScreenPrintf(32, 320, "ShortDist pos.y::%.1f", shortDist.pos.y);
 
 
-	///チャージ攻撃
-	// Objectの初期設定（Bossの周囲で回転）
-	Object object = {
-		{ boss.pos.x + 100.0f, boss.pos.y }, // 初期位置（Bossの右側）
-		50.0f,                               // 浮遊高さ
-		true,                                // 浮遊状態
-		15.0f,                               // 初期投げ飛ばしスピード
-		0.0f,                                // 初期回転角度
-		100.0f                               // 円運動の半径
-	};
+
 	if (boss.attakNo == 3) {
 		object.isAttak = true;
 		if (object.isAttak) {
-			// `object`が5秒後に投げ飛ばされる準備
+			// タイマーの進行
 			timer++;
+
 			if (timer >= 300) { // 約5秒後
 				object.isFloating = false;
 			}
 
 			// アニメーション処理
 			if (object.isFloating) {
-				// `Boss_`の周りを回転する
+				// ボスの周囲を回転するアニメーション
 				object.rotation += 0.05f; // 回転速度を調整
 				object.pos.x = boss.pos.x + object.orbitRadius * cos(object.rotation);
 				object.pos.y = boss.pos.y + object.orbitRadius * sin(object.rotation);
 			} else {
-				// 左に投げ飛ばすアニメーション
-				object.pos.x -= object.throwSpeed;
-				object.throwSpeed += 1.0f;  // 徐々に加速
+				// プレイヤーに向かって飛ばす処理
+				Vector2 direction = {
+					player.pos.x - object.pos.x,
+					player.pos.y - object.pos.y
+				};
+
+				// ベクトルの正規化（方向ベクトルの長さを1にする）
+				float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+				if (length != 0.0f) {
+					direction.x /= length;
+					direction.y /= length;
+				}
+
+				// 移動処理
+				object.pos.x += direction.x * object.throwSpeed;
+				object.pos.y += direction.y * object.throwSpeed;
 			}
 
+			// 一定時間が経過した場合のリセット処理
 			if (object.attakTime > 0) {
 				object.attakTime--;
 			} else {
+				// リセット処理
 				timer = 0;
 				object.rotation = 0.0f;
-				object.throwSpeed = 0.0f;
+				object.throwSpeed = 15.0f; // 初期スピードに戻す
 				object.pos.x = boss.pos.x + object.orbitRadius;
 				object.pos.y = boss.pos.y + object.orbitRadius;
 				object.isAttak = false;
@@ -276,8 +288,38 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	}
 
 
-}
+	localTimer = 0;
+	if (!boss.isFloating) {
+		if (localTimer >= 5) {
+			boss.isFloating = true;
+			localTimer = 0;
+		}
+	} else {
+		if (boss.pos.y > 400.0f && boss.attackCount < MAX_PROJECTILES) {
+			boss.pos.y -= 2.0f;
+		} else if (boss.attackCount < MAX_PROJECTILES) {
+			if (timer >= 20) {
+				projectiles[boss.attackCount].pos = boss.pos;
+				Vector2 direction = { player.pos.x - boss.pos.x, player.pos.y - boss.pos.y };
+				float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+				direction.x /= length;
+				direction.y /= length;
 
+				projectiles[boss.attackCount].velocity = { direction.x * 8.0f, direction.y * 8.0f };
+				projectiles[boss.attackCount].isActive = true;
+				boss.attackCount++;
+				timer = 0;
+			}
+		} else {
+			if (boss.pos.y < 600.0f) {
+				boss.pos.y += 2.0f;
+			} else {
+				boss.isFloating = false;
+				boss.attackCount = 0;
+			}
+		}
+	}
+}
 
 // ボスを描画する
 void Boss::BossDraw(Boss_ boss, Shake& shake) {
@@ -384,8 +426,31 @@ void Boss::DrawBeams(Boss_& boss) {
 // チャージ攻撃の描画
 void Boss::DrawBossChargeAttak(const Object& object) {
 	if (object.isAttak) {
-		Novice::DrawBox(static_cast<int>(object.pos.x), static_cast<int>(object.pos.y),
-			100, 100, object.rotation, BLUE, kFillModeSolid);
+		Novice::DrawBox(
+			static_cast<int>(object.pos.x) - 50,
+			static_cast<int>(object.pos.y) - 50,
+			100,
+			100,
+			0.0f,
+			WHITE,
+			kFillModeSolid
+		);
+
 	}
 }
+
+void Boss::UpdateProjectiles(Projectile* projectiles) {
+	for (int i = 0; i < MAX_PROJECTILES; i++) {
+		if (projectiles[i].isActive) {
+			projectiles[i].pos.x += projectiles[i].velocity.x;
+			projectiles[i].pos.y += projectiles[i].velocity.y;
+			if (projectiles[i].pos.x < 0 || projectiles[i].pos.x > 1280 ||
+				projectiles[i].pos.y < 0 || projectiles[i].pos.y > 720) {
+				projectiles[i].isActive = false;
+			}
+		}
+	}
+}
+
+
 

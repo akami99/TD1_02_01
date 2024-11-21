@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿
+#pragma once
 #include <Vector2.h>
 
 const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
@@ -57,6 +58,8 @@ struct Boss_ {
 	int isAttak = false;
 	int secondHp = 200;
 	int isEase = false;
+	bool isFloating = false;          // 浮上状態か
+	int attackCount = 0;              // 飛び道具の発射回数
 	Beam_ beams[MAX_BEAMS];// ビーム攻撃用の配列
 
 	int image = Novice::LoadTexture("./Resources/images/boss_01.png");
@@ -102,17 +105,6 @@ struct ShortDubleDistansAttak_ {
 
 
 
-////チャージ攻撃
-//	// Objectの初期設定（Bossの周囲で回転）
-//Object object = {
-//	{ boss.pos.x + 100.0f, boss.pos.y }, // 初期位置（Bossの右側）
-//	50.0f,                               // 浮遊高さ
-//	true,                                // 浮遊状態
-//	15.0f,                               // 初期投げ飛ばしスピード
-//	0.0f,                                // 初期回転角度
-//	100.0f                               // 円運動の半径
-//};
-
 // チャージ攻撃
 struct Object {
     Vector2 pos= { 0.0f, 0.0f };
@@ -124,11 +116,25 @@ struct Object {
     int isAttak = false;
     int attakTime = 360;
     int attakStandTime = 30;
+
+
+
 };
+struct Projectile {
+	Vector2 pos;
+	Vector2 velocity;
+	bool isActive = false;
+
+
+};
+
+
 
 struct  Shake{
 	Vector2 pos = { 0.0f,0.0f };
 };
+
+
 
 // 地面
 struct Line {
@@ -139,5 +145,12 @@ struct Line {
 
 };
 
+
+
 // timer の宣言（定義はソースファイルに）
 extern int timer;
+
+
+
+
+

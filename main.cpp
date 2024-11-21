@@ -1,3 +1,4 @@
+
 #include <Novice.h>
 #include <math.h>
 #include "Data.h"
@@ -40,6 +41,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Object object_;
 	ShortDubleDistansAttak_ doubleShort;
 	Shake shake;
+	Projectile projectiles[10];
+	Boss::UpdateProjectiles(projectiles);
 
 	int scene = TITLE;
 
@@ -71,7 +74,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, flash_, keys, preKeys);
 
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort,shake);
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, projectiles, timer);
 
 			///
 			/// ↑更新処理ここまで
@@ -110,6 +113,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ui.DrawGauge(100, 620, player_.hp, 1);
 			ui.DrawGauge(100, 670, player_.energy, 2);
 
+
 			///
 			/// ↑描画処理ここまで
 			///
@@ -136,3 +140,5 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Novice::Finalize();
 	return 0;
 }
+
+

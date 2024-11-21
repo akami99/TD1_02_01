@@ -4,8 +4,9 @@
 
 class Boss {
 public:
-	void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, 
-		Object& object,ShortDubleDistansAttak_& doubleShort,Shake& shake);
+	void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist,
+		Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,
+		Projectile* projectiles, int& timer);
 
 	void BossDraw(Boss_ boss,Shake& shake);
 
@@ -23,6 +24,8 @@ public:
 
 	void DrawDoubleShortDistansAttak(ShortDubleDistansAttak_ shortDobleDist);
 
+	static void UpdateProjectiles(Projectile* projectiles);
+	
 private:
 
 };
