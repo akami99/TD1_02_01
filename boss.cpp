@@ -225,6 +225,17 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	Novice::ScreenPrintf(32, 288, "ShortDist pos.x::%.1f", shortDist.pos.x);
 	Novice::ScreenPrintf(32, 320, "ShortDist pos.y::%.1f", shortDist.pos.y);
 
+
+	///チャージ攻撃
+	// Objectの初期設定（Bossの周囲で回転）
+	Object object = {
+		{ boss.pos.x + 100.0f, boss.pos.y }, // 初期位置（Bossの右側）
+		50.0f,                               // 浮遊高さ
+		true,                                // 浮遊状態
+		15.0f,                               // 初期投げ飛ばしスピード
+		0.0f,                                // 初期回転角度
+		100.0f                               // 円運動の半径
+	};
 	if (boss.attakNo == 3) {
 		object.isAttak = true;
 		if (object.isAttak) {
