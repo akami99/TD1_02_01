@@ -41,6 +41,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Object object_;
 	ShortDubleDistansAttak_ doubleShort;
 	Shake shake;
+	Beam2 beam2;
 	Projectile projectiles[10];
 	Boss::UpdateProjectiles(projectiles);
 
@@ -74,7 +75,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, flash_, keys, preKeys);
 
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, projectiles, timer);
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2,projectiles, timer);
 
 			///
 			/// ↑更新処理ここまで
@@ -92,13 +93,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// プレイヤーの描画
 			player.Draw(player_);
 
+			//ボスのビーム攻撃
 			boss.DrawBeams(boss_);
+
+			//第二形態のボスのビーム攻撃
+			boss.DrawBeam2(beam2);
 
 			// ボスの範囲攻撃描画
 			boss.DrawBossRengeAttak(rengeAttak_);
 
 			// ボスの描画
-			boss.BossDraw(boss_,shake);
+			boss.BossDraw(boss_, shake);
 
 			//近距離攻撃の描画
 			boss.DrawShortDistansAttak(shortDistAttak_);
