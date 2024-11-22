@@ -3,6 +3,8 @@
 #include "Data.h"
 #include "boss.h"
 #include <cmath> // 距離計算のために必要
+#include <algorithm>
+
 
 // ボスのイージング移動処理
 void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easingSpeed) {
@@ -39,7 +41,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo =3;
+					boss.attakNo =20;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -465,7 +467,13 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			boss.isAttak = false;
 		}
 	}
+	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
+		if (boss.allRangeBeams[i].lifeTime <= 10) {
+			AllRengeAttakHitBox(boss, player);
+		}
+	}
 
+	Novice::ScreenPrintf(200, 500, "%d", player.isHit);
 }
 
 
@@ -707,28 +715,28 @@ void Boss::PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_&
 	}
 }
 
-void InitializeAllRangeAttack(AllRange* beams) {
-	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
-		beams[i].startPos = { static_cast<float>(rand() % 1280),  static_cast<float>(rand() % 720) }; // ランダムな開始位置
-		beams[i].endPos = { static_cast<float>(rand() % 1280),  static_cast<float>(rand() % 720) };   // ランダムな終了位置
-		beams[i].currentPos = beams[i].startPos;
-
-		// 進行方向を計算
-		beams[i].direction = {
-			beams[i].endPos.x - beams[i].startPos.x,
-			beams[i].endPos.y - beams[i].startPos.y
-		};
-
-		// 正規化して速度を掛ける
-		float length = std::sqrt(beams[i].direction.x * beams[i].direction.x + beams[i].direction.y * beams[i].direction.y);
-		beams[i].direction.x /= length;
-		beams[i].direction.y /= length;
-		beams[i].speed = 5.0f;
-
-		beams[i].isActive = 1;
-		beams[i].lifeTime = 120; // 寿命は2秒（60FPS）
-	}
-}
+//void InitializeAllRangeAttack(AllRange* beams) {
+//	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
+//		beams[i].startPos = { static_cast<float>(rand() % 1280),  static_cast<float>(rand() % 720) }; // ランダムな開始位置
+//		beams[i].endPos = { static_cast<float>(rand() % 1280),  static_cast<float>(rand() % 720) };   // ランダムな終了位置
+//		beams[i].currentPos = beams[i].startPos;
+//
+//		// 進行方向を計算
+//		beams[i].direction = {
+//			beams[i].endPos.x - beams[i].startPos.x,
+//			beams[i].endPos.y - beams[i].startPos.y
+//		};
+//
+//		// 正規化して速度を掛ける
+//		float length = std::sqrt(beams[i].direction.x * beams[i].direction.x + beams[i].direction.y * beams[i].direction.y);
+//		beams[i].direction.x /= length;
+//		beams[i].direction.y /= length;
+//		beams[i].speed = 5.0f;
+//
+//		beams[i].isActive = 1;
+//		beams[i].lifeTime = 120; // 寿命は2秒（60FPS）
+//	}
+//}
 
 
 //===================
@@ -748,8 +756,18 @@ void Boss::DrawBeam2(Beam2& beam2) {
 //全体攻撃
 void Boss::InitializeAllRangeAttack(Boss_& allRange) {
 	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
-		allRange.allRangeBeams[i].startPos = { static_cast<float>(rand() % 1280),  static_cast<float>(rand() % 720) }; // ランダムな開始位置
-		allRange.allRangeBeams[i].endPos = { static_cast<float>(rand() % 1280),  static_cast<float>(rand() % 720) };   // ランダムな終了位置
+		// ビームの開始位置を画面上部にランダム配置
+		allRange.allRangeBeams[i].startPos = {
+			static_cast<float>(rand() % 1280), // 横方向のランダムな位置
+			0.0f                              // 天井（画面上部）
+		};
+
+		// ビームの終了位置を画面下部にランダム配置
+		allRange.allRangeBeams[i].endPos = {
+			static_cast<float>(rand() % 1280), // 横方向のランダムな位置
+			720.0f                            // 地面（画面下部）
+		};
+
 		allRange.allRangeBeams[i].currentPos = allRange.allRangeBeams[i].startPos;
 
 		// 進行方向を計算
@@ -758,17 +776,24 @@ void Boss::InitializeAllRangeAttack(Boss_& allRange) {
 			allRange.allRangeBeams[i].endPos.y - allRange.allRangeBeams[i].startPos.y
 		};
 
-		// 正規化して速度を掛ける
-		float length = std::sqrt(allRange.allRangeBeams[i].direction.x * allRange.allRangeBeams[i].direction.x + allRange.allRangeBeams[i].direction.y * allRange.allRangeBeams[i].direction.y);
+		// 正規化して進行方向を単位ベクトルにする
+		float length = std::sqrt(
+			allRange.allRangeBeams[i].direction.x * allRange.allRangeBeams[i].direction.x +
+			allRange.allRangeBeams[i].direction.y * allRange.allRangeBeams[i].direction.y
+		);
+
 		if (length != 0.0f) {
 			allRange.allRangeBeams[i].direction.x /= length;
 			allRange.allRangeBeams[i].direction.y /= length;
 		}
-	//	allRange.allRangeBeams[i].speed = 5.0f;
-		allRange.allRangeBeams[i].isActive = 1;
+
+		// ビームの初期パラメータ設定
+		allRange.allRangeBeams[i].speed = 5.0f; // 移動速度
+		allRange.allRangeBeams[i].isActive = 1; // ビームをアクティブ化
 		allRange.allRangeBeams[i].lifeTime = 120; // 寿命は2秒（60FPS）
 	}
 }
+
 
 //全体攻撃
 void Boss::UpdateAllRangeAttack(Boss_& allRange) {
@@ -791,17 +816,110 @@ void Boss::UpdateAllRangeAttack(Boss_& allRange) {
 	}
 }
 
+//全体攻撃の描画
 void Boss::DrawAllRangeAttack(Boss_& allRange) {
 	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
 		if (allRange.allRangeBeams[i].isActive) {
-			// 開始位置から終了位置までの固定線を描画
-			Novice::DrawLine(
-				static_cast<int>(allRange.allRangeBeams[i].startPos.x),
-				static_cast<int>(allRange.allRangeBeams[i].startPos.y),
-				static_cast<int>(allRange.allRangeBeams[i].endPos.x),
-				static_cast<int>(allRange.allRangeBeams[i].endPos.y),
-				WHITE
-			);
+			// 残りフレームが10以下の場合は太い線を描画
+
+			if (allRange.allRangeBeams[i].lifeTime >= 11 &&allRange.allRangeBeams[i].lifeTime <=12) {
+				Novice::DrawBox(0, 0, 1280, 720, 0.0f, WHITE, kFillModeSolid);
+			}
+
+			if (allRange.allRangeBeams[i].lifeTime <= 10) {
+				// 線を太く描画する
+				float thickness = 10.0f; // 線の太さ
+				Vector2 direction = {
+					allRange.allRangeBeams[i].endPos.x - allRange.allRangeBeams[i].startPos.x,
+					allRange.allRangeBeams[i].endPos.y - allRange.allRangeBeams[i].startPos.y
+				};
+
+				// 線の長さを計算
+				float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+				// 正規化
+				if (length != 0.0f) {
+					direction.x /= length;
+					direction.y /= length;
+				}
+
+				// 垂直方向のベクトルを計算（線の幅を表現するため）
+				Vector2 perpendicular = { -direction.y * thickness, direction.x * thickness };
+
+				// 線を四角形として描画
+				Novice::DrawBox(
+					static_cast<int>(allRange.allRangeBeams[i].startPos.x - perpendicular.x / 2),
+					static_cast<int>(allRange.allRangeBeams[i].startPos.y - perpendicular.y / 2),
+					static_cast<int>(length), // 線の長さ
+					static_cast<int>(thickness), // 線の太さ
+					std::atan2(direction.y, direction.x), // 線の回転角度
+					WHITE, // 色
+					kFillModeSolid // 塗りつぶし
+				);
+			} else {
+				// 通常の細い線を描画
+				Novice::DrawLine(
+					static_cast<int>(allRange.allRangeBeams[i].startPos.x),
+					static_cast<int>(allRange.allRangeBeams[i].startPos.y),
+					static_cast<int>(allRange.allRangeBeams[i].endPos.x),
+					static_cast<int>(allRange.allRangeBeams[i].endPos.y),
+					WHITE
+				);
+			}
+		}
+	}
+}
+
+
+// 全体攻撃の当たり判定
+void Boss::AllRengeAttakHitBox(Boss_& allRange, Player_& player) {
+	player.isHit = false; // プレイヤーの被弾状態をリセット
+
+	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
+		if (allRange.allRangeBeams[i].isActive) {
+			// ビームの開始位置と終了位置
+			Vector2 start = allRange.allRangeBeams[i].startPos;
+			Vector2 end = allRange.allRangeBeams[i].endPos;
+
+			// プレイヤーの位置
+			Vector2 playerPos = player.pos;
+
+			// ビームのベクトル
+			Vector2 beamVec = { end.x - start.x, end.y - start.y };
+
+			// プレイヤーからビームの開始点へのベクトル
+			Vector2 playerVec = { playerPos.x - start.x, playerPos.y - start.y };
+
+			// ビームの長さの2乗を計算
+			float beamLengthSquared = beamVec.x * beamVec.x + beamVec.y * beamVec.y;
+
+			// t を計算（0.0f～1.0fの範囲に収める）
+			float t = (beamVec.x * playerVec.x + beamVec.y * playerVec.y) / beamLengthSquared;
+			if (t < 0.0f) {
+				t = 0.0f;
+			} else if (t > 1.0f) {
+				t = 1.0f;
+			}
+
+			// 最近接点を計算
+			Vector2 closestPoint = {
+				start.x + t * beamVec.x,
+				start.y + t * beamVec.y
+			};
+
+			// プレイヤーとの距離を計算
+			float distanceX = playerPos.x - closestPoint.x;
+			float distanceY = playerPos.y - closestPoint.y;
+			float distanceSquared = distanceX * distanceX + distanceY * distanceY;
+
+			// 当たり判定の閾値（プレイヤーの半径やビームの幅）
+			float hitRadius = player.radius;
+
+			// プレイヤーが当たり判定内にいるかチェック
+			if (distanceSquared <= hitRadius * hitRadius) {
+				player.isHit = true;
+				break; // 一つのビームでも当たれば処理を終了
+			}
 		}
 	}
 }

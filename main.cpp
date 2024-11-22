@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "boss.h"
 #include "Ui.h"
+#include <algorithm>
+
 
 const char kWindowTitle[] = "1221_霊障退治";
 

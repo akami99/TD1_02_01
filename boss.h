@@ -26,10 +26,21 @@ public:
 
 	void DrawBeam2(Beam2& beam2);
 
+	//=============
 	//第二形態の攻撃
+	//=============
 
 	static void UpdateProjectiles(Projectile* projectiles);
 	
+	// 全方位攻撃の初期化
+	void InitializeAllRangeAttack(Boss_& beams);
+
+	// 全方位攻撃の更新
+	void UpdateAllRangeAttack(Boss_& beams);
+
+	// 全方位攻撃の描画
+	void DrawAllRangeAttack(Boss_& beams);
+
 	//=====================================================================
 	//当たり判定の作成(後でプレイヤーの向きによってバッグに当たり判定がないようにする)
 	//=====================================================================
@@ -47,16 +58,8 @@ public:
 	void PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_& doubleAttak);
 
 
-	// プロトタイプ宣言
-
-	// 全方位攻撃の初期化
-	void InitializeAllRangeAttack(Boss_& beams);
-
-	// 全方位攻撃の更新
-	void UpdateAllRangeAttack(Boss_& beams);
-
-	// 全方位攻撃の描画
-	void DrawAllRangeAttack(Boss_& beams);
+	void AllRengeAttakHitBox(Boss_& allRange,Player_& player);
+	
 
 
 private:
