@@ -39,7 +39,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo =11;
+					boss.attakNo =3;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -249,7 +249,10 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 
 	
+
 	if (boss.attakNo == 3) {
+
+		
 		object.isAttak = true;
 
 		object.timer++;
@@ -270,32 +273,32 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				object.pos.x = boss.pos.x + object.orbitRadius * cos(object.rotation);
 				object.pos.y = boss.pos.y + object.orbitRadius * sin(object.rotation);
 			} else {
-				// プレイヤーに向かって飛ばす処理
-	            // 方向ベクトルを毎フレーム計算
-				Vector2 direction = { player.pos.x - object.pos.x, player.pos.y - object.pos.y };
-				float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+				// 発射タイミングで一度だけ初速度を設定
+				if (object.timer == 300) { // 飛ばすタイミング
+					Vector2 direction = { player.pos.x - object.pos.x, player.pos.y - object.pos.y };
+					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
 
-				// ベクトルを正規化
-				if (length != 0) {
-					direction.x /= length;
-					direction.y /= length;
-				}
+					// ベクトルを正規化して速度を計算
+					if (length != 0) {
+						direction.x /= length;
+						direction.y /= length;
+					}
 
-				// チャージオブジェクトの速度を適用して移動
-				object.pos.x += direction.x * object.throwSpeed;
-				object.pos.y += direction.y * object.throwSpeed;
-				// 初回の速度設定
-				if (object.timer == 300) { // 飛ばすタイミングで設定
+					// オブジェクトに速度を設定
 					object.velocity = { direction.x * object.throwSpeed, direction.y * object.throwSpeed };
 				}
 
-				// オブジェクトを移動
+				// 設定された速度で移動
 				object.pos.x += object.velocity.x;
 				object.pos.y += object.velocity.y;
 
 				// プレイヤーに接近したら攻撃終了
 				float stopThreshold = 50.0f; // 近接判定のしきい値
-				if (length < stopThreshold) {
+				float distanceToPlayer = std::sqrt(
+					(player.pos.x - object.pos.x) * (player.pos.x - object.pos.x) +
+					(player.pos.y - object.pos.y) * (player.pos.y - object.pos.y));
+
+				if (distanceToPlayer < stopThreshold) {
 					// 攻撃終了処理
 					object.isAttak = false;
 					boss.isAttak = false;
@@ -309,11 +312,12 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 					object.isFloating = true;
 				}
 
+				// 画面外判定
 				float screenWidth = 1330.0f;  // 画面幅（例）
 				float screenHeight = 770.0f; // 画面高さ（例）
 				bool isOutOfScreen = object.pos.x < -50 || object.pos.x > screenWidth ||
 					object.pos.y < -50 || object.pos.y > screenHeight;
-				if (length < stopThreshold || isOutOfScreen) {
+				if (isOutOfScreen) {
 					// 攻撃終了処理
 					object.isAttak = false;
 					boss.isAttak = false;
@@ -328,6 +332,8 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				}
 			}
 		}
+	
+
 	}
 
 
