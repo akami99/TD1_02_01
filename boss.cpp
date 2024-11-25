@@ -284,6 +284,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		}
 	}
 
+		
 	if (boss.attakNo == 20) { // 攻撃番号20を全方位攻撃に設定
 		static bool initialized = false;
 
@@ -468,80 +469,6 @@ void Boss::DrawShortDistansAttak(ShortDistansAttak_ shortDist) {
 		if (shortDist.attakTime > 0) {
 			Novice::DrawBox(static_cast<int>(shortDist.pos.x), static_cast<int>(shortDist.pos.y),
 				static_cast<int>(shortDist.size.x), static_cast<int>(shortDist.size.y), 0.0f, BLUE, kFillModeSolid);
-		}
-	}
-}
-
-void Boss::DoubleShortDistansAttak(Boss_& boss, ShortDubleDistansAttak_& shortDobleDist, Player_ player) {
-	shortDobleDist.isAttak = true;
-
-	if (shortDobleDist.isAttak) {
-		if (shortDobleDist.attakCount == 0) {
-			// 最初の攻撃: プレイヤーにイージングで近づく
-			float distanceX = player.pos.x - boss.pos.x;
-			float stopDistance = 100.0f; // プレイヤーからこの距離で停止
-
-			if (std::abs(distanceX) > stopDistance) {
-				// プレイヤーに近づく
-				if (shortDobleDist.isEase) {
-					boss.pos.x += distanceX * shortDobleDist.easeSpeed;
-				}
-				shortDobleDist.attakTime = 10; // 攻撃判定をリセット
-				shortDobleDist.isShortAttak = false;
-			} else {
-				// 一定距離まで近づいたら攻撃
-				if (shortDobleDist.attakTime == 10) {
-					if (player.pos.x < boss.pos.x) {
-						shortDobleDist.pos.x = boss.pos.x - shortDobleDist.size.x;
-						shortDobleDist.expandDirection = -1; // 左方向
-					} else {
-						shortDobleDist.pos.x = boss.pos.x + boss.size.x;
-						shortDobleDist.expandDirection = 1;  // 右方向
-					}
-					shortDobleDist.pos.y = boss.pos.y + boss.size.y / 2 - shortDobleDist.size.y / 2;
-				}
-
-				if (shortDobleDist.attakTime > 0) {
-					shortDobleDist.isShortAttak = true;
-					shortDobleDist.attakTime--;
-				} else {
-					shortDobleDist.attakCount++;
-					shortDobleDist.isHit = false;
-					shortDobleDist.attakTime = 10; // 次回攻撃の準備
-				}
-			}
-
-		} else if (shortDobleDist.attakCount == 1) {
-			// 2回目の攻撃: 横方向に攻撃範囲を拡大
-			if (shortDobleDist.attakTime == 10) {
-				shortDobleDist.size.x = shortDobleDist.baseSizeX; // サイズをリセットして拡大開始
-			}
-
-			if (shortDobleDist.size.x < shortDobleDist.maxExpandSize) {
-				shortDobleDist.size.x += 20.0f; // 攻撃範囲を拡大
-				if (shortDobleDist.expandDirection == -1) {
-					// 左方向に拡大
-					shortDobleDist.pos.x = boss.pos.x - shortDobleDist.size.x;
-				} else {
-					// 右方向に拡大
-					shortDobleDist.pos.x = boss.pos.x + boss.size.x;
-				}
-			}
-
-			if (shortDobleDist.attakTime > 0) {
-				shortDobleDist.isShortAttak = true;
-				shortDobleDist.attakTime--;
-			} else {
-				// 攻撃終了
-				shortDobleDist.isHit = false;
-				shortDobleDist.isShortAttak = false;
-				shortDobleDist.isAttak = false;
-				shortDobleDist.attakCount = 0;
-				shortDobleDist.size.x = shortDobleDist.baseSizeX; // サイズをリセット
-				boss.isAttak = false;
-				boss.attakNo = 0;
-				boss.attakStandTime = 120; // クールダウン
-			}
 		}
 	}
 }
@@ -1308,62 +1235,6 @@ void Boss::DrawWarpAttak(WarpAttak& warp, ShortDistansAttak_& shortDist) {
 		}
 	}
 }
-
-//=========================
-//ワープ攻撃
-//=========================
-// ワープ攻撃の処理（ランダム攻撃付き）
-// ワープ攻撃の処理
-void Boss::BossWarpAttak(Boss_& boss, Player_& player, WarpAttak& warp, ShortDistansAttak_& shortDist) {
-	// ワープ攻撃が始まる条件
-	if (!warp.isAttak) {
-		warp.attakTime = 60;  // ワープ後の攻撃時間を設定
-		warp.pos.x = player.pos.x - 100.0f; // プレイヤーの後ろにワープ
-		warp.pos.y = player.pos.y;
-		boss.pos = warp.pos; // ボスをワープさせる
-		warp.isAttak = true; // ワープ攻撃を開始
-	}
-
-	// 攻撃時間中は近接攻撃
-	if (warp.isAttak && warp.attakTime > 0) {
-		warp.attakTime--;
-
-		// 簡易的に近接攻撃の処理を行う
-		shortDist.isAttak = true;
-		shortDist.pos = { boss.pos.x + boss.size.x, boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
-
-		// 当たり判定を確認
-		if (player.pos.x < shortDist.pos.x + shortDist.size.x &&
-			player.pos.x + player.radius > shortDist.pos.x &&
-			player.pos.y < shortDist.pos.y + shortDist.size.y &&
-			player.pos.y + player.radius > shortDist.pos.y) {
-			player.isHit = true;
-		}
-	} else if (warp.attakTime <= 0) {
-		// 攻撃終了後のリセット
-		warp.isAttak = false;
-		boss.isAttak = false;
-		boss.attakNo = 0;
-		boss.attakStandTime = 120; // クールダウン時間
-	}
-}
-
-// ワープ攻撃の描画
-void Boss::DrawWarpAttak(WarpAttak& warp) {
-	if (warp.isAttak) {
-		// ワープのエフェクトを描画する（ここでは単純に四角形で表現）
-		Novice::DrawBox(
-			static_cast<int>(warp.pos.x),
-			static_cast<int>(warp.pos.y),
-			50, 50, // エフェクトのサイズ
-			0.0f,
-			0x00FF00FF, // 緑色
-			kFillModeSolid
-		);
-	}
-}
-
-
 
 //if (boss.attakNo == 3) {
 //	object.isAttak = true;
