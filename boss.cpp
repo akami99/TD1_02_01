@@ -18,7 +18,7 @@ void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easin
 
 
 // ボスの動き
-void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake, Beam2& beam2, Projectile* projectiles, Shockwave* shockwaves) {
+void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake, Beam2& beam2, Projectile* projectiles, Shockwave* shockwaves,WarpAttak& warp) {
 	
 	if (boss.attakStandTime > 0) {
 		boss.attakStandTime--;
@@ -38,7 +38,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 1;
+					boss.attakNo = 12;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -98,10 +98,6 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	Novice::ScreenPrintf(32, 256, "ShortDist pos.y::%.1f", shortDist.pos.y);
 	Novice::ScreenPrintf(32, 288, "ShortDist pos.x::%.1f", shortDist.pos.x);
 	Novice::ScreenPrintf(32, 320, "ShortDist pos.y::%.1f", shortDist.pos.y);
-
-
-
-
 
 	if (boss.attakNo == 3) {
 
@@ -232,6 +228,71 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		}
 	}
 
+	//エリア全体
+	if (boss.attakNo == 12) {
+
+		// ボスの移動処理（上中央に移動）
+		if (!boss.hasMovedToCenter) {
+			if (boss.pos.y > 240.0f) {
+				boss.pos.y -= boss.speed;
+			} else {
+				boss.hasMovedToCenter = true;
+				boss.isFloating = true;
+			}
+		}
+
+		// ボスの攻撃処理
+		if (boss.hasMovedToCenter && boss.attackCount == 0) {
+			for (int i = 0; i < MAX_boll; i++) {
+				boss.bullets[i].isAttak = true;
+				boss.bullets[i].bounceCount = 0;
+				float angle = (rand() % 360) * (3.14159f / 180.0f);
+				boss.bullets[i].velocity.x = cos(angle) * 5.0f;
+				boss.bullets[i].velocity.y = sin(angle) * 5.0f;
+				boss.bullets[i].pos = boss.pos;
+			}
+			boss.attackCount = 1;
+		}
+
+		// 弾の更新処理
+		for (int i = 0; i < MAX_boll; i++) {
+			if (boss.bullets[i].isAttak) {
+				boss.bullets[i].pos.x += boss.bullets[i].velocity.x;
+				boss.bullets[i].pos.y += boss.bullets[i].velocity.y;
+
+				if (boss.bullets[i].pos.x < 0 || boss.bullets[i].pos.x > 1280) {
+					boss.bullets[i].velocity.x = -boss.bullets[i].velocity.x;
+					boss.bullets[i].bounceCount++;
+				}
+
+				if (boss.bullets[i].pos.y < 0 || boss.bullets[i].pos.y > 720) {
+					boss.bullets[i].velocity.y = -boss.bullets[i].velocity.y;
+					boss.bullets[i].bounceCount++;
+				}
+
+				if (boss.bullets[i].bounceCount >= 2) {
+					boss.bullets[i].isAttak = false;
+				}
+
+
+			}
+		}
+
+		// ボスが降りる条件
+		if (boss.isFloating && boss.attackCount > 0 && boss.AreAllBulletsInactive()) {
+			boss.isReturning = true;
+			boss.isFloating = false;
+		}
+		if (boss.isReturning) {
+			if (boss.pos.y < 600.0f) {
+				boss.pos.y += boss.speed;
+			} else {
+				boss.isReturning = false;
+				boss.hasMovedToCenter = false;
+				boss.attackCount = 0;
+			}
+		}
+	}
 
 	if (boss.attakNo == 20) { // 攻撃番号20を全方位攻撃に設定
 		static bool initialized = false;
@@ -275,6 +336,12 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		UpdateShockwaves(shockwaves, 10);
 
 	}
+
+	if (boss.attakNo == 40) {
+		BossWarpAttak(boss, player, warp, shortDist);
+	}
+
+
 
 	Novice::ScreenPrintf(200, 500, "%d", player.isHit);
 
@@ -1082,6 +1149,60 @@ void Boss::DrawShockwaves(Shockwave* shockwaves, int maxShockwaves) {
 				kFillModeSolid
 			);
 		}
+	}
+}
+
+//=========================
+//ワープ攻撃
+//=========================
+// ワープ攻撃の処理（ランダム攻撃付き）
+// ワープ攻撃の処理
+void Boss::BossWarpAttak(Boss_& boss, Player_& player, WarpAttak& warp, ShortDistansAttak_& shortDist) {
+	// ワープ攻撃が始まる条件
+	if (!warp.isAttak) {
+		warp.attakTime = 60;  // ワープ後の攻撃時間を設定
+		warp.pos.x = player.pos.x - 100.0f; // プレイヤーの後ろにワープ
+		warp.pos.y = player.pos.y;
+		boss.pos = warp.pos; // ボスをワープさせる
+		warp.isAttak = true; // ワープ攻撃を開始
+	}
+
+	// 攻撃時間中は近接攻撃
+	if (warp.isAttak && warp.attakTime > 0) {
+		warp.attakTime--;
+
+		// 簡易的に近接攻撃の処理を行う
+		shortDist.isAttak = true;
+		shortDist.pos = { boss.pos.x + boss.size.x, boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
+
+		// 当たり判定を確認
+		if (player.pos.x < shortDist.pos.x + shortDist.size.x &&
+			player.pos.x + player.radius > shortDist.pos.x &&
+			player.pos.y < shortDist.pos.y + shortDist.size.y &&
+			player.pos.y + player.radius > shortDist.pos.y) {
+			player.isHit = true;
+		}
+	} else if (warp.attakTime <= 0) {
+		// 攻撃終了後のリセット
+		warp.isAttak = false;
+		boss.isAttak = false;
+		boss.attakNo = 0;
+		boss.attakStandTime = 120; // クールダウン時間
+	}
+}
+
+// ワープ攻撃の描画
+void Boss::DrawWarpAttak(WarpAttak& warp) {
+	if (warp.isAttak) {
+		// ワープのエフェクトを描画する（ここでは単純に四角形で表現）
+		Novice::DrawBox(
+			static_cast<int>(warp.pos.x),
+			static_cast<int>(warp.pos.y),
+			50, 50, // エフェクトのサイズ
+			0.0f,
+			0x00FF00FF, // 緑色
+			kFillModeSolid
+		);
 	}
 }
 

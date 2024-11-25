@@ -49,7 +49,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Projectile projectiles[10];
 	Boss::UpdateProjectiles(projectiles);
 
+	WarpAttak warp;
+
+	Whole whole;
+
+
 	int scene = TITLE;
+
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -83,7 +89,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, boss_, flash_, keys, preKeys);
 
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2,projectiles, shockwaves);
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2,projectiles, shockwaves,warp);
 
 			if (boss_.hp <= 0) {
 				scene = SECONDBOSS;

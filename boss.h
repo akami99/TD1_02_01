@@ -6,7 +6,7 @@ class Boss {
 public:
 	void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist,
 		Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,
-		Beam2& beam2,Projectile* projectiles, Shockwave* shockwaves);
+		Beam2& beam2,Projectile* projectiles, Shockwave* shockwaves, WarpAttak& warp);
 
 	//ボスの描画
 	void BossDraw(Boss_ boss,Shake& shake);
@@ -53,7 +53,8 @@ public:
 
 	void DrawBeam2(Beam2& beam2);
 
-	
+
+	void DrawWhole(Boss_& whole);
 	
 	//=============
 	//第二形態の攻撃
@@ -81,8 +82,14 @@ public:
 	//=====================
 	void UpdateShockwaves(Shockwave* shockwaves, int maxShockwaves);
 
-
 	void DrawShockwaves(Shockwave* shockwaves, int maxShockwaves);
+
+	//===================
+	//ワープ攻撃
+	//===================
+	void BossWarpAttak(Boss_& boss, Player_& player, WarpAttak& warp, ShortDistansAttak_& shortDist);
+
+	void DrawWarpAttak(WarpAttak& warp);
 
 	//=====================================================================
 	//当たり判定の作成(後でプレイヤーの向きによってバッグに当たり判定がないようにする)
@@ -103,6 +110,8 @@ public:
 
 	void AllRengeAttakHitBox(Boss_& allRange,Player_& player);
 	
+
+
 private:
 
 };

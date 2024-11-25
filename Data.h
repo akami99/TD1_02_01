@@ -6,11 +6,22 @@ const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
 const int MAX_PROJECTILES = 3;
 // 最大ビーム数
 const int MAX_ALLRANGE_BEAMS = 30;
+const int MAX_boll = 30; // 発射する弾の数
+
+// エリア全体
+struct Whole {
+	Vector2 pos = { 0.0f, 0.0f };
+	Vector2 velocity = { 0.0f, 0.0f };
+	bool isAttak = false;
+	int attakTime = 360;
+	int bounceCount = 0; // 反射回数を追加
+};
+// 発射された弾の配列
 
 // プレイヤー
 struct Player_ {
     Vector2 pos = { 32.0f,600.0f };
-    Vector2 direction = { 1.0f, 0.0f };
+    Vector2 direction = { 1.0f, 0.0f };//プレイヤーの向き(1だったら右、-1だったら左向き)
     Vector2 velocity = { 0.0f, 0.0f };
     Vector2 acceleration = { 0.0f, 0.5f };
     float radius = 32;
@@ -103,7 +114,31 @@ struct Boss_ {
 	int fallSpeed = 10;
 	int fallCoolTime = 0;
 
+	int warpAttak = false;
+
 	int image = Novice::LoadTexture("./Resources/images/boss_01.png");
+
+	Whole bullets[MAX_boll];
+
+	bool hasMovedToCenter = false;    // ボスが上中央に移動したか
+	bool isReturning = false;         // ボスが降りている状態か
+
+	// すべての弾が無効化されているか確認する関数
+	bool AreAllBulletsInactive() {
+		for (int i = 0; i < MAX_boll; i++) {
+			if (bullets[i].isAttak) { // 修正：isAttack -> isAttak
+				return false;
+			}
+		}
+		return true;
+	}
+
+};
+
+struct WarpAttak {
+	Vector2 pos = {-100.0f,-100.0f};//bossの位置をここに固定する
+	int attakTime = 0;//if(warp.attakTime>0)の場合プレイヤーの後ろに固定させる
+	int isAttak = false;//trueだったら近接攻撃(shortDirectionAttak)
 
 };
 
