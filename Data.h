@@ -5,7 +5,7 @@
 const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
 const int MAX_PROJECTILES = 3;
 // 最大ビーム数
-const int MAX_ALLRANGE_BEAMS = 20;
+const int MAX_ALLRANGE_BEAMS = 30;
 
 // プレイヤー
 struct Player_ {
