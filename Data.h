@@ -13,7 +13,7 @@ struct Player_ {
     Vector2 direction = { 1.0f, 0.0f };
     Vector2 velocity = { 0.0f, 0.0f };
     Vector2 acceleration = { 0.0f, 0.5f };
-    float radius = 64;
+    float radius = 32;
 	int hp = 300;    // ゲージの描画はUi.cpp内で調整してるので注意
 	int energy = 600;// 同上
 	const int kMaxEnergy = 600;
