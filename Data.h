@@ -10,7 +10,7 @@ const int MAX_ALLRANGE_BEAMS = 30;
 // プレイヤー
 struct Player_ {
     Vector2 pos = { 32.0f,600.0f };
-    Vector2 direction = { 0.0f, 0.0f };
+    Vector2 direction = { 1.0f, 0.0f };
     Vector2 velocity = { 0.0f, 0.0f };
     Vector2 acceleration = { 0.0f, 0.5f };
     float radius = 64;
@@ -75,9 +75,15 @@ struct AllRange {
 // ボス
 struct Boss_ {
 	Vector2 pos = { 1000.0f, 472.0f };    // ボスの初期位置
+	Vector2 top = { 1000.0f + 32.0f, 472.0f + 32.0f };
+	Vector2 bottom = { 1000.0f + 32.0f, 472.0f + 96.0f };
 	Vector2 size = { 64.0f, 128.0f };
 	Vector2 shakePos = { 0.0f,0.0f };
 	int hp = 200;                         // ゲージの描画Ui.cpp内で調整してるので注意
+	int isHitTop = false;
+	int isHitLeft = false;
+	int isHitRight = false;
+	int isHit = false;
 	int attakNo = 0;
 	int attakStandTime = 120;
 	int isAttak = false;

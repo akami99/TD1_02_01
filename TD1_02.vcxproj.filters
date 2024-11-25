@@ -55,10 +55,13 @@
     <ClCompile Include="Player.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
-    <ClCompile Include="Ui.cpp">
-      <Filter>KamataEngine\Source</Filter>
-    </ClCompile>
     <ClCompile Include="ScondBoss.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Ui.cpp">
+      <Filter>KamataEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="Tool.cpp">
       <Filter>KamataEngine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -138,5 +141,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Data.h" />
     <ClInclude Include="Ui.h" />
+    <ClInclude Include="Tool.h" />
   </ItemGroup>
 </Project>
