@@ -501,5 +501,5 @@ void Player::FlashHitBox(Player_& player, Boss_& boss, Flash_& flash) {
 
 //背景の描画
 void Player::DrawBackGround(Line& backGround, Shake shake) {
-	Novice::DrawSprite(static_cast<int>(0 + shake.pos.x), static_cast<int>(0 + shake.pos.y), backGround.backGround, 1, 1, 0.0f, WHITE);
+	Novice::DrawSprite(static_cast<int>(0 + shake.pos.x+shake.bgPos.x), static_cast<int>(0 + shake.pos.y+shake.bgPos.y),backGround.backGround ,1, 1, 0.0f, WHITE);
 }

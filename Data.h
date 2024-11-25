@@ -17,26 +17,26 @@ struct Player_ {
 	int hp = 300;    // ゲージの描画はUi.cpp内で調整してるので注意
 	int energy = 600;// 同上
 	const int kMaxEnergy = 600;
-    int isFlash = false;
-    int isHighFlash = false;
-    int isJanp = false;
-    int janpNum = 0;
-    float speed = 2.0f;
-    int isJanpSpeed = false;
-	int isHit=false;
+	int isFlash = false;
+	int isHighFlash = false;
+	int isJanp = false;
+	int janpNum = 0;
+	float speed = 2.0f;
+	int isJanpSpeed = false;
+	int isHit = false;
 	int image = Novice::LoadTexture("./Resources/images/player_01.png");
 
 };
 
 //フラッシュライト
 struct Flash_ {
-    Vector2 pos = { 0.0f,0.0f };
-    Vector2 direction = { 0.0f, 0.0f };
-    float range = 192;
-    float highRange = 288;
-    float width = 50;
-    float highWidth = 100;
-    int damage = 1;
+	Vector2 pos = { 0.0f,0.0f };
+	Vector2 direction = { 0.0f, 0.0f };
+	float range = 192;
+	float highRange = 288;
+	float width = 50;
+	float highWidth = 100;
+	int damage = 1;
 };
 
 // ビーム攻撃用構造体
@@ -89,16 +89,33 @@ struct Boss_ {
 	int isAttak = false;
 	int secondHp = 200;
 	int isEase = false;
-	float speed=5.0f;
+	float speed = 5.0f;
 	int vanishTime = 0;//ボスを消す
 	bool isFloating = false;          // 浮上状態か
 	int attackCount = 0;              // 飛び道具の発射回数
 	Beam_ beams[MAX_BEAMS];// ビーム攻撃用の配列
 	int localTimer = 0;
 	AllRange allRangeBeams[MAX_ALLRANGE_BEAMS];//オールレンジアタックの攻撃用配列
+
+	int isFall=false;//落下攻撃
+	int isFallAttak = false;
+	int fallCount = 0;
+	int fallSpeed = 10;
+	int fallCoolTime = 0;
+
 	int image = Novice::LoadTexture("./Resources/images/boss_01.png");
 
 };
+
+//落下攻撃の衝撃波
+struct Shockwave {
+	Vector2 pos = {-100.0f,-100.0f};       // 衝撃波の位置
+	Vector2 size = {32.0f,32.0f};      // 衝撃波のサイズ
+	Vector2 direction; // 衝撃波の進行方向
+	float speed=10.0f;       // 衝撃波のスピード
+	int isActive=false;      // 衝撃波が有効かどうか（1: 有効, 0: 無効）
+};
+
 
 // 範囲攻撃
 struct BossRengeAttak_ {
@@ -136,24 +153,25 @@ struct ShortDubleDistansAttak_ {
 	float maxExpandSize = 200.0f;        // 攻撃範囲の最大サイズ
 	float baseSizeX = 128.0f;            // 元のX方向のサイズ
 	int isShortAttak = false;
-	int isHit=false;
+	int isHit = false;
 };
 
 // チャージ攻撃
 struct Object {
-    Vector2 pos= { 0.0f, 0.0f };
+	Vector2 pos = { 0.0f, 0.0f };
 	Vector2 size = { 100,100 };
 	Vector2 velocity = { 10.0f,10.0f };
-    float floatHeight=50.0f;
+	float floatHeight = 50.0f;
 	bool isFloating = true;
-	float throwSpeed=15.0f;
-    float rotation=0.0f;
-    float orbitRadius=100.0f;
-    int isAttak = false;
-    int attakTime = 360;
-    int attakStandTime = 30;
+	float throwSpeed = 15.0f;
+	float rotation = 0.0f;
+	float orbitRadius = 100.0f;
+	int isAttak = false;
+	int attakTime = 360;
+	int attakStandTime = 30;
 	int timer = 0;
 };
+
 
 struct Projectile {
 	Vector2 pos = { 0.0f,0.0f };
@@ -164,10 +182,11 @@ struct Projectile {
 
 };
 
-struct  Shake{
+struct  Shake {
 	Vector2 pos = { 0.0f,0.0f };
 	Vector2 bossPos = { 0.0f,0.0f };
 	Vector2 bgPos = { 0.0f,0.0f };
+	int time = 0;
 };
 
 // 地面

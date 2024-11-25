@@ -18,7 +18,7 @@ void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easin
 
 
 // ボスの動き
-void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake, Beam2& beam2, Projectile* projectiles) {
+void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake, Beam2& beam2, Projectile* projectiles, Shockwave* shockwaves) {
 	// 関数内容
 
 
@@ -41,7 +41,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo =20;
+					boss.attakNo = 30;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -250,11 +250,11 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 
 
-	
+
 
 	if (boss.attakNo == 3) {
 
-		
+
 		object.isAttak = true;
 
 		object.timer++;
@@ -334,7 +334,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 				}
 			}
 		}
-	
+
 
 	}
 
@@ -474,6 +474,14 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 	}
 
 	Novice::ScreenPrintf(200, 500, "%d", player.isHit);
+
+	//落下攻撃
+	if (boss.attakNo == 30) {
+		BossFallAttak(boss, player, shake, shockwaves,10);
+
+		UpdateShockwaves(shockwaves, 10);
+
+	}
 }
 
 
@@ -634,7 +642,6 @@ void Boss::UpdateProjectiles(Projectile* projectiles) {
 		}
 	}
 }
-
 
 
 
@@ -822,7 +829,7 @@ void Boss::DrawAllRangeAttack(Boss_& allRange) {
 		if (allRange.allRangeBeams[i].isActive) {
 			// 残りフレームが10以下の場合は太い線を描画
 
-			if (allRange.allRangeBeams[i].lifeTime >= 11 &&allRange.allRangeBeams[i].lifeTime <=12) {
+			if (allRange.allRangeBeams[i].lifeTime >= 11 && allRange.allRangeBeams[i].lifeTime <= 12) {
 				Novice::DrawBox(0, 0, 1280, 720, 0.0f, WHITE, kFillModeSolid);
 			}
 
@@ -920,6 +927,129 @@ void Boss::AllRengeAttakHitBox(Boss_& allRange, Player_& player) {
 				player.isHit = true;
 				break; // 一つのビームでも当たれば処理を終了
 			}
+		}
+	}
+}
+
+//落下攻撃の処理
+void Boss::BossFallAttak(Boss_& boss, Player_& player, Shake& shake, Shockwave* shockwaves, int maxShockwaves) {
+	Vector2 easePos = { 640.0f, 100.0f };
+
+	if (boss.fallCoolTime == 0) {
+		if (boss.fallCount < 4) {
+			if (!boss.isFallAttak) {
+				boss.pos.x += (easePos.x - boss.pos.x) * 0.05f;
+				boss.pos.y += (easePos.y - boss.pos.y) * 0.05f;
+				boss.vanishTime = 2;
+
+				if (std::fabs(easePos.x - boss.pos.x) < 0.5f && std::fabs(easePos.y - boss.pos.y) < 0.5f) {
+					boss.pos = easePos;
+					boss.isFallAttak = true;
+				}
+			} else {
+				if (!boss.isFall) {
+					if (std::fabs(boss.pos.x - player.pos.x) < 10.0f) {
+						boss.isFall = true;
+					} else {
+						boss.pos.x += boss.speed;
+
+						if (boss.pos.x <= 0 || boss.pos.x > 1280.0f - boss.size.x) {
+							boss.speed *= -1;
+						}
+					}
+				} else {
+					if (boss.pos.y > 600.0f - boss.size.y) {
+						boss.fallCoolTime = 40;
+						boss.fallCount++;
+						boss.isFall = false;
+						boss.isFallAttak = false;
+						shake.time = 20;
+
+						// 衝撃波を生成
+						int createdShockwaves = 0; // 生成済み衝撃波の数
+						for (int i = 0; i < maxShockwaves; i++) {
+							if (!shockwaves[i].isActive) {
+								if (createdShockwaves == 0) {
+									// 左側の衝撃波
+									shockwaves[i].pos = { boss.pos.x, 600.0f - boss.size.y / 2 };
+									shockwaves[i].size = { 32.0f, 32.0f };
+									shockwaves[i].direction = { -1.0f, 0.0f }; // 左方向
+									shockwaves[i].speed = 10.0f;
+									shockwaves[i].isActive = 1;
+									createdShockwaves++;
+								} else if (createdShockwaves == 1) {
+									// 右側の衝撃波
+									shockwaves[i].pos = { boss.pos.x + boss.size.x, 600.0f - boss.size.y / 2 };
+									shockwaves[i].size = { 32.0f, 32.0f };
+									shockwaves[i].direction = { 1.0f, 0.0f }; // 右方向
+									shockwaves[i].speed = 10.0f;
+									shockwaves[i].isActive = 1;
+									break;
+								}
+							}
+						}
+					} else {
+						boss.pos.y += boss.fallSpeed;
+					}
+				}
+			}
+		} else {
+			Vector2 firstPos = { 1000.0f, 478.0f };
+			boss.pos.x += (firstPos.x - boss.pos.x) * 0.05f;
+			boss.pos.y += (firstPos.y - boss.pos.y) * 0.05f;
+			boss.vanishTime = 2;
+
+			if (std::fabs(firstPos.x - boss.pos.x) < 0.5f && std::fabs(firstPos.y - boss.pos.y) < 0.5f) {
+				boss.pos = firstPos;
+
+				boss.isAttak = false;
+				boss.attakNo = 0;
+				boss.attakStandTime = 120; // クールダウン
+			}
+		}
+	} else if (boss.fallCoolTime > 0) {
+		boss.fallCoolTime--;
+	}
+
+	if (shake.time > 0) {
+		shake.time--;
+	}
+
+	if (shake.time > 5) {
+		shake.bgPos.x = static_cast<float>(rand() % shake.time - 5);
+		shake.bgPos.y = static_cast<float>(rand() % shake.time - 5);
+	} else {
+		shake.bgPos.x = 0.0f;
+		shake.bgPos.y = 0.0f;
+	}
+}
+
+void Boss::UpdateShockwaves(Shockwave* shockwaves, int maxShockwaves) {
+	for (int i = 0; i < maxShockwaves; i++) { // maxShockwavesを使ってループの上限を設定
+		if (shockwaves[i].isActive) {
+			shockwaves[i].pos.x += shockwaves[i].direction.x * shockwaves[i].speed;
+
+			// 衝撃波が画面外に出たら無効化
+			if (shockwaves[i].pos.x < 0 || shockwaves[i].pos.x > 1280) {
+				shockwaves[i].isActive = 0;
+			}
+		}
+	}
+}
+
+
+void Boss::DrawShockwaves(Shockwave* shockwaves, int maxShockwaves) {
+	for (int i = 0; i < maxShockwaves; i++) { // maxShockwavesを使ってループの上限を設定
+		if (shockwaves[i].isActive) {
+			Novice::DrawBox(
+				static_cast<int>(shockwaves[i].pos.x),
+				static_cast<int>(shockwaves[i].pos.y),
+				static_cast<int>(shockwaves[i].size.x),
+				static_cast<int>(shockwaves[i].size.y),
+				0.0f,
+				RED,
+				kFillModeSolid
+			);
 		}
 	}
 }
