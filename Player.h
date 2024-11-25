@@ -4,6 +4,12 @@
 
 class Player{
 public:
+	/// <summary>
+	/// 初期化
+	/// </summary>
+	/// <param name="player">プレイヤー</param>
+	/// <param name="flash">ライト</param>
+	void Initialize(Player_& player, Flash_& flash);
 
     /// <summary>
     /// Function for moving the player
