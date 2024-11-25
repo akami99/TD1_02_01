@@ -194,8 +194,9 @@ struct Line {
 	Vector2 pos = { 0.0f, 600.0f };
 	Vector2 endPos = { 1280.0f,600 };
 
+	int title = Novice::LoadTexture("./Resources/images/title.png");
 	int backGround = Novice::LoadTexture("./Resources/images/backGround.png");
-
+	int clear = Novice::LoadTexture("./Resources/images/clear.png");
 };
 
 
