@@ -1,5 +1,4 @@
-﻿
-#include "Novice.h"
+﻿#include "Novice.h"
 #include "Data.h"
 #include "boss.h"
 #include <cmath> // 距離計算のために必要
@@ -712,6 +711,18 @@ void Boss::DrawBossChargeAttak(const Object& object) {
 
 	}
 }
+//飛び道具
+void Boss::UpdateProjectiles(Projectile* projectiles) {
+	for (int i = 0; i < MAX_PROJECTILES; i++) {
+		if (projectiles[i].isActive) {
+			projectiles[i].pos.x += projectiles[i].velocity.x;
+			projectiles[i].pos.y += projectiles[i].velocity.y;
+			if (projectiles[i].pos.x < 0 || projectiles[i].pos.x > 1280 ||
+				projectiles[i].pos.y < 0 || projectiles[i].pos.y > 720) {
+				projectiles[i].isActive = false;
+			}
+		}
+	}
 
 //飛び道具
 void Boss::UpdateProjectiles(Projectile* projectiles) {

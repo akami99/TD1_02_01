@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <Novice.h>
 #include "Data.h"
 
@@ -54,6 +53,9 @@ public:
 
 	void DrawBeam2(Beam2& beam2);
 
+	//=============
+	//第二形態の攻撃
+	//=============
 
 	void DrawWhole(Boss_& whole);
 	
@@ -117,6 +119,3 @@ private:
 
 };
 
-
-
- 

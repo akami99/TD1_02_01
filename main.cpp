@@ -178,7 +178,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 		}
 
-		
+
 
 		// フレームの終了
 		Novice::EndFrame();
