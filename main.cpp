@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "boss.h"
 #include "Ui.h"
+#include <algorithm>
+
 
 const char kWindowTitle[] = "1221_霊障退治";
 
@@ -75,7 +77,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, boss_, flash_, keys, preKeys);
 
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2,projectiles, timer);
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2,projectiles);
+
+			if (boss_.hp <= 0) {
+				scene = SECONDBOSS;
+			}
 
 			///
 			/// ↑更新処理ここまで
@@ -107,6 +113,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// ボスの描画
 			boss.BossDraw(boss_, shake);
 
+			//オールレンジアタック
+			boss.DrawAllRangeAttack(boss_);
+
 			//近距離攻撃の描画
 			boss.DrawShortDistansAttak(shortDistAttak_);
 
@@ -122,7 +131,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			boss.UpdateProjectiles(projectiles);
 
-
+			//Novice::ScreenPrintf(0, 0, "%d",boss.time);
 			///
 			/// ↑描画処理ここまで
 			///
@@ -131,11 +140,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case SECONDBOSS:
 
+			if (boss_.secondHp <= 0) {
+				scene = CLEAR;
+			}
+
 			break;
-
-
-
 		}
+
+		
+
 		// フレームの終了
 		Novice::EndFrame();
 

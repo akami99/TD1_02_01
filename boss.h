@@ -6,7 +6,7 @@ class Boss {
 public:
 	void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist,
 		Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,
-		Beam2& beam2,Projectile* projectiles, int& timer);
+		Beam2& beam2,Projectile* projectiles);
 
 	void BossDraw(Boss_ boss,Shake& shake);
 
@@ -26,10 +26,21 @@ public:
 
 	void DrawBeam2(Beam2& beam2);
 
+	//=============
 	//第二形態の攻撃
+	//=============
 
 	static void UpdateProjectiles(Projectile* projectiles);
 	
+	// 全方位攻撃の初期化
+	void InitializeAllRangeAttack(Boss_& beams);
+
+	// 全方位攻撃の更新
+	void UpdateAllRangeAttack(Boss_& beams);
+
+	// 全方位攻撃の描画
+	void DrawAllRangeAttack(Boss_& beams);
+
 	//=====================================================================
 	//当たり判定の作成(後でプレイヤーの向きによってバッグに当たり判定がないようにする)
 	//=====================================================================
@@ -45,6 +56,11 @@ public:
 
 	//連続攻撃の当たり判定
 	void PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_& doubleAttak);
+
+
+	void AllRengeAttakHitBox(Boss_& allRange,Player_& player);
+	
+
 
 private:
 

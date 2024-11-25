@@ -4,6 +4,9 @@
 
 const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
 const int MAX_PROJECTILES = 3;
+// 最大ビーム数
+const int MAX_ALLRANGE_BEAMS = 30;
+
 // プレイヤー
 struct Player_ {
     Vector2 pos = { 32.0f,600.0f };
@@ -58,6 +61,17 @@ struct Beam2 {
 	int isEase = false;
 };
 
+// 全方位攻撃用ビーム構造体
+struct AllRange {
+	Vector2 startPos;   // ビームの開始位置
+	Vector2 endPos;     // ビームの終了位置
+	Vector2 currentPos; // ビームの現在位置
+	Vector2 direction;  // ビームの進行方向
+	float speed;        // ビームの移動速度
+	int isActive;       // ビームがアクティブかどうか（1: 有効、0: 無効）
+	int lifeTime;       // ビームの寿命（フレーム単位で管理）
+};
+
 // ボス
 struct Boss_ {
 	Vector2 pos = { 1000.0f, 472.0f };    // ボスの初期位置
@@ -80,7 +94,8 @@ struct Boss_ {
 	bool isFloating = false;          // 浮上状態か
 	int attackCount = 0;              // 飛び道具の発射回数
 	Beam_ beams[MAX_BEAMS];// ビーム攻撃用の配列
-
+	int localTimer = 0;
+	AllRange allRangeBeams[MAX_ALLRANGE_BEAMS];//オールレンジアタックの攻撃用配列
 	int image = Novice::LoadTexture("./Resources/images/boss_01.png");
 
 };
@@ -124,11 +139,11 @@ struct ShortDubleDistansAttak_ {
 	int isHit=false;
 };
 
-
-
 // チャージ攻撃
 struct Object {
     Vector2 pos= { 0.0f, 0.0f };
+	Vector2 size = { 100,100 };
+	Vector2 velocity = { 10.0f,10.0f };
     float floatHeight=50.0f;
 	bool isFloating = true;
 	float throwSpeed=15.0f;
@@ -137,31 +152,23 @@ struct Object {
     int isAttak = false;
     int attakTime = 360;
     int attakStandTime = 30;
-
-
-
-
-
-
+	int timer = 0;
 };
 
 struct Projectile {
-	Vector2 pos;
-	Vector2 velocity;
+	Vector2 pos = { 0.0f,0.0f };
+	Vector2 velocity = { 0.0f,0.0f };
+	int radius = 20;
 	bool isActive = false;
-
+	int localTimer = 0;
 
 };
-
-
 
 struct  Shake{
 	Vector2 pos = { 0.0f,0.0f };
 	Vector2 bossPos = { 0.0f,0.0f };
 	Vector2 bgPos = { 0.0f,0.0f };
 };
-
-
 
 // 地面
 struct Line {
@@ -171,11 +178,6 @@ struct Line {
 	int backGround = Novice::LoadTexture("./Resources/images/backGround.png");
 
 };
-
-
-// timer の宣言（定義はソースファイルに）
-extern int timer;
-
 
 
 
