@@ -129,7 +129,7 @@ void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* key
 		}
 	}
 	//フラッシュライトの位置を現在のプレイヤーのライトの位置にする
-	flash.pos = { player.pos.x + player.radius / 2 + player.radius / 3 * flash.direction.x, player.pos.y + player.radius / 2 + player.radius / 2 * flash.direction.y };
+	flash.pos = { player.pos.x + player.radius + player.radius / 3 * flash.direction.x, player.pos.y + player.radius + player.radius / 2 * flash.direction.y };
 	FlashHitBox(player, boss, flash);
 }
 
