@@ -64,6 +64,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case TITLE:
 			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				player.Initialize(player_, flash_);
+				boss_.hp = 200;//初期化(仮)
 				scene = FASTBOSS;
 			}
 
