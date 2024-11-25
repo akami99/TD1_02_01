@@ -8,28 +8,52 @@ public:
 		Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,
 		Beam2& beam2,Projectile* projectiles, Shockwave* shockwaves);
 
+	//ボスの描画
 	void BossDraw(Boss_ boss,Shake& shake);
+
+	//=====================
+	//範囲攻撃
+	//=====================
+	void BossRengeAttak(Boss_& boss, BossRengeAttak_& renge, Shake& shake);
 
 	void DrawBossRengeAttak(BossRengeAttak_ renge);
 
+	//======================
+	//チャージ攻撃
+	//======================
+
 	void DrawBossChargeAttak(const Object& object);
 
+	//=======================
+	//ビーム攻撃
+	//=======================
 	void BeamAttack(Boss_& boss,Shake& shake);  // ビーム攻撃開始
 
 	void DrawBeams(Boss_& boss);   // ビームを描画
 
+	//イージング用の関数
 	void BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easingSpeed);  // 目標位置にイージングで移動
+
+	//========================================
+	//近距離攻撃
+	//========================================
+
+	void ShortDistansAttak(Boss_& boss, ShortDistansAttak_& shortDist,  Player_ player);
 
 	void DrawShortDistansAttak(ShortDistansAttak_ shortDist);
 
+	void DoubleShortDistansAttak(Boss_& boss, ShortDubleDistansAttak_& shortDobleDist, Player_ player);
+
 	void DrawDoubleShortDistansAttak(ShortDubleDistansAttak_ shortDobleDist);
+
+	//==========================
+	//移動ビーム
+	//==========================
+	void Beam2Attak(Boss_& boss, Beam2& beam2, Shake& sheke);
 
 	void DrawBeam2(Beam2& beam2);
 
-	void UpdateShockwaves(Shockwave* shockwaves, int maxShockwaves);
 	
-
-	void DrawShockwaves(Shockwave* shockwaves, int maxShockwaves); 
 	
 	//=============
 	//第二形態の攻撃
@@ -46,7 +70,19 @@ public:
 	// 全方位攻撃の描画
 	void DrawAllRangeAttack(Boss_& beams);
 
+	//=====================
+	//落下攻撃
+	//=====================
+
 	void BossFallAttak(Boss_& boss, Player_& player, Shake& shake, Shockwave* shockwaves, int maxShockwaves);
+
+	//=====================
+	//落下攻撃に出る衝撃波
+	//=====================
+	void UpdateShockwaves(Shockwave* shockwaves, int maxShockwaves);
+
+
+	void DrawShockwaves(Shockwave* shockwaves, int maxShockwaves);
 
 	//=====================================================================
 	//当たり判定の作成(後でプレイヤーの向きによってバッグに当たり判定がないようにする)
