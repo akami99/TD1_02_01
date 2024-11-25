@@ -4,6 +4,8 @@
 
 const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
 const int MAX_PROJECTILES = 3;
+const int MAX_boll = 30; // 発射する弾の数
+const int MAX_BULLETS = 10;  // 最大弾数
 // 最大ビーム数
 const int MAX_ALLRANGE_BEAMS = 30;
 const int MAX_boll = 30; // 発射する弾の数
@@ -117,6 +119,9 @@ struct Boss_ {
 	int warpAttak = false;
 
 	int image = Novice::LoadTexture("./Resources/images/boss_01.png");
+	bool hasMovedToCenter = false;    // ボスが上中央に移動したか
+	bool isReturning = false;         // ボスが降りている状態か
+	float moveSpeed = 5.0f;           // 上下移動の速度
 
 	Whole bullets[MAX_boll];
 

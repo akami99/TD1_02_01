@@ -6,6 +6,7 @@
 #include <algorithm>
 
 
+Whole bullets[MAX_boll];
 // ボスのイージング移動処理
 void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easingSpeed) {
 	boss.pos.x += (targetPos.x - boss.pos.x) * easingSpeed;
