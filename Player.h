@@ -18,7 +18,7 @@ public:
 	/// <param name="player">Player's values</param>
 	/// <param name="flash">Flash's values</param>
 	/// <param name="keys">Key input values</param>
-	void Attack(Player_& player, Flash_& flash, const char* keys, const char* preKeys);
+	void Attack(Player_& player, Boss_& boss, Flash_& flash, const char* keys, const char* preKeys);
 
 	/// <summary>
 	/// Function for drawing the player
@@ -32,6 +32,14 @@ public:
 	/// <param name="isFlash">isFlash flag</param>
 	/// <param name="flash">Flash's values</param>
 	void DrawFlash(Player_& player, Flash_& flash);
+
+	/// <summary>
+	/// ライトの当たり判定の関数
+	/// </summary>
+	/// <param name="player">プレイヤーの値</param>
+	/// <param name="boss">ボスの値</param>
+	/// <param name="flash">ライトの値</param>
+	void FlashHitBox(Player_& player, Boss_& boss, Flash_& flash);
 
 	void DrawBackGround(Line& backGround, Shake shake);
 };

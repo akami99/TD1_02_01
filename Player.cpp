@@ -1,6 +1,7 @@
 ﻿#include <Novice.h>
 #include "Data.h"
 #include "Player.h"
+#include "Tool.h"
 
 const float leftWall = 0.0f;
 const float rightWall = 1280.0f;
@@ -35,12 +36,12 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 		}
 	}
 
-	if (player.pos.x <leftWall) {
+	if (player.pos.x < leftWall) {
 		player.pos.x = leftWall;
 	}
 
 	if (player.pos.x > rightWall - player.radius * 2) {
-		player.pos.x = rightWall-player.radius * 2;
+		player.pos.x = rightWall - player.radius * 2;
 	}
 
 	//jump
@@ -56,7 +57,7 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 		}
 	}
 
-	if (!keys[DIK_SPACE] && !preKeys[DIK_SPACE] ) {
+	if (!keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
 		player.isJanp = false;
 	}
 
@@ -83,7 +84,7 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 
 }
 
-void Player::Attack(Player_& player, Flash_& flash, const char* keys, const char* preKeys) {
+void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* keys, const char* preKeys) {
 	// 通常ライト
 	if (keys[DIK_J] && !preKeys[DIK_J]) {
 		if (!player.isFlash) {
@@ -128,7 +129,8 @@ void Player::Attack(Player_& player, Flash_& flash, const char* keys, const char
 		}
 	}
 	//フラッシュライトの位置を現在のプレイヤーのライトの位置にする
-	flash.pos = { player.pos.x + player.radius + player.radius / 2 * flash.direction.x, player.pos.y + player.radius + player.radius / 2 * flash.direction.y };
+	flash.pos = { player.pos.x + player.radius / 2 + player.radius / 3 * flash.direction.x, player.pos.y + player.radius / 2 + player.radius / 2 * flash.direction.y };
+	FlashHitBox(player, boss, flash);
 }
 
 void Player::Draw(Player_& player) {
@@ -142,12 +144,12 @@ void Player::Draw(Player_& player) {
 void Player::DrawFlash(Player_& player, Flash_& flash) {
 	// 通常ライト
 	if (player.isFlash) {
-		if (flash.direction.y > 0) {                                   //上
+		if (flash.direction.y > 0) {                                   //下
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x + flash.width), static_cast<int>(flash.pos.y + flash.range),
 				static_cast<int>(flash.pos.x - flash.width), static_cast<int>(flash.pos.y + flash.range),
 				0xe0dd8780, kFillModeSolid);
-		} else if (flash.direction.y < 0) {                            //下
+		} else if (flash.direction.y < 0) {                            //上
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x + flash.width), static_cast<int>(flash.pos.y - flash.range),
 				static_cast<int>(flash.pos.x - flash.width), static_cast<int>(flash.pos.y - flash.range),
@@ -166,12 +168,12 @@ void Player::DrawFlash(Player_& player, Flash_& flash) {
 	}
 	// 強化ライト
 	if (player.isHighFlash) {
-		if (flash.direction.y > 0) {                                   //上
+		if (flash.direction.y > 0) {                                   //下
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x + flash.highWidth), static_cast<int>(flash.pos.y + flash.highRange),
 				static_cast<int>(flash.pos.x - flash.highWidth), static_cast<int>(flash.pos.y + flash.highRange),
 				0xe0dd87d0, kFillModeSolid);
-		} else if (flash.direction.y < 0) {                            //下
+		} else if (flash.direction.y < 0) {                            //上
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x + flash.highWidth), static_cast<int>(flash.pos.y - flash.highRange),
 				static_cast<int>(flash.pos.x - flash.highWidth), static_cast<int>(flash.pos.y - flash.highRange),
@@ -190,7 +192,314 @@ void Player::DrawFlash(Player_& player, Flash_& flash) {
 	}
 }
 
+//=========================
+//当たり判定の作成 　　　　　　　　　　　 方向が指定できていない！！！！！＜－方向が保存されてない？
+//=========================
+//---------------------------------------------------------------------------------------------
+
+//通常ライト
+void Player::FlashHitBox(Player_& player, Boss_& boss, Flash_& flash) {
+	boss.top = { boss.pos.x + boss.size.x / 2, boss.pos.y + boss.size.y / 2 };
+	boss.bottom = { boss.pos.x + boss.size.x / 2, boss.pos.y + boss.size.y * 3 / 4 };
+
+	// ライトと敵が重なっているかチェック
+	// 通常ライト
+	if (player.isFlash) {
+		// ライトの上下の当たり判定
+		if (boss.size.x / 2.0f + flash.range >=
+			Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y))) {
+			boss.isHitTop = true;
+		} else {
+			boss.isHitTop = false;
+		}
+
+		if (flash.direction.y > 0) {                                   //下
+			// 外積を使ったライトの衝突判定
+			if (0 < CrossProduct(     // + で範囲の中
+				Measurement(flash.pos.x + flash.width, flash.pos.x) / flash.range,
+				Measurement(flash.pos.y + flash.range, flash.pos.y) / flash.range,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 < CrossProduct(     // + で範囲の中
+					Measurement(flash.pos.x + flash.width, flash.pos.x) / flash.range,
+					Measurement(flash.pos.y + flash.range, flash.pos.y) / flash.range,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitRight = true;
+			} else {
+				boss.isHitRight = false;
+			}
+			if (0 > CrossProduct(     // - で範囲の中
+				Measurement(flash.pos.x - flash.width, flash.pos.x) / flash.range,
+				Measurement(flash.pos.y + flash.range, flash.pos.y) / flash.range,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 > CrossProduct(     // - で範囲の中
+					Measurement(flash.pos.x - flash.width, flash.pos.x) / flash.range,
+					Measurement(flash.pos.y + flash.range, flash.pos.y) / flash.range,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitLeft = true;
+			} else {
+				boss.isHitLeft = false;
+			}
+		} else if (flash.direction.y < 0) {                            //上
+			// 外積を使ったライトの衝突判定 
+			if (0 > CrossProduct(     // - で範囲の中
+				Measurement(flash.pos.x + flash.width, flash.pos.x) / flash.range,
+				Measurement(flash.pos.y - flash.range, flash.pos.y) / flash.range,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 > CrossProduct(     // - で範囲の中
+					Measurement(flash.pos.x + flash.width, flash.pos.x) / flash.range,
+					Measurement(flash.pos.y - flash.range, flash.pos.y) / flash.range,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitRight = true;
+			} else {
+				boss.isHitRight = false;
+			}
+			if (0 < CrossProduct(     // + で範囲の中
+				Measurement(flash.pos.x - flash.width, flash.pos.x) / flash.range,
+				Measurement(flash.pos.y - flash.range, flash.pos.y) / flash.range,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 < CrossProduct(     // + で範囲の中
+					Measurement(flash.pos.x - flash.width, flash.pos.x) / flash.range,
+					Measurement(flash.pos.y - flash.range, flash.pos.y) / flash.range,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitLeft = true;
+			} else {
+				boss.isHitLeft = false;
+			}
+		} else if (flash.direction.x > 0) {                            //右
+			// 外積を使ったライトの衝突判定
+			if (0 > CrossProduct(     // - で範囲の中
+				Measurement(flash.pos.x + flash.range, flash.pos.x) / flash.range,
+				Measurement(flash.pos.y + flash.width, flash.pos.y) / flash.range,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 > CrossProduct(     // - で範囲の中
+					Measurement(flash.pos.x + flash.range, flash.pos.x) / flash.range,
+					Measurement(flash.pos.y + flash.width, flash.pos.y) / flash.range,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitRight = true;
+			} else {
+				boss.isHitRight = false;
+			}
+			if (0 < CrossProduct(     // + で範囲の中
+				Measurement(flash.pos.x + flash.range, flash.pos.x) / flash.range,
+				Measurement(flash.pos.y - flash.width, flash.pos.y) / flash.range,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 < CrossProduct(     // + で範囲の中
+					Measurement(flash.pos.x + flash.range, flash.pos.x) / flash.range,
+					Measurement(flash.pos.y - flash.width, flash.pos.y) / flash.range,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitLeft = true;
+			} else {
+				boss.isHitLeft = false;
+			}
+		} else if (flash.direction.x < 0) {                            //左
+			// 外積を使ったライトの衝突判定
+			if (0 < CrossProduct(     // + で範囲の中
+				Measurement(flash.pos.x - flash.range, flash.pos.x) / flash.range,
+				Measurement(flash.pos.y + flash.width, flash.pos.y) / flash.range,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 < CrossProduct(     // + で範囲の中
+					Measurement(flash.pos.x - flash.range, flash.pos.x) / flash.range,
+					Measurement(flash.pos.y + flash.width, flash.pos.y) / flash.range,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitRight = true;
+			} else {
+				boss.isHitRight = false;
+			}
+			if (0 > CrossProduct(     // - で範囲の中
+				Measurement(flash.pos.x - flash.range, flash.pos.x) / flash.range,
+				Measurement(flash.pos.y - flash.width, flash.pos.y) / flash.range,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 > CrossProduct(     // - で範囲の中
+					Measurement(flash.pos.x - flash.range, flash.pos.x) / flash.range,
+					Measurement(flash.pos.y - flash.width, flash.pos.y) / flash.range,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitLeft = true;
+			} else {
+				boss.isHitLeft = false;
+			}
+		}
+	}
+	// 強化ライト
+	if (player.isHighFlash) {
+		// ライトの上下の当たり判定
+		if (boss.size.x / 2.0f + flash.highRange >=
+			Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y))) {
+			boss.isHitTop = true;
+		} else {
+			boss.isHitTop = false;
+		}
+
+		if (flash.direction.y > 0) {                                   //下
+			// 外積を使ったライトの衝突判定
+			if (0 < CrossProduct(     // + で範囲の中
+				Measurement(flash.pos.x + flash.highWidth, flash.pos.x) / flash.highRange,
+				Measurement(flash.pos.y + flash.highRange, flash.pos.y) / flash.highRange,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 < CrossProduct(     // + で範囲の中
+					Measurement(flash.pos.x + flash.highWidth, flash.pos.x) / flash.highRange,
+					Measurement(flash.pos.y + flash.highRange, flash.pos.y) / flash.highRange,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitRight = true;
+			} else {
+				boss.isHitRight = false;
+			}
+			if (0 > CrossProduct(     // - で範囲の中
+				Measurement(flash.pos.x - flash.highWidth, flash.pos.x) / flash.highRange,
+				Measurement(flash.pos.y + flash.highRange, flash.pos.y) / flash.highRange,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 > CrossProduct(     // - で範囲の中
+					Measurement(flash.pos.x - flash.highWidth, flash.pos.x) / flash.highRange,
+					Measurement(flash.pos.y + flash.highRange, flash.pos.y) / flash.highRange,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitLeft = true;
+			} else {
+				boss.isHitLeft = false;
+			}
+		} else if (flash.direction.y < 0) {                            //上
+			// 外積を使ったライトの衝突判定                 
+			if (0 > CrossProduct(     // - で範囲の中
+				Measurement(flash.pos.x + flash.highWidth, flash.pos.x) / flash.highRange,
+				Measurement(flash.pos.y - flash.highRange, flash.pos.y) / flash.highRange,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 > CrossProduct(     // - で範囲の中
+					Measurement(flash.pos.x + flash.highWidth, flash.pos.x) / flash.highRange,
+					Measurement(flash.pos.y - flash.highRange, flash.pos.y) / flash.highRange,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitRight = true;
+			} else {
+				boss.isHitRight = false;
+			}
+			if (0 < CrossProduct(     // + で範囲の中
+				Measurement(flash.pos.x - flash.highWidth, flash.pos.x) / flash.highRange,
+				Measurement(flash.pos.y - flash.highRange, flash.pos.y) / flash.highRange,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 < CrossProduct(     // + で範囲の中
+					Measurement(flash.pos.x - flash.highWidth, flash.pos.x) / flash.highRange,
+					Measurement(flash.pos.y - flash.highRange, flash.pos.y) / flash.highRange,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitLeft = true;
+			} else {
+				boss.isHitLeft = false;
+			}
+		} else if (flash.direction.x > 0) {                            //右
+			// 外積を使ったライトの衝突判定
+			if (0 > CrossProduct(     // - で範囲の中
+				Measurement(flash.pos.x + flash.highRange, flash.pos.x) / flash.highRange,
+				Measurement(flash.pos.y + flash.highWidth, flash.pos.y) / flash.highRange,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 > CrossProduct(     // - で範囲の中
+					Measurement(flash.pos.x + flash.highRange, flash.pos.x) / flash.highRange,
+					Measurement(flash.pos.y + flash.highWidth, flash.pos.y) / flash.highRange,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitRight = true;
+			} else {
+				boss.isHitRight = false;
+			}
+			if (0 < CrossProduct(     // + で範囲の中
+				Measurement(flash.pos.x + flash.highRange, flash.pos.x) / flash.highRange,
+				Measurement(flash.pos.y - flash.highWidth, flash.pos.y) / flash.highRange,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 < CrossProduct(     // + で範囲の中
+					Measurement(flash.pos.x + flash.highRange, flash.pos.x) / flash.highRange,
+					Measurement(flash.pos.y - flash.highWidth, flash.pos.y) / flash.highRange,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitLeft = true;
+			} else {
+				boss.isHitLeft = false;
+			}
+		} else if (flash.direction.x < 0) {                            //左
+			// 外積を使ったライトの衝突判定
+			if (0 < CrossProduct(     // + で範囲の中
+				Measurement(flash.pos.x - flash.highRange, flash.pos.x) / flash.highRange,
+				Measurement(flash.pos.y + flash.highWidth, flash.pos.y) / flash.highRange,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 < CrossProduct(     // + で範囲の中
+					Measurement(flash.pos.x - flash.highRange, flash.pos.x) / flash.highRange,
+					Measurement(flash.pos.y + flash.highWidth, flash.pos.y) / flash.highRange,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitRight = true;
+			} else {
+				boss.isHitRight = false;
+			}
+			if (0 > CrossProduct(     // - で範囲の中
+				Measurement(flash.pos.x - flash.highRange, flash.pos.x) / flash.highRange,
+				Measurement(flash.pos.y - flash.highWidth, flash.pos.y) / flash.highRange,
+				Measurement(boss.top.x, flash.pos.x) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)),
+				Measurement(boss.top.y, flash.pos.y) / Length(Measurement(boss.top.x, flash.pos.x), Measurement(boss.top.y, flash.pos.y)))
+				|| 0 > CrossProduct(     // - で範囲の中
+					Measurement(flash.pos.x - flash.highRange, flash.pos.x) / flash.highRange,
+					Measurement(flash.pos.y - flash.highWidth, flash.pos.y) / flash.highRange,
+					Measurement(boss.bottom.x, flash.pos.x) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)),
+					Measurement(boss.bottom.y, flash.pos.y) / Length(Measurement(boss.bottom.x, flash.pos.x), Measurement(boss.bottom.y, flash.pos.y)))
+				) {
+				boss.isHitLeft = true;
+			} else {
+				boss.isHitLeft = false;
+			}
+		}
+	}
+
+	// 最終的な判定
+	if (boss.isHitTop && boss.isHitRight && boss.isHitLeft) {
+		if (player.isFlash) {
+			if (boss.hp > 0) { // 敵へダメージ
+				boss.hp--;
+			}
+		} else if (player.isHighFlash) {
+			if (boss.hp > 0) { // 敵へダメージ
+				boss.hp -= 2;
+			}
+		}
+	}
+}
+//---------------------------------------------------------------------------------------------
+
 //背景の描画
 void Player::DrawBackGround(Line& backGround, Shake shake) {
-	Novice::DrawSprite(static_cast<int>(0 + shake.pos.x), static_cast<int>(0 + shake.pos.y),backGround.backGround ,1, 1, 0.0f, WHITE);
+	Novice::DrawSprite(static_cast<int>(0 + shake.pos.x), static_cast<int>(0 + shake.pos.y), backGround.backGround, 1, 1, 0.0f, WHITE);
 }
