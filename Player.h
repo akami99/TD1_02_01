@@ -41,6 +41,17 @@ public:
 	/// <param name="flash">ライトの値</param>
 	void FlashHitBox(Player_& player, Boss_& boss, Flash_& flash);
 
+	/// <summary>
+	/// 動かさない背景の描画
+	/// </summary>
+	/// <param name="backGround">動かさない背景</param>
+	void DrawBackGround(int backGround);
+
+	/// <summary>
+	/// 動かす背景の描画
+	/// </summary>
+	/// <param name="backGround">動かす背景</param>
+	/// <param name="shake">シェイク</param>
 	void DrawBackGround(Line& backGround, Shake shake);
 };
 

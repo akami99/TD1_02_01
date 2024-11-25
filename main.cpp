@@ -66,6 +66,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
 				scene = FASTBOSS;
 			}
+
+			player.DrawBackGround(line.title);
 			break;
 
 		case FASTBOSS:
@@ -145,10 +147,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case SECONDBOSS:
 
+			//デバッグ用---
+			boss_.secondHp = 0;
+			//-----------
+
 			if (boss_.secondHp <= 0) {
 				scene = CLEAR;
 			}
 
+			break;
+		case CLEAR:
+
+			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				scene = TITLE;
+			}
+
+			player.DrawBackGround(line.clear);
 			break;
 		}
 
