@@ -1,4 +1,3 @@
-
 #include <Novice.h>
 #include <math.h>
 #include "Data.h"
@@ -48,6 +47,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Beam2 beam2;
 	Projectile projectiles[10];
 	Boss::UpdateProjectiles(projectiles);
+	Whole whole;
 
 	WarpAttak warp;
 
@@ -148,7 +148,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			boss.UpdateProjectiles(projectiles);
 
-			//Novice::ScreenPrintf(0, 0, "%d",boss.time);
+			boss.DrawWhole();
+
+			
 			///
 			/// ↑描画処理ここまで
 			///

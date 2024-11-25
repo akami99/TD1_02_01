@@ -230,6 +230,31 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 	//エリア全体
 	if (boss.attakNo == 12) {
+		// ボスの移動処理（上中央に移動）
+		if (!boss.hasMovedToCenter) {
+			if (boss.pos.y > 240.0f) {
+				boss.pos.y -= boss.speed;
+			} else {
+				boss.hasMovedToCenter = true;
+				boss.isFloating = true;
+			}
+		}
+
+		// ボスの攻撃処理
+		if (boss.hasMovedToCenter && boss.attackCount == 0) {
+			for (int i = 0; i < MAX_boll; i++) {
+				bullets[i].isAttak = true;
+				bullets[i].bounceCount = 0;
+				float angle = (rand() % 360) * (3.14159f / 180.0f);
+				bullets[i].velocity.x = cos(angle) * 5.0f;
+				bullets[i].velocity.y = sin(angle) * 5.0f;
+				bullets[i].pos = boss.pos;
+			}
+			boss.attackCount = 1;
+		}
+
+	//エリア全体
+	if (boss.attakNo == 12) {
 
 		// ボスの移動処理（上中央に移動）
 		if (!boss.hasMovedToCenter) {
@@ -280,6 +305,35 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 		// ボスが降りる条件
 		if (boss.isFloating && boss.attackCount > 0 && boss.AreAllBulletsInactive()) {
+			boss.isReturning = true;
+			boss.isFloating = false;
+		}
+		if (boss.isReturning) {
+			if (boss.pos.y < 600.0f) {
+				boss.pos.y += boss.speed;
+			} else {
+				boss.isReturning = false;
+				boss.hasMovedToCenter = false;
+				boss.attackCount = 0;
+			}
+		}
+	}
+
+				if (bullets[i].pos.y < 0 || bullets[i].pos.y > 720) {
+					bullets[i].velocity.y = -bullets[i].velocity.y;
+					bullets[i].bounceCount++;
+				}
+
+				if (bullets[i].bounceCount >= 2) {
+					bullets[i].isAttak = false;
+				}
+
+
+			}
+		}
+
+		// ボスが降りる条件
+		if (boss.isFloating && boss.attackCount > 0 && AreAllBulletsInactive()) {
 			boss.isReturning = true;
 			boss.isFloating = false;
 		}
@@ -753,6 +807,18 @@ void Boss::UpdateProjectiles(Projectile* projectiles) {
 }
 
 
+
+void Boss::DrawWhole() {
+	// 弾の描画
+	for (int i = 0; i < MAX_boll; i++) {
+		if (bullets[i].isAttak) {
+			Novice::DrawBox(
+				static_cast<int>(bullets[i].pos.x) - 5,
+				static_cast<int>(bullets[i].pos.y) - 5,
+				10, 10, 0.0f, RED, kFillModeSolid);
+		}
+	}
+}
 
 
 //=========================
@@ -1284,3 +1350,6 @@ void Boss::DrawWarpAttak(WarpAttak& warp) {
 //		}
 //	}
 //}
+
+
+

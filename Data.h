@@ -1,6 +1,10 @@
 ﻿
 #pragma once
 #include <Vector2.h>
+#include <cmath>
+#include <cstdlib> // rand()のため
+// 宣言のみ
+extern int globalVariable;
 
 const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
 const int MAX_PROJECTILES = 3;
@@ -72,16 +76,16 @@ struct Beam2 {
 	int isEase = false;
 };
 
-// 全方位攻撃用ビーム構造体
 struct AllRange {
-	Vector2 startPos;   // ビームの開始位置
-	Vector2 endPos;     // ビームの終了位置
-	Vector2 currentPos; // ビームの現在位置
-	Vector2 direction;  // ビームの進行方向
-	float speed;        // ビームの移動速度
-	int isActive;       // ビームがアクティブかどうか（1: 有効、0: 無効）
-	int lifeTime;       // ビームの寿命（フレーム単位で管理）
+	Vector2 startPos = { 0.0f, 0.0f };   // デフォルト値
+	Vector2 endPos = { 0.0f, 0.0f };     // デフォルト値
+	Vector2 currentPos = { 0.0f, 0.0f }; // デフォルト値
+	Vector2 direction = { 0.0f, 0.0f };  // デフォルト値
+	float speed = 0.0f;                  // 初期化
+	int isActive = 0;                    // 初期化 (0: 無効)
+	int lifeTime = 0;                    // 初期化
 };
+
 
 // ボス
 struct Boss_ {
@@ -207,7 +211,7 @@ struct Object {
 	int timer = 0;
 };
 
-
+//飛び道具
 struct Projectile {
 	Vector2 pos = { 0.0f,0.0f };
 	Vector2 velocity = { 0.0f,0.0f };
