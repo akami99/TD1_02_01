@@ -30,7 +30,8 @@ public:
 	/// Function for drawing the player
 	/// </summary>
 	/// <param name="player">Player's values</param>
-	void Draw(Player_& player);
+	/// <param name="player">flash's values</param>
+	void Draw(Player_& player, Flash_& flash);
 
 	/// <summary>
 	/// Function for drawing the flash

@@ -142,7 +142,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.DrawFlash(player_, flash_);
 
 			// プレイヤーの描画
-			player.Draw(player_);
+			player.Draw(player_, flash_);
 
 			//ボスのビーム攻撃
 			boss.DrawBeams(boss_);
