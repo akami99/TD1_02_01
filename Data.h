@@ -59,7 +59,7 @@ struct Flash_ {
 struct Beam_ {
 	Vector2 pos = { -1000.0f, -1000.0f };         // ビームの位置
 	Vector2 direction = { 0.0f, 1.0f };   // ビームの進行方向
-	Vector2 size = { 100.0f, 800.0f };    // ビームのサイズ
+	Vector2 size = { 60.0f, 800.0f };    // ビームのサイズ
 	float speed = 5.0f;                   // ビームのスピード
 	int attakTime = 60;                  // ビームの持続時間
 	int attakStandTime = 120;
@@ -124,6 +124,8 @@ struct Boss_ {
 	int imageLeft = Novice::LoadTexture("./Resources/images/boss_01.png");
 	int imageRight = Novice::LoadTexture("./Resources/images/boss_02.png");
 	int imageDown = Novice::LoadTexture("./Resources/images/boss_03.png");
+
+	int imageBeam = Novice::LoadTexture("./Resources/images/beam.png");
 
 	Whole bullets[MAX_boll];
 
