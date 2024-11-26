@@ -63,3 +63,7 @@ void Ui::DrawGauge(const int& posX, const int& posY, const int& point, const int
 void Ui::DrawFont(int posX, int posY, int font) {
 	Novice::DrawSprite(posX, posY, font, 1, 1, 0.0f, WHITE);
 }
+
+void Ui::DrawLightFont(int posX, int posY, int font) {
+	Novice::DrawSprite(posX, posY, font, 1, 1, 0.0f, 0xffffff80);
+}

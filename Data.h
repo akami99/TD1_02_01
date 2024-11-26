@@ -240,6 +240,8 @@ struct Line {
 	int backGround = Novice::LoadTexture("./Resources/images/backGround.png");
 	int clear = Novice::LoadTexture("./Resources/images/clear.png");
 	int pressToSpace = Novice::LoadTexture("./Resources/images/pressToSpace.png");
+	int start = Novice::LoadTexture("./Resources/images/start.png");
+	int exit = Novice::LoadTexture("./Resources/images/exit.png");
 };
 
 

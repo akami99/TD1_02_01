@@ -106,6 +106,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			player.DrawBackGround(line.title);
 
+			if (sceneNo == 0) {
+				ui.DrawFont(555, 325, line.start);
+				ui.DrawLightFont(580, 455, line.exit);
+			} else if (sceneNo == 1) {
+				ui.DrawLightFont(555, 325, line.start);
+				ui.DrawFont(580, 455, line.exit);
+			}
+			
 			ui.DrawFont(410, 600, line.pressToSpace);
 			break;
 

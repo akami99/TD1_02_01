@@ -21,4 +21,12 @@ public:
 	/// <param name="posY">描画位置Y</param>
 	/// <param name="font">文字画像</param>
 	void DrawFont(int posX, int posY, int font);
+
+	/// <summary>
+	/// 薄い文字画像の描画
+	/// </summary>
+	/// <param name="posX">描画位置X</param>
+	/// <param name="posY">描画位置Y</param>
+	/// <param name="font">文字画像</param>
+	void DrawLightFont(int posX, int posY, int font);
 };
