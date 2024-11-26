@@ -159,10 +159,10 @@ void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* key
 }
 
 void Player::Draw(Player_& player) {
-	Novice::DrawBox(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y),
+	Novice::DrawBox(static_cast<int>(player.pos.x + 64.0f), static_cast<int>(player.pos.y + 64.0f),
 		static_cast<int>(player.radius), static_cast<int>(player.radius), 0.0f, WHITE, kFillModeSolid);
 
-	Novice::DrawSprite(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y), player.image, 1, 1, 0.0f, WHITE);
+	Novice::DrawSprite(static_cast<int>(player.pos.x+64.0f), static_cast<int>(player.pos.y + 64.0f), player.image, 1, 1, 0.0f, WHITE);
 
 }
 

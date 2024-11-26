@@ -731,6 +731,80 @@ void Boss::PlayerBeamsHitBox(Player_& player, Boss_& boss) {
 	}
 }
 
+void Boss::DoubleShortDistansAttak(Boss_& boss, ShortDubleDistansAttak_& shortDobleDist, Player_ player) {
+	shortDobleDist.isAttak = true;
+
+	if (shortDobleDist.isAttak) {
+		if (shortDobleDist.attakCount == 0) {
+			// 最初の攻撃: プレイヤーにイージングで近づく
+			float distanceX = player.pos.x - boss.pos.x;
+			float stopDistance = 100.0f; // プレイヤーからこの距離で停止
+
+			if (std::abs(distanceX) > stopDistance) {
+				// プレイヤーに近づく
+				if (shortDobleDist.isEase) {
+					boss.pos.x += distanceX * shortDobleDist.easeSpeed;
+				}
+				shortDobleDist.attakTime = 10; // 攻撃判定をリセット
+				shortDobleDist.isShortAttak = false;
+			} else {
+				// 一定距離まで近づいたら攻撃
+				if (shortDobleDist.attakTime == 10) {
+					if (player.pos.x < boss.pos.x) {
+						shortDobleDist.pos.x = boss.pos.x - shortDobleDist.size.x;
+						shortDobleDist.expandDirection = -1; // 左方向
+					} else {
+						shortDobleDist.pos.x = boss.pos.x + boss.size.x;
+						shortDobleDist.expandDirection = 1;  // 右方向
+					}
+					shortDobleDist.pos.y = boss.pos.y + boss.size.y / 2 - shortDobleDist.size.y / 2;
+				}
+
+				if (shortDobleDist.attakTime > 0) {
+					shortDobleDist.isShortAttak = true;
+					shortDobleDist.attakTime--;
+				} else {
+					shortDobleDist.attakCount++;
+					shortDobleDist.isHit = false;
+					shortDobleDist.attakTime = 10; // 次回攻撃の準備
+				}
+			}
+
+		} else if (shortDobleDist.attakCount == 1) {
+			// 2回目の攻撃: 横方向に攻撃範囲を拡大
+			if (shortDobleDist.attakTime == 10) {
+				shortDobleDist.size.x = shortDobleDist.baseSizeX; // サイズをリセットして拡大開始
+			}
+
+			if (shortDobleDist.size.x < shortDobleDist.maxExpandSize) {
+				shortDobleDist.size.x += 20.0f; // 攻撃範囲を拡大
+				if (shortDobleDist.expandDirection == -1) {
+					// 左方向に拡大
+					shortDobleDist.pos.x = boss.pos.x - shortDobleDist.size.x;
+				} else {
+					// 右方向に拡大
+					shortDobleDist.pos.x = boss.pos.x + boss.size.x;
+				}
+			}
+
+			if (shortDobleDist.attakTime > 0) {
+				shortDobleDist.isShortAttak = true;
+				shortDobleDist.attakTime--;
+			} else {
+				// 攻撃終了
+				shortDobleDist.isHit = false;
+				shortDobleDist.isShortAttak = false;
+				shortDobleDist.isAttak = false;
+				shortDobleDist.attakCount = 0;
+				shortDobleDist.size.x = shortDobleDist.baseSizeX; // サイズをリセット
+				boss.isAttak = false;
+				boss.attakNo = 0;
+				boss.attakStandTime = 120; // クールダウン
+			}
+		}
+	}
+}
+
 //連続攻撃
 void Boss::PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_& doubleAttak) {
 	player.isHit = false;
@@ -1093,9 +1167,9 @@ void Boss::BossWarpAttak(Boss_& boss, Player_& player, WarpAttak& warp, ShortDis
 	if (!warp.isAttak) {
 		// プレイヤーの向きに応じてワープ位置を変更
 		if (player.isRight) { // プレイヤーが右を向いている場合
-			warp.pos.x = player.pos.x - 100.0f; // プレイヤーの左後ろにワープ
+			warp.pos.x = player.pos.x - 50.0f; // プレイヤーの左後ろにワープ
 		} else if (player.isLeft) { // プレイヤーが左を向いている場合
-			warp.pos.x = player.pos.x + 100.0f; // プレイヤーの右後ろにワープ
+			warp.pos.x = player.pos.x + 150.0f; // プレイヤーの右後ろにワープ
 		}
 		warp.pos.y = player.pos.y;
 
@@ -1104,7 +1178,7 @@ void Boss::BossWarpAttak(Boss_& boss, Player_& player, WarpAttak& warp, ShortDis
 		warp.isAttak = true; // ワープ攻撃を開始
 
 		if (player.isRight) { // プレイヤーが右向き
-			shortDist.pos = { boss.pos.x+50.0f , boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
+			shortDist.pos = { boss.pos.x+75.0f , boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
 		} else if (player.isLeft) { // プレイヤーが左向き
 			shortDist.pos = { boss.pos.x - boss.size.x-50.0f, boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
 		} 
