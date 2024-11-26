@@ -1,6 +1,6 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <Vector2.h>
+#include "Novice.h"
 
 const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
 const int MAX_PROJECTILES = 3;
@@ -39,6 +39,9 @@ struct Player_ {
 	int imageUp = Novice::LoadTexture("./Resources/images/player_02.png");
 	int imageLeft = Novice::LoadTexture("./Resources/images/player_03.png");
 	int imageDown = Novice::LoadTexture("./Resources/images/player_04.png");
+	int isRight = true;
+	int isLeft = false;
+
 };
 
 //フラッシュライト
