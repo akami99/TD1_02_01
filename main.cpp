@@ -128,11 +128,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, boss_, flash_, keys, preKeys);
 
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2, projectiles, shockwaves, warp);
-
-			if (boss_.hp <= 0) {
-				scene = SECONDBOSS;
-			}
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2);
 
 			///
 			/// ↑更新処理ここまで
@@ -163,12 +159,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// ボスの描画
 			boss.BossDraw(boss_, shake);
-
-			//オールレンジアタック
-			boss.DrawAllRangeAttack(boss_);
-
-			//衝撃波の描画
-			boss.DrawShockwaves(shockwaves, 10);
 
 			//近距離攻撃の描画
 			boss.DrawShortDistansAttak(shortDistAttak_);
