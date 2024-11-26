@@ -35,8 +35,10 @@ struct Player_ {
 	float speed = 2.0f;
 	int isJanpSpeed = false;
 	int isHit = false;
-	int image = Novice::LoadTexture("./Resources/images/player_01.png");
-
+	int imageRight = Novice::LoadTexture("./Resources/images/player_01.png");
+	int imageUp = Novice::LoadTexture("./Resources/images/player_02.png");
+	int imageLeft = Novice::LoadTexture("./Resources/images/player_03.png");
+	int imageDown = Novice::LoadTexture("./Resources/images/player_04.png");
 };
 
 //フラッシュライト

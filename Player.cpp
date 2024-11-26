@@ -151,12 +151,21 @@ void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* key
 	FlashHitBox(player, boss, flash);
 }
 
-void Player::Draw(Player_& player) {
+void Player::Draw(Player_& player, Flash_& flash) {
 	//Novice::DrawBox(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y),
 	//	static_cast<int>(player.radius), static_cast<int>(player.radius), 0.0f, WHITE, kFillModeSolid);
 
-	Novice::DrawSprite(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y), player.image, 1, 1, 0.0f, WHITE);
-
+	if (flash.direction.x > 0) {         //右
+		Novice::DrawSprite(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y), player.imageRight, 1, 1, 0.0f, WHITE);
+	} else if (flash.direction.x < 0) {  //左
+		Novice::DrawSprite(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y), player.imageLeft, 1, 1, 0.0f, WHITE);
+	} else if (flash.direction.y > 0) {  //下
+		Novice::DrawSprite(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y), player.imageDown, 1, 1, 0.0f, WHITE);
+	} else if (flash.direction.y < 0) {  //上
+		Novice::DrawSprite(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y), player.imageUp, 1, 1, 0.0f, WHITE);
+	} else {                             //最初
+		Novice::DrawSprite(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y), player.imageRight, 1, 1, 0.0f, WHITE);
+	}
 }
 
 void Player::DrawFlash(Player_& player, Flash_& flash) {
