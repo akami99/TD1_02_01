@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include <Vector2.h>
+#include "Novice.h"
 
 const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
 const int MAX_PROJECTILES = 3;
