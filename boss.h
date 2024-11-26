@@ -1,5 +1,4 @@
-﻿
-#pragma once
+﻿#pragma once
 #include <Novice.h>
 #include "Data.h"
 
@@ -54,6 +53,13 @@ public:
 
 	void DrawBeam2(Beam2& beam2);
 
+
+	//==========================
+	//エリア全体
+	//==========================
+	Boss_ bossData; // Boss_ 型のメンバを追加
+
+	// ボスの弾描画
 	void DrawWhole();
 
 
@@ -122,4 +128,7 @@ public:
 private:
 
 };
+
+
+
 

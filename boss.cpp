@@ -230,6 +230,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 	//エリア全体
 	if (boss.attakNo == 12) {
+		
 		// ボスの移動処理（上中央に移動）
 		if (!boss.hasMovedToCenter) {
 			if (boss.pos.y > 240.0f) {
@@ -243,12 +244,12 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		// ボスの攻撃処理
 		if (boss.hasMovedToCenter && boss.attackCount == 0) {
 			for (int i = 0; i < MAX_boll; i++) {
-				bullets[i].isAttak = true;
-				bullets[i].bounceCount = 0;
+				boss.bullets[i].isAttak = true;
+				boss.bullets[i].bounceCount = 0;
 				float angle = (rand() % 360) * (3.14159f / 180.0f);
-				bullets[i].velocity.x = cos(angle) * 5.0f;
-				bullets[i].velocity.y = sin(angle) * 5.0f;
-				bullets[i].pos = boss.pos;
+				boss.bullets[i].velocity.x = cos(angle) * 5.0f;
+				boss.bullets[i].velocity.y = sin(angle) * 5.0f;
+				boss.bullets[i].pos = boss.pos;
 			}
 			boss.attackCount = 1;
 		}
@@ -319,23 +320,28 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		}
 	}
 
-				if (bullets[i].pos.y < 0 || bullets[i].pos.y > 720) {
-					bullets[i].velocity.y = -bullets[i].velocity.y;
-					bullets[i].bounceCount++;
+				if (boss.bullets[i].pos.y < 0 || boss.bullets[i].pos.y > 720) {
+					boss.bullets[i].velocity.y = -boss.bullets[i].velocity.y;
+					boss.bullets[i].bounceCount++;
 				}
 
-				if (bullets[i].bounceCount >= 2) {
-					bullets[i].isAttak = false;
+				if (boss.bullets[i].bounceCount >= 2) {
+					boss.bullets[i].isAttak = false;
 				}
 
 
 			}
 		}
 
+
 		// ボスが降りる条件
-		if (boss.isFloating && boss.attackCount > 0 && AreAllBulletsInactive()) {
+		if (boss.isFloating && boss.attackCount > 0 && boss.AreAllBulletsInactive()) {
 			boss.isReturning = true;
 			boss.isFloating = false;
+			for (int i = 0; i < MAX_boll; i++) {
+				boss.bullets[i].isAttak = true;
+				boss.bullets[i].pos = { 640.0f, 360.0f };
+			}
 		}
 		if (boss.isReturning) {
 			if (boss.pos.y < 600.0f) {
@@ -532,6 +538,80 @@ void Boss::DrawShortDistansAttak(ShortDistansAttak_ shortDist) {
 		if (shortDist.attakTime > 0) {
 			Novice::DrawBox(static_cast<int>(shortDist.pos.x), static_cast<int>(shortDist.pos.y),
 				static_cast<int>(shortDist.size.x), static_cast<int>(shortDist.size.y), 0.0f, BLUE, kFillModeSolid);
+		}
+	}
+}
+
+void Boss::DoubleShortDistansAttak(Boss_& boss, ShortDubleDistansAttak_& shortDobleDist, Player_ player) {
+	shortDobleDist.isAttak = true;
+
+	if (shortDobleDist.isAttak) {
+		if (shortDobleDist.attakCount == 0) {
+			// 最初の攻撃: プレイヤーにイージングで近づく
+			float distanceX = player.pos.x - boss.pos.x;
+			float stopDistance = 100.0f; // プレイヤーからこの距離で停止
+
+			if (std::abs(distanceX) > stopDistance) {
+				// プレイヤーに近づく
+				if (shortDobleDist.isEase) {
+					boss.pos.x += distanceX * shortDobleDist.easeSpeed;
+				}
+				shortDobleDist.attakTime = 10; // 攻撃判定をリセット
+				shortDobleDist.isShortAttak = false;
+			} else {
+				// 一定距離まで近づいたら攻撃
+				if (shortDobleDist.attakTime == 10) {
+					if (player.pos.x < boss.pos.x) {
+						shortDobleDist.pos.x = boss.pos.x - shortDobleDist.size.x;
+						shortDobleDist.expandDirection = -1; // 左方向
+					} else {
+						shortDobleDist.pos.x = boss.pos.x + boss.size.x;
+						shortDobleDist.expandDirection = 1;  // 右方向
+					}
+					shortDobleDist.pos.y = boss.pos.y + boss.size.y / 2 - shortDobleDist.size.y / 2;
+				}
+
+				if (shortDobleDist.attakTime > 0) {
+					shortDobleDist.isShortAttak = true;
+					shortDobleDist.attakTime--;
+				} else {
+					shortDobleDist.attakCount++;
+					shortDobleDist.isHit = false;
+					shortDobleDist.attakTime = 10; // 次回攻撃の準備
+				}
+			}
+
+		} else if (shortDobleDist.attakCount == 1) {
+			// 2回目の攻撃: 横方向に攻撃範囲を拡大
+			if (shortDobleDist.attakTime == 10) {
+				shortDobleDist.size.x = shortDobleDist.baseSizeX; // サイズをリセットして拡大開始
+			}
+
+			if (shortDobleDist.size.x < shortDobleDist.maxExpandSize) {
+				shortDobleDist.size.x += 20.0f; // 攻撃範囲を拡大
+				if (shortDobleDist.expandDirection == -1) {
+					// 左方向に拡大
+					shortDobleDist.pos.x = boss.pos.x - shortDobleDist.size.x;
+				} else {
+					// 右方向に拡大
+					shortDobleDist.pos.x = boss.pos.x + boss.size.x;
+				}
+			}
+
+			if (shortDobleDist.attakTime > 0) {
+				shortDobleDist.isShortAttak = true;
+				shortDobleDist.attakTime--;
+			} else {
+				// 攻撃終了
+				shortDobleDist.isHit = false;
+				shortDobleDist.isShortAttak = false;
+				shortDobleDist.isAttak = false;
+				shortDobleDist.attakCount = 0;
+				shortDobleDist.size.x = shortDobleDist.baseSizeX; // サイズをリセット
+				boss.isAttak = false;
+				boss.attakNo = 0;
+				boss.attakStandTime = 120; // クールダウン
+			}
 		}
 	}
 }
@@ -807,14 +887,16 @@ void Boss::UpdateProjectiles(Projectile* projectiles) {
 }
 
 
-
 void Boss::DrawWhole() {
-	// 弾の描画
 	for (int i = 0; i < MAX_boll; i++) {
-		if (bullets[i].isAttak) {
+		if (bossData.bullets[i].isAttak) {
+			// デバッグ用ログ (必要なら表示を確認)
+			Novice::ScreenPrintf(0, 20 * i, "Bullet[%d]: x=%.2f, y=%.2f, active=%d",
+				i, bossData.bullets[i].pos.x, bossData.bullets[i].pos.y, bossData.bullets[i].isAttak);
+
 			Novice::DrawBox(
-				static_cast<int>(bullets[i].pos.x) - 5,
-				static_cast<int>(bullets[i].pos.y) - 5,
+				static_cast<int>(bossData.bullets[i].pos.x) - 5,
+				static_cast<int>(bossData.bullets[i].pos.y) - 5,
 				10, 10, 0.0f, RED, kFillModeSolid);
 		}
 	}
@@ -1350,6 +1432,3 @@ void Boss::DrawWarpAttak(WarpAttak& warp) {
 //		}
 //	}
 //}
-
-
-
