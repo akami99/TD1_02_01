@@ -345,17 +345,17 @@ void Boss::BossDraw(Boss_ boss, Shake& shake) {
 	/*Novice::DrawBox(static_cast<int>(boss.pos.x), static_cast<int>(boss.pos.y),
 		static_cast<int>(boss.size.x), static_cast<int>(boss.size.y), 0.0f, WHITE, kFillModeSolid);*/
 	if (boss.vanishTime == 0) {
-		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x + shake.bossPos.x), static_cast<int>(boss.pos.y + shake.pos.y + shake.bossPos.y),
-			boss.image, 1, 1, 0.0f, WHITE);
+		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
+			boss.imageLeft, 1, 1, 0.0f, WHITE);
 	} else if (boss.vanishTime < 10) {
-		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x + shake.bossPos.x), static_cast<int>(boss.pos.y + shake.pos.y + shake.bossPos.y),
-			boss.image, 1, 1, 0.0f, 0xFFFFFF50);
+		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
+			boss.imageLeft, 1, 1, 0.0f, 0xFFFFFF50);
 	} else if (20 > boss.vanishTime && boss.vanishTime > 10) {
-		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x + shake.bossPos.x), static_cast<int>(boss.pos.y + shake.pos.y + shake.bossPos.y),
-			boss.image, 1, 1, 0.0f, 0xFFFFFF40);
+		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
+			boss.imageLeft, 1, 1, 0.0f, 0xFFFFFF40);
 	} else if (30 > boss.vanishTime && boss.vanishTime > 20) {
-		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x + shake.bossPos.x), static_cast<int>(boss.pos.y + shake.pos.y + shake.bossPos.y),
-			boss.image, 1, 1, 0.0f, 0xFFFFFF30);
+		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
+			boss.imageLeft, 1, 1, 0.0f, 0xFFFFFF30);
 	}
 }
 
