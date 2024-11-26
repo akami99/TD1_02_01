@@ -38,7 +38,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 40;
+					boss.attakNo = 4;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -545,9 +545,8 @@ void Boss::DrawBeams(Boss_& boss) {
 		if (boss.beams[i].attakStandTime <= 0) {
 			if (boss.beams[i].attakTime > 0) {
 				if (boss.beams[i].attakTime % 2 == 0) {
-					Novice::DrawBox(static_cast<int>(boss.beams[i].pos.x), static_cast<int>(boss.beams[i].pos.y),
-						static_cast<int>(boss.beams[i].size.x), static_cast<int>(boss.beams[i].size.y),
-						0.0f, RED, kFillModeSolid);
+					Novice::DrawSprite(static_cast<int>(boss.beams[i].pos.x), static_cast<int>(boss.beams[i].pos.y),
+						boss.imageBeam, 1, 1, 0.0f, WHITE);
 				}
 			}
 		} else if (boss.beams[i].attakStandTime > 0) {
