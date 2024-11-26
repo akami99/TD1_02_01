@@ -13,6 +13,16 @@ public:
 	//ボスの描画
 	void BossDraw(Boss_ boss,Shake& shake);
 
+	//ボスがランダムに動く
+	void BossWalk(Boss_& boss);
+
+	void DrawAura(Boss_& boss);
+
+	void UpdateParticles(Particle particles[], int maxParticles, const Vector2& bossPos);
+
+	void DrawParticles(Particle particles[], int maxParticles);
+
+
 	//=====================
 	//範囲攻撃
 	//=====================

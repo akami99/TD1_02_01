@@ -30,6 +30,8 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		boss.vanishTime--;
 	}
 
+	UpdateParticles(boss.particles, 50, boss.pos);
+
 	if (boss.vanishTime == 0) {
 		//HPが50%以上ならattakNo1~3
 		//%50%以下なら3~6(仮)
@@ -37,14 +39,19 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		if (!boss.isAttak) {
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
-					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 200;
+					boss.attakNo = rand() % 5 + 1;
+					//boss.attakNo = ;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
 					boss.isEase = false;
 				}
 			}
+
+			BossWalk(boss);
+
+
+
 		}
 	}
 	if (boss.vanishTime > 0) {
@@ -403,18 +410,166 @@ void Boss::BossDraw(Boss_ boss, Shake& shake) {
 		static_cast<int>(boss.size.x), static_cast<int>(boss.size.y), 0.0f, WHITE, kFillModeSolid);*/
 	if (boss.vanishTime == 0) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.imageLeft, 1, 1, 0.0f, WHITE);
+			boss.image, 1, 1, 0.0f, WHITE);
 	} else if (boss.vanishTime < 10) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.imageLeft, 1, 1, 0.0f, 0xFFFFFF50);
+			boss.image, 1, 1, 0.0f, 0xFFFFFF50);
 	} else if (20 > boss.vanishTime && boss.vanishTime > 10) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.imageLeft, 1, 1, 0.0f, 0xFFFFFF40);
+			boss.image, 1, 1, 0.0f, 0xFFFFFF40);
 	} else if (30 > boss.vanishTime && boss.vanishTime > 20) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.imageLeft, 1, 1, 0.0f, 0xFFFFFF30);
+			boss.image, 1, 1, 0.0f, 0xFFFFFF30);
 	}
 }
+
+
+void Boss::BossWalk(Boss_& boss) {
+	// 移動のベース速度
+	const float baseSpeed = 2.0f;
+
+	// ランダムな移動方向を決定するタイマー
+	static int directionChangeTimer = 0;
+
+	// 現在の移動方向（初期化）
+	static Vector2 direction = { 0.0f, 0.0f };
+
+	// 一定フレームごとに移動方向を変更
+	if (directionChangeTimer <= 0) {
+		direction.x = static_cast<float>((rand() % 3) - 1); // -1, 0, 1
+		direction.y = static_cast<float>((rand() % 3) - 1); // -1, 0, 1
+
+		// 移動が停止しないようにする
+		if (direction.x == 0 && direction.y == 0) {
+			direction.x = 1.0f;
+		}
+
+		// リセットタイマーを設定
+		directionChangeTimer = 60 + (rand() % 60); // 60～120フレーム
+	}
+
+	// タイマーを減らす
+	directionChangeTimer--;
+
+	// 移動処理
+	boss.pos.x += direction.x * baseSpeed * 0.5f; // ふわふわ感を出すために速度を調整
+	boss.pos.y += direction.y * baseSpeed * 0.5f;
+
+	// 画面内に留める処理
+	if (boss.pos.x < 0) {
+		boss.pos.x = 0;
+		direction.x = -direction.x; // 反転
+	}
+	if (boss.pos.x > 1280 - boss.size.x) {
+		boss.pos.x = 1280 - boss.size.x;
+		direction.x = -direction.x; // 反転
+	}
+	if (boss.pos.y < 0) {
+		boss.pos.y = 0;
+		direction.y = -direction.y; // 反転
+	}
+	if (boss.pos.y > 720 - boss.size.y) {
+		boss.pos.y = 720 - boss.size.y;
+		direction.y = -direction.y; // 反転
+	}
+
+	// 幽霊の浮遊感を演出（上下に少し揺れる）
+	static float floatTimer = 0.0f;
+	floatTimer += 0.05f; // 揺れる速度
+	boss.pos.y += std::sin(floatTimer) * 1.5f; // 振幅を1.5に設定
+
+	// ボスの向きに応じた画像変更
+	if (direction.x > 0) {
+		boss.image = boss.imageRight; // 右向き
+	} else if (direction.x < 0) {
+		boss.image = boss.imageLeft; // 左向き
+	} else if (direction.y > 0) {
+		boss.image = boss.imageDown; // 下向き
+	} else {
+		boss.image = boss.imageLeft; // デフォルトは左向き
+	}
+}
+
+void Boss::UpdateParticles(Particle particles[], int maxParticles, const Vector2& bossPos) {
+	for (int i = 0; i < maxParticles; i++) {
+		if (particles[i].isActive) {
+			particles[i].pos.x += particles[i].velocity.x * 0.5f; // 移動速度を調整
+			particles[i].pos.y += particles[i].velocity.y * 0.5f;
+
+			particles[i].lifetime--;
+
+			// パーティクルが消える条件
+			if (particles[i].lifetime <= 0) {
+				particles[i].isActive = false;
+			}
+		} else {
+			// 新しいパーティクルを生成
+			particles[i].pos = bossPos;
+
+			// ランダムな速度 (-2.0f ~ 2.0f)
+			particles[i].velocity = {
+				static_cast<float>(rand() % 5 - 2), // X方向
+				static_cast<float>(rand() % 5 - 2)  // Y方向
+			};
+
+			// ランダムな寿命 (50 ~ 100フレーム)
+			particles[i].lifetime = static_cast<float>(rand() % 50 + 50);
+
+			// ランダムなサイズ (2.0f ~ 5.0f)
+			particles[i].size = static_cast<float>(rand() % 3 + 2);
+
+			// パーティクルを有効化
+			particles[i].isActive = true;
+		}
+	}
+}
+
+void Boss::DrawParticles(Particle particles[], int maxParticles) {
+	for (int i = 0; i < maxParticles; i++) {
+		if (particles[i].isActive) {
+			Novice::DrawEllipse(
+				static_cast<int>(particles[i].pos.x+16.0f),
+				static_cast<int>(particles[i].pos.y+64.0f),
+				static_cast<int>(particles[i].size),
+				static_cast<int>(particles[i].size),
+				0.0f,
+				0xFFFFFF10, // 半透明の白
+				kFillModeSolid
+			);
+		}
+	}
+
+	Novice::ScreenPrintf(0, 0, "Particle count: %d", maxParticles);
+	for (int i = 0; i < maxParticles; i++) {
+		if (particles[i].isActive) {
+			Novice::ScreenPrintf(0, 20 + i * 20, "Particle %d: x=%.2f, y=%.2f, size=%.2f, lifetime=%.2f",
+				i, particles[i].pos.x, particles[i].pos.y, particles[i].size, particles[i].lifetime);
+		}
+	}
+
+
+}
+
+
+void Boss::DrawAura(Boss_& boss) {
+
+	boss.auraTimer += 0.05f; // 輝きのスピードを調整
+
+	// オーラの透明度を計算（0.2～0.6の範囲で変化）
+	float alpha = (std::sin(boss.auraTimer) * 0.2f) + 0.4f;
+
+	Novice::DrawEllipse(
+		static_cast<int>(boss.pos.x + boss.size.x / 2),
+		static_cast<int>(boss.pos.y + boss.size.y / 2),
+		static_cast<int>(boss.size.x * 0.5f), // ボスサイズより少し小さく
+		static_cast<int>(boss.size.y * 0.3f),
+		0.0f,
+		0xFFFFFF50 | (static_cast<int>(alpha * 255) << 24), // アルファ値を加算
+		kFillModeSolid
+	);
+}
+
+
 
 ///=============================================
 ///範囲攻撃の関数

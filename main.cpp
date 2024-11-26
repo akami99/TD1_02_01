@@ -148,8 +148,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			Novice::DrawLine(0, 600, 1280, 600, WHITE);
 
 			// ボスの描画
+			boss.DrawParticles(boss_.particles, 50);
+			boss.DrawAura(boss_);
 			boss.BossDraw(boss_, shake);
-
 			// フラッシュライトの描画
 			player.DrawFlash(player_, flash_);
 
@@ -215,7 +216,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// ボスの描画
 			boss.BossDraw(boss_, shake);
-
+			boss.DrawAura(boss_);
 			//第二形態のボスのビーム攻撃
 			boss.DrawBeam2(beam2);
 
