@@ -76,6 +76,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			player.DrawBackGround(line.title);
+
+			ui.DrawFont(410, 600, line.pressToSpace);
 			break;
 
 		case FASTBOSS:
@@ -171,6 +173,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			player.DrawBackGround(line.clear);
+
+			ui.DrawFont(410, 600, line.pressToSpace);
 			break;
 		}
 

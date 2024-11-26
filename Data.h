@@ -232,6 +232,7 @@ struct Line {
 	int title = Novice::LoadTexture("./Resources/images/title.png");
 	int backGround = Novice::LoadTexture("./Resources/images/backGround.png");
 	int clear = Novice::LoadTexture("./Resources/images/clear.png");
+	int pressToSpace = Novice::LoadTexture("./Resources/images/pressToSpace.png");
 };
 
 
