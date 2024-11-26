@@ -100,9 +100,9 @@ public:
 	//===================
 	//ワープ攻撃
 	//===================
-	void BossWarpAttak(Boss_& boss, Player_& player, WarpAttak& warp, ShortDistansAttak_& shortDist);
+	void BossWarpAttak(Boss_& boss, Player_& player, WarpAttak& warp, ShortDistansAttak_& shortDist, Shake& shake);
 
-	void DrawWarpAttak(WarpAttak& warp);
+	void DrawWarpAttak(WarpAttak& warp,ShortDistansAttak_& shortDist);
 
 	//=====================================================================
 	//当たり判定の作成(後でプレイヤーの向きによってバッグに当たり判定がないようにする)

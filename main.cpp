@@ -141,6 +141,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			boss.DrawBossChargeAttak(object_);
 
+			boss.DrawWarpAttak(warp, shortDistAttak_);
+
 			// UIの描画
 			ui.DrawGauge(340, 30, boss_.hp, 0);
 			ui.DrawGauge(100, 620, player_.hp, 1);

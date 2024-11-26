@@ -23,7 +23,7 @@ struct Player_ {
     Vector2 direction = { 1.0f, 0.0f };//プレイヤーの向き(1だったら右、-1だったら左向き)
     Vector2 velocity = { 0.0f, 0.0f };
     Vector2 acceleration = { 0.0f, 0.5f };
-    float radius = 32;
+    float radius = 64;
 	int hp = 300;    // ゲージの描画はUi.cpp内で調整してるので注意
 	int energy = 600;// 同上
 	const int kMaxEnergy = 600;
@@ -35,6 +35,9 @@ struct Player_ {
 	int isJanpSpeed = false;
 	int isHit = false;
 	int image = Novice::LoadTexture("./Resources/images/player_01.png");
+
+	int isRight = true;
+	int isLeft = false;
 
 };
 

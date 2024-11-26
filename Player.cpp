@@ -30,6 +30,9 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 	if (keys[DIK_D] || keys[DIK_RIGHT]) {
 		player.pos.x += player.speed;
 		player.direction.x = 1;
+		player.isLeft = false;
+		player.isRight = true;
+
 	}
 
 	if (keys[DIK_A] || keys[DIK_LEFT]) {
@@ -40,6 +43,10 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 		} else {
 			player.direction.x = -1;
 		}
+
+		player.isRight = false;
+		player.isLeft = true;
+	
 	}
 
 	if (keys[DIK_S] || keys[DIK_DOWN]) {
@@ -152,8 +159,8 @@ void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* key
 }
 
 void Player::Draw(Player_& player) {
-	//Novice::DrawBox(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y),
-	//	static_cast<int>(player.radius), static_cast<int>(player.radius), 0.0f, WHITE, kFillModeSolid);
+	Novice::DrawBox(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y),
+		static_cast<int>(player.radius), static_cast<int>(player.radius), 0.0f, WHITE, kFillModeSolid);
 
 	Novice::DrawSprite(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y), player.image, 1, 1, 0.0f, WHITE);
 
