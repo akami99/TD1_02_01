@@ -38,7 +38,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 40;
+					boss.attakNo = 12;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
