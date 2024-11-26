@@ -17,9 +17,9 @@ void Boss::BossMoveToPosition(Boss_& boss, const Vector2& targetPos, float easin
 }
 
 
-// ボスの動き
-void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, 
-	ShortDubleDistansAttak_& doubleShort, Shake& shake,Beam2& beam2) {
+//第一形態のボスの動き
+void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist, Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake, Projectile* projectiles) {
+
 	if (boss.attakStandTime > 0) {
 		boss.attakStandTime--;
 	} else {
@@ -38,7 +38,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 4;
+					boss.attakNo = 200;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -197,12 +197,6 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			}
 		}
 
-
-	}
-
-	if (boss.attakNo == 10) {
-		Beam2Attak(boss, beam2, shake);
-
 	}
 
 	if (boss.attakNo == 11) {
@@ -304,8 +298,49 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			}
 		}
 	}
+}
 
-		
+//==================================
+//第二形態のボスの攻撃
+//==================================
+void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist,
+	Player_& player, Shake& shake,
+	Beam2& beam2, Shockwave* shockwaves, WarpAttak& warp, BossExprosive& explosive) {
+
+	if (boss.attakStandTime > 0) {
+		boss.attakStandTime--;
+	} else {
+		boss.isAttak = true;
+	}
+
+	if (boss.vanishTime > 0) {
+		boss.vanishTime--;
+	}
+
+	if (boss.vanishTime == 0) {
+		//HPが50%以上ならattakNo1~3
+		//%50%以下なら3~6(仮)
+		//25%以下なら5~8(仮)
+		if (!boss.isAttak) {
+			if (boss.attakNo == 0) {
+				if (boss.attakStandTime <= 0) {
+					//boss.attakNo = rand() % 5 + 1;
+					boss.attakNo = 200;
+					/*if (boss.hp > 100) {
+						boss.attakNo = 5;
+					}*/
+					boss.isEase = false;
+				}
+			}
+		}
+	}
+
+
+	if (boss.attakNo == 10) {
+		Beam2Attak(boss, beam2, shake);
+
+	}
+
 	if (boss.attakNo == 20) { // 攻撃番号20を全方位攻撃に設定
 		static bool initialized = false;
 
@@ -353,12 +388,13 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		BossWarpAttak(boss, player, warp, shortDist, shake);
 	}
 
+	if (boss.attakNo == 200) {
 
+		BossExplosive(boss, explosive, player);
 
+	}
 	Novice::ScreenPrintf(200, 500, "%d", player.isHit);
-
 }
-
 
 
 // ボスを描画する
@@ -1328,10 +1364,10 @@ void Boss::BossWarpAttak(Boss_& boss, Player_& player, WarpAttak& warp, ShortDis
 		warp.isAttak = true; // ワープ攻撃を開始
 
 		if (player.isRight) { // プレイヤーが右向き
-			shortDist.pos = { boss.pos.x+75.0f , boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
+			shortDist.pos = { boss.pos.x + 75.0f , boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
 		} else if (player.isLeft) { // プレイヤーが左向き
-			shortDist.pos = { boss.pos.x - boss.size.x-50.0f, boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
-		} 
+			shortDist.pos = { boss.pos.x - boss.size.x - 50.0f, boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
+		}
 	}
 
 	// 攻撃時間中は近接攻撃
@@ -1386,15 +1422,134 @@ void Boss::DrawWarpAttak(WarpAttak& warp, ShortDistansAttak_& shortDist) {
 	}
 }
 
-//第2形態のビーム
-void Boss::DrawBeam2(Beam2& beam2) {
-	if (beam2.attakStandTime <= 0) {
-		if (beam2.attakTime > 0) {
-			Novice::DrawBox(static_cast<int>(beam2.pos.x), static_cast<int>(beam2.pos.y),
-				static_cast<int>(beam2.size.x), static_cast<int>(beam2.size.y), 0.0f, RED, kFillModeSolid);
+//=====================================
+//ボスの渾身の全体攻撃
+//=====================================
+void Boss::BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player) {
+
+	player.isHit = false;
+
+	// イージング移動処理
+	if (!explosive.isEase) {
+		boss.pos.x += (explosive.easePos.x - boss.pos.x) * 0.05f;
+		boss.pos.y += (explosive.easePos.y - boss.pos.y) * 0.05f;
+
+		// ボスの位置がほぼ目的地に到達したらイージング完了
+		if (std::abs(explosive.easePos.x - boss.pos.x) < 1.0f && std::abs(explosive.easePos.y - boss.pos.y) < 1.0f) {
+			boss.pos = explosive.easePos;
+			explosive.isEase = true;
+			explosive.attakCoolTime = 120; // 攻撃クールタイムの設定
+			explosive.isDraw = true;
+			// セーフゾーンの位置をランダムに設定
+			explosive.safePos.x = static_cast<float>(rand() % (1280 - static_cast<int>(explosive.safeSize.x)));
+			explosive.safePos.y = (600.0f - static_cast<float>(explosive.safeSize.y));
+		}
+	}
+
+	// 攻撃クールタイム中の処理
+	if (explosive.isEase && explosive.attakCoolTime > 0) {
+		explosive.attakCoolTime--;
+
+		// クールタイム終了後に攻撃を開始
+		if (explosive.attakCoolTime == 0) {
+			explosive.isAttak = true;
+			explosive.attakTime = 60; // 攻撃時間の設定
+		}
+	}
+
+	// 攻撃時間中の処理
+	if (explosive.isAttak && explosive.attakTime > 0) {
+		explosive.attakTime--;
+
+		// プレイヤーがセーフゾーン外にいるかを確認
+		if (player.pos.x < explosive.safePos.x ||
+			player.pos.x + player.radius > explosive.safePos.x + explosive.safeSize.x ||
+			player.pos.y < explosive.safePos.y ||
+			player.pos.y + player.radius > explosive.safePos.y + explosive.safeSize.y) {
+			player.isHit = true; // ダメージ判定
+		}
+
+
+	}
+
+	// 攻撃終了時のリセット処理
+	if (explosive.attakTime <= 0) {
+
+		explosive.isAttak = false;
+
+	}
+
+	if (!explosive.isAttak && explosive.isEase && explosive.attakCoolTime <= 0) {
+		Vector2 returnPos = { 1000.0f,472.0f };
+		explosive.isDraw = false;
+		boss.pos.x += (returnPos.x - boss.pos.x) * 0.05f;
+		boss.pos.y += (returnPos.y - boss.pos.y) * 0.05f;
+		if (std::abs(returnPos.x - boss.pos.x) < 1.0f && std::abs(returnPos.y - boss.pos.y) < 1.0f) {
+			explosive.isEase = false;
+			boss.attakNo = 0;
+			boss.attakStandTime = 120;
+			boss.isAttak = false;
+			explosive.attakCoolTime = 120; // クールタイムをリセット
+		}
+	}
+
+}
+
+
+void Boss::DrawExplosive(BossExprosive& explosive) {
+	if (explosive.isDraw) {
+		// 攻撃範囲とセーフゾーンの描画
+		if (!explosive.isAttak && explosive.attakCoolTime <= 60) {
+			// 全体攻撃の範囲（赤い四角）
+			Novice::DrawBox(
+				0,
+				0,
+				static_cast<int>(explosive.attakSize.x),
+				static_cast<int>(explosive.attakSize.y),
+				0.0f,
+				0xFF000040,
+				kFillModeSolid
+			);
+
+			// セーフゾーン（緑の四角）
+			Novice::DrawBox(
+				static_cast<int>(explosive.safePos.x),
+				static_cast<int>(explosive.safePos.y),
+				static_cast<int>(explosive.safeSize.x),
+				static_cast<int>(explosive.safeSize.y),
+				0.0f,
+				0x00FF0040,
+				kFillModeSolid
+			);
+		}
+
+		if (explosive.isAttak && explosive.attakTime > 0) {
+			// 全体攻撃の描画（全画面エフェクト）
+			Novice::DrawBox(
+				0,
+				0,
+				static_cast<int>(explosive.attakSize.x),
+				static_cast<int>(explosive.attakSize.y),
+				0.0f,
+				0xFF000080,
+				kFillModeSolid
+			);
+
+			// セーフゾーンの描画
+			Novice::DrawBox(
+				static_cast<int>(explosive.safePos.x),
+				static_cast<int>(explosive.safePos.y),
+				static_cast<int>(explosive.safeSize.x),
+				static_cast<int>(explosive.safeSize.y),
+				0.0f,
+				0x00FF0040,
+				kFillModeSolid
+			);
 		}
 	}
 }
+
+
 //if (boss.attakNo == 3) {
 //	object.isAttak = true;
 //

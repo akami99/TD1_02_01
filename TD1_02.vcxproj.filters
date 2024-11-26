@@ -152,5 +152,6 @@
     <ClInclude Include="Ui.h" />
     <ClInclude Include="Tool.h" />
     <ClInclude Include="GameInitializer.h" />
+    <ClInclude Include="bossSecond.h" />
   </ItemGroup>
 </Project>

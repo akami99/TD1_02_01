@@ -48,8 +48,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Beam2 beam2;
 	Projectile projectiles[10];
 	Boss::UpdateProjectiles(projectiles);
-
+	BossExprosive explosive;
 	WarpAttak warp;
+	
 
 	Whole whole;
 
@@ -128,7 +129,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, boss_, flash_, keys, preKeys);
 
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, beam2);
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake,projectiles);
+
+			if (boss_.hp <= 0) {
+				scene = SECONDBOSS;
+			}
 
 			///
 			/// ↑更新処理ここまで
@@ -142,6 +147,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Novice::DrawLine(0, 600, 1280, 600, WHITE);
 
+			// ボスの描画
+			boss.BossDraw(boss_, shake);
+
 			// フラッシュライトの描画
 			player.DrawFlash(player_, flash_);
 
@@ -151,14 +159,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//ボスのビーム攻撃
 			boss.DrawBeams(boss_);
 
-			//第二形態のボスのビーム攻撃
-			boss.DrawBeam2(beam2);
-
-			// ボスの範囲攻撃描画
-			boss.DrawBossRengeAttak(rengeAttak_);
-
-			// ボスの描画
-			boss.BossDraw(boss_, shake);
+			//オールレンジアタック
+			boss.DrawAllRangeAttack(boss_);
 
 			//近距離攻撃の描画
 			boss.DrawShortDistansAttak(shortDistAttak_);
@@ -168,7 +170,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			boss.DrawBossChargeAttak(object_);
 
-			boss.DrawWarpAttak(warp, shortDistAttak_);
+	
 
 			// UIの描画
 			ui.DrawGauge(340, 30, boss_.hp, 0);
@@ -193,13 +195,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case SECONDBOSS:
 
-			//デバッグ用---
-			boss_.secondHp = 0;
-			//-----------
+			//================================
+			//更新処理
+			//================================
+			
+			// プレイヤーの更新処理
+			player.Move(player_, line, keys, preKeys);
+			player.Attack(player_, boss_, flash_, keys, preKeys);
 
+			boss.SecondBossMove(boss_, shortDistAttak_, player_, shake, beam2, shockwaves, warp, explosive);
+			
 			if (boss_.secondHp <= 0) {
 				scene = CLEAR;
 			}
+
+			//========================
+			//描画処理
+			//========================
+
+			// ボスの描画
+			boss.BossDraw(boss_, shake);
+
+			//第二形態のボスのビーム攻撃
+			boss.DrawBeam2(beam2);
+
+			// ボスの範囲攻撃描画
+			boss.DrawBossRengeAttak(rengeAttak_);
+
+			//近距離攻撃の描画
+			boss.DrawShortDistansAttak(shortDistAttak_);
+
+			//衝撃波の描画
+			boss.DrawShockwaves(shockwaves, 10);
+
+			boss.DrawWarpAttak(warp, shortDistAttak_);
+
+			boss.DrawExplosive(explosive);
+
 
 			break;
 		case CLEAR:

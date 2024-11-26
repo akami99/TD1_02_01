@@ -182,6 +182,17 @@ struct Shockwave {
 	int isActive=false;      // 衝撃波が有効かどうか（1: 有効, 0: 無効）
 };
 
+struct BossExprosive {
+	Vector2 easePos = { 620.0f,100.0f };
+	Vector2 safePos = { -100.0f,-100.0f };
+	Vector2 attakSize = { 1280.0f,720.0f };
+	Vector2 safeSize = { 128.0f,128.0f };
+	int attakCoolTime = 120;
+	int attakTime = 60;
+	int isAttak = false;
+	int isEase = false;
+	int isDraw = false;
+};
 
 // 範囲攻撃
 struct BossRengeAttak_ {
