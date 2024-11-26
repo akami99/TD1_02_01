@@ -1023,95 +1023,10 @@ void Boss::DrawAllRangeAttack(Boss_& allRange) {
 					WHITE, // 色
 					kFillModeSolid // 塗りつぶし
 				);
-			} else {
-				timer = 0;
-				object.rotation = 0.0f;
-				object.throwSpeed = 0.0f;
-				object.pos.x = boss.pos.x + object.orbitRadius;
-				object.pos.y = boss.pos.y + object.orbitRadius;
-				object.isAttak = false;
-				object.isFloating = true;
-				boss.isAttak = false;
-				boss.attakNo = 0;
-				boss.attakStandTime = 120;  // 攻撃後のクールダウン
-				object.attakTime = 360;
-			}
-		}
-	}
-
-	if (boss.attakNo == 10) {
-		if (!beam2.isEase) {
-			Vector2 targetPos = { 640.0f, 100.0f };  // 画面中央上部
-		
-			boss.pos.x += (targetPos.x - boss.pos.x) * 0.05f;
-			boss.pos.y += (targetPos.y - boss.pos.y) * 0.05f;
-			boss.vanishTime = 2;
-			if (std::abs(targetPos.x - boss.pos.x) < 0.5f && std::abs(targetPos.y - boss.pos.y) < 0.5f) {
-				boss.pos = targetPos;
-				beam2.pos = boss.pos;
-				beam2.isEase = true;
-			}
-
-			beam2.attakStandTime = 60;
-			beam2.attakTime = 300;
-
-		} else if (beam2.isEase) {
-
-			if (beam2.attakStandTime > 0) {
-				beam2.attakStandTime--;
-				beam2.pos = { boss.pos.x,boss.pos.y};
-			} else {
-				beam2.isAttak = true;
-			}
-
-			if (beam2.isAttak) {
-				if (beam2.attakTime > 0) {
-					beam2.attakTime--;
-					boss.pos.x += beam2.speed;
-					beam2.pos.x += beam2.speed;
-
-					if (boss.pos.x > 1280.0f - boss.size.x||boss.pos.x<0) {
-						beam2.speed *= -1;
-					}
-					shake.pos.x = static_cast<float>(rand() % 20 -10);
-					shake.pos.y = static_cast<float>(rand() % 20 - 10);
-				} else{
-					Vector2 endPos = { 1000.0f,472.0f };
-					boss.pos.x += (endPos.x - boss.pos.x) * 0.05f;
-					boss.pos.y += (endPos.y - boss.pos.y) * 0.05f;
-					shake.pos.x = 0.0f;
-					shake.pos.y = 0.0f;
-					boss.vanishTime = 2;
-
-					if (std::abs(endPos.x - boss.pos.x) < 0.5f && std::abs(endPos.y - boss.pos.y) < 0.5f) {
-						boss.pos = endPos;
-						beam2.isEase = false;
-						boss.isAttak = false;
-						boss.attakNo = 0;
-						boss.attakStandTime = 120; // クールダウン
-
-					}
-				}
-			}
-		}
-		
-	}
-	Novice::ScreenPrintf(32, 352, "attakStandTime: %d", beam2.attakStandTime);
-	Novice::ScreenPrintf(32, 384, "attakTime: %d", beam2.attakTime);
-	Novice::ScreenPrintf(32, 416, "pos.x: %.1f, pos.y: %.1f", beam2.pos.x, beam2.pos.y);
-				// 通常の細い線を描画
-				Novice::DrawLine(
-					static_cast<int>(allRange.allRangeBeams[i].startPos.x),
-					static_cast<int>(allRange.allRangeBeams[i].startPos.y),
-					static_cast<int>(allRange.allRangeBeams[i].endPos.x),
-					static_cast<int>(allRange.allRangeBeams[i].endPos.y),
-					WHITE
-				);
 			}
 		}
 	}
 }
-
 
 // 全体攻撃の当たり判定
 void Boss::AllRengeAttakHitBox(Boss_& allRange, Player_& player) {
@@ -1162,23 +1077,6 @@ void Boss::AllRengeAttakHitBox(Boss_& allRange, Player_& player) {
 				break; // 一つのビームでも当たれば処理を終了
 			}
 		}
-	}
-// ボスを描画する
-void Boss::BossDraw(Boss_ boss, Shake& shake) {
-	/*Novice::DrawBox(static_cast<int>(boss.pos.x), static_cast<int>(boss.pos.y),
-		static_cast<int>(boss.size.x), static_cast<int>(boss.size.y), 0.0f, WHITE, kFillModeSolid);*/
-	if (boss.vanishTime == 0) {
-		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.image, 1, 1, 0.0f, WHITE);
-	} else if(boss.vanishTime<10){
-		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.image, 1, 1, 0.0f, 0xFFFFFF50);
-	} else if (20>boss.vanishTime&&boss.vanishTime>10) {
-		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.image, 1, 1, 0.0f, 0xFFFFFF40);
-	} else if (30 > boss.vanishTime && boss.vanishTime > 20) {
-		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.image, 1, 1, 0.0f, 0xFFFFFF30);
 	}
 }
 
@@ -1320,54 +1218,15 @@ void Boss::BossWarpAttak(Boss_& boss, Player_& player, WarpAttak& warp, ShortDis
 			warp.pos.x = player.pos.x + 150.0f; // プレイヤーの右後ろにワープ
 		}
 		warp.pos.y = player.pos.y;
-		if (boss.beams[i].attakStandTime > 0) {
-			shake.pos.x = static_cast<float>(rand() % 20 - 10);
-			shake.pos.y = static_cast<float>(rand() % 20 - 10);
-			boss.beams[i].attakStandTime--;
-			boss.beams[i].attakTime = 60;
-		} else if (boss.beams[i].attakStandTime <= 0) {
-			if (boss.beams[i].attakTime > 0) {
-				shake.pos.x = static_cast<float>(rand() % 30 - 15);
-				shake.pos.y = static_cast<float>(rand() % 30 - 15);
-				boss.beams[i].attakTime--;
-			} else {
-				
-					boss.beams[i].isAttak = false;
-				}
-			}
-		}
-	
-
-	// すべてのビームが終了しているか確認
-	bool allBeamsFinished = true;
-	for (int i = 0; i < MAX_BEAMS; i++) {
-		if (boss.beams[i].isAttak) {
-			allBeamsFinished = false;
-			break;
-		}
 	}
+	warp.attakTime = 60;  // ワープ後の攻撃時間を設定
+	boss.pos = warp.pos; // ボスをワープさせる
+	warp.isAttak = true; // ワープ攻撃を開始
 
-	if (allBeamsFinished) {
-		// ボスを初期位置に戻すリセット処理
-		static Vector2 originalPosition = { 1000.0f, 472.0f }; // ボスの初期位置を設定
-		boss.pos = originalPosition;
-		shake.pos.x = 0.0f;
-		shake.pos.y =0.0f;
-		boss.vanishTime = 60;
-		boss.isAttak = false;
-		boss.attakNo = 0;
-		boss.attakStandTime = 120; // クールダウン時間をリセット
-	}
-}
-		warp.attakTime = 60;  // ワープ後の攻撃時間を設定
-		boss.pos = warp.pos; // ボスをワープさせる
-		warp.isAttak = true; // ワープ攻撃を開始
-
-		if (player.isRight) { // プレイヤーが右向き
-			shortDist.pos = { boss.pos.x + 75.0f , boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
-		} else if (player.isLeft) { // プレイヤーが左向き
-			shortDist.pos = { boss.pos.x - boss.size.x - 50.0f, boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
-		}
+	if (player.isRight) { // プレイヤーが右向き
+		shortDist.pos = { boss.pos.x + 75.0f , boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
+	} else if (player.isLeft) { // プレイヤーが左向き
+		shortDist.pos = { boss.pos.x - boss.size.x - 50.0f, boss.pos.y + boss.size.y / 2 - shortDist.size.y / 2 };
 	}
 
 	// 攻撃時間中は近接攻撃
@@ -1548,7 +1407,6 @@ void Boss::DrawExplosive(BossExprosive& explosive) {
 		}
 	}
 }
-
 
 //if (boss.attakNo == 3) {
 //	object.isAttak = true;
