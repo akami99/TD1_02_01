@@ -355,16 +355,16 @@ void Boss::BossDraw(Boss_ boss, Shake& shake) {
 		static_cast<int>(boss.size.x), static_cast<int>(boss.size.y), 0.0f, WHITE, kFillModeSolid);*/
 	if (boss.vanishTime == 0) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.image, 1, 1, 0.0f, WHITE);
+			boss.imageLeft, 1, 1, 0.0f, WHITE);
 	} else if (boss.vanishTime < 10) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.image, 1, 1, 0.0f, 0xFFFFFF50);
+			boss.imageLeft, 1, 1, 0.0f, 0xFFFFFF50);
 	} else if (20 > boss.vanishTime && boss.vanishTime > 10) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.image, 1, 1, 0.0f, 0xFFFFFF40);
+			boss.imageLeft, 1, 1, 0.0f, 0xFFFFFF40);
 	} else if (30 > boss.vanishTime && boss.vanishTime > 20) {
 		Novice::DrawSprite(static_cast<int>(boss.pos.x + shake.pos.x), static_cast<int>(boss.pos.y + shake.pos.y),
-			boss.image, 1, 1, 0.0f, 0xFFFFFF30);
+			boss.imageLeft, 1, 1, 0.0f, 0xFFFFFF30);
 	}
 }
 

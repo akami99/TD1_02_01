@@ -118,7 +118,9 @@ struct Boss_ {
 
 	int warpAttak = false;
 
-	int image = Novice::LoadTexture("./Resources/images/boss_01.png");
+	int imageLeft = Novice::LoadTexture("./Resources/images/boss_01.png");
+	int imageRight = Novice::LoadTexture("./Resources/images/boss_02.png");
+	int imageDown = Novice::LoadTexture("./Resources/images/boss_03.png");
 
 	Whole bullets[MAX_boll];
 
