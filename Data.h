@@ -112,7 +112,8 @@ struct Boss_ {
 	Vector2 bottom = { 1000.0f + 32.0f, 472.0f + 96.0f };
 	Vector2 size = { 64.0f, 128.0f };
 	Vector2 shakePos = { 0.0f,0.0f };
-	int hp = 200;                         // ゲージの描画Ui.cpp内で調整してるので注意
+	Vector2 velocity = { 20.0f,20.0f };
+	int hp = 0;                         // ゲージの描画Ui.cpp内で調整してるので注意
 	int isHitTop = false;
 	int isHitLeft = false;
 	int isHitRight = false;
@@ -121,6 +122,8 @@ struct Boss_ {
 	int attakStandTime = 120;
 	int isAttak = false;
 	int secondHp = 200;
+	int explosiveTime = 600;
+	int isExplo = false;
 	int isEase = false;
 	float speed = 5.0f;
 	int vanishTime = 0;//ボスを消す
@@ -135,6 +138,10 @@ struct Boss_ {
 	int fallCount = 0;
 	int fallSpeed = 10;
 	int fallCoolTime = 0;
+
+	int isOneExtraAttak = false;
+	int isTwoExtraAttak = false;
+	int isThreeExtraAttak = false;
 
 	int hitStopTime = 0;
 

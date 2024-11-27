@@ -410,23 +410,45 @@ void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist, Player_& p
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 10;
-					/*if (boss.hp > 100) {
-						boss.attakNo = 5;
-					}*/
+					if (boss.hp > 100) {
+						boss.attakNo = 3 + 1;
+					} else if (boss.hp <= 100) {
+						boss.attakNo = 5 + 1;
+					}
+
 					boss.isEase = false;
 				}
 			}
 		}
 	}
 
+	if (!boss.isOneExtraAttak) {
+		if (boss.hp <= 100) {
+			boss.attakNo = 200;
+			boss.isOneExtraAttak = false;
+		}
+	}
 
-	if (boss.attakNo == 10) {
+	if (!boss.isTwoExtraAttak) {
+		if (boss.hp <= 100) {
+			boss.attakNo = 200;
+			boss.isTwoExtraAttak = false;
+		}
+	}
+
+	if (!boss.isThreeExtraAttak) {
+		if (boss.hp <= 100) {
+			boss.attakNo = 200;
+			boss.isThreeExtraAttak = false;
+		}
+	}
+
+	if (boss.attakNo == 1) {
 		Beam2Attak(boss, beam2, shake);
 		Beam2HitBox(beam2, player);
 	}
 
-	if (boss.attakNo == 20) { // 攻撃番号20を全方位攻撃に設定
+	if (boss.attakNo == 2) { // 攻撃番号20を全方位攻撃に設定
 		static bool initialized = false;
 
 		// 初期化処理
@@ -461,18 +483,18 @@ void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist, Player_& p
 		}
 	}
 	//落下攻撃
-	if (boss.attakNo == 30) {
+	if (boss.attakNo == 3) {
 		BossFallAttak(boss, player, shake, shockwaves, 10);
 
 		UpdateShockwaves(shockwaves, 10, player);
 
 	}
 
-	if (boss.attakNo == 40) {
+	if (boss.attakNo == 4) {
 		BossWarpAttak(boss, player, warp, shortDist, shake);
 	}
 
-	if (boss.attakNo == 50) {
+	if (boss.attakNo == 5) {
 		boss.localTimer++;
 		if (!boss.isFloating) {
 			if (boss.localTimer >= 5) {
@@ -1070,7 +1092,7 @@ void Boss::PlayerShortAttakHitBox(Player_& player, ShortDistansAttak_& shortAtta
 				player.pos.y + player.radius> shortAttak.pos.y) { // プレイヤーの上端が範囲の下端より上
 				player.hitStopTime = 3;
 				player.hp -= 5;
-
+				shortAttak.isHit = true;
 			}
 		}
 	}
@@ -1741,7 +1763,8 @@ void Boss::BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player,
 	if (explosive.attakTime <= 0) {
 
 		explosive.isAttak = false;
-
+		shake.pos.x = 0;
+		shake.pos.y = 0;
 	}
 
 	if (!explosive.isAttak && explosive.isEase && explosive.attakCoolTime <= 0) {
@@ -1807,6 +1830,65 @@ void Boss::DrawExplosive(BossExprosive& explosive) {
 				static_cast<int>(explosive.safeSize.y),
 				0.0f,
 				0x00FF0040,
+				kFillModeSolid
+			);
+		}
+	}
+}
+
+void Boss::BossFinishBro(Boss_& boss, Player_& player, Shake& shake) {
+	// 爆発状態を初期化
+	shake.pos.x = 0.0f;
+	shake.pos.y = 0.0f;
+
+	// 最終判定: ボスが全方向ヒットかつフラッシュライトが有効
+	if (boss.isHitTop && boss.isHitRight && boss.isHitLeft) {
+		if ((player.isFlash || player.isHighFlash) && !boss.isExplo) {
+			// 壁に反射する処理
+			boss.velocity.x *= -1.0f;
+			boss.velocity.y *= -1.0f;
+
+			// 爆発の開始
+			boss.isExplo = true;
+			boss.explosiveTime = 300; // 爆発エフェクトの初期時間を設定
+		}
+	}
+
+	// 爆発中の処理
+	if (boss.isExplo) {
+		// ボスの反射運動
+		boss.pos.x += boss.velocity.x;
+		boss.pos.y += boss.velocity.y;
+
+		// 壁の衝突判定（反射時に画面揺れを発生）
+		if (boss.pos.x <= 0 || boss.pos.x >= 1280 - boss.size.x) {
+			boss.velocity.x *= -1.0f; // 水平方向に反射
+			shake.pos.x = static_cast<float>(rand() % 61 - 30);
+			shake.pos.y = static_cast<float>(rand() % 61 - 30);
+		}
+		if (boss.pos.y <= 0 || boss.pos.y >= 720 - boss.size.y) {
+			boss.velocity.y *= -1.0f; // 垂直方向に反射
+			shake.pos.x = static_cast<float>(rand() % 61 - 30);
+			shake.pos.y = static_cast<float>(rand() % 61 - 30);
+		}
+
+		// 爆発エフェクトの時間を減少
+		 if (boss.explosiveTime > 0) {
+			boss.explosiveTime--;
+		}
+	}
+}
+void Boss::DrawBossExplo(Boss_& boss) {
+	if (boss.isExplo) {
+		// 例えばボスの爆発エフェクトなどを描画
+		if (boss.explosiveTime % 4 == 0) {
+			Novice::DrawBox(
+				static_cast<int>(boss.pos.x) - 50,
+				static_cast<int>(boss.pos.y) - 50,
+				150,
+				150,
+				0.0f,
+				0xFF450080, // 爆発色
 				kFillModeSolid
 			);
 		}
