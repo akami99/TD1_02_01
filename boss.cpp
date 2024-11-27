@@ -38,7 +38,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 200;
+					boss.attakNo = 30;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -1190,14 +1190,14 @@ void Boss::UpdateShockwaves(Shockwave* shockwaves, int maxShockwaves) {
 void Boss::DrawShockwaves(Shockwave* shockwaves, int maxShockwaves) {
 	for (int i = 0; i < maxShockwaves; i++) { // maxShockwavesを使ってループの上限を設定
 		if (shockwaves[i].isActive) {
-			Novice::DrawBox(
+			Novice::DrawSprite(
 				static_cast<int>(shockwaves[i].pos.x),
 				static_cast<int>(shockwaves[i].pos.y),
-				static_cast<int>(shockwaves[i].size.x),
-				static_cast<int>(shockwaves[i].size.y),
+				shockwaves->imageWave,
+				1.0f,
+				1.0f,
 				0.0f,
-				RED,
-				kFillModeSolid
+				WHITE
 			);
 		}
 	}
