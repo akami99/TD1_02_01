@@ -48,7 +48,9 @@ struct Player_ {
 	int hitStopTime = 0;
 	int flashTime = 0;
 	int highFlashTime = 0;
-
+	int veryHighFlashGeze = 0;
+	int veryHighFlashGaze = false;
+	int veryHighFlashCount = 0;
 };
 
 

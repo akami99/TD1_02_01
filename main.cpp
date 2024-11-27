@@ -143,7 +143,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		case GUIDE:
 			if (keys[DIK_Q]) {
+				boss_.hp = 200;
 				scene = SECONDBOSS;
+
 			}
 
 			player.Move(player_, line, keys, preKeys);
@@ -427,7 +429,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.DrawBackGround(line, shake);
 
 			// ボスの描画
-			boss.DrawParticles(boss_.particles, 50);  // ボスのパーティクル
+			//boss.DrawParticles(boss_.particles, 50);  // ボスのパーティクル
 			boss.BossDraw(boss_, shake);              // ボス本体の描画
 
 			boss.DrawBossExplo(boss_);
