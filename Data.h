@@ -180,6 +180,8 @@ struct Shockwave {
 	Vector2 direction; // 衝撃波の進行方向
 	float speed=10.0f;       // 衝撃波のスピード
 	int isActive=false;      // 衝撃波が有効かどうか（1: 有効, 0: 無効）
+
+	int imageWave = Novice::LoadTexture("./Resources/images/wave.png");
 };
 
 struct BossExprosive {
@@ -192,6 +194,8 @@ struct BossExprosive {
 	int isAttak = false;
 	int isEase = false;
 	int isDraw = false;
+
+	int imageExplosive = Novice::LoadTexture("./Resources/images/explosiveAttak.png");
 };
 
 // 範囲攻撃
@@ -214,6 +218,8 @@ struct ShortDistansAttak_ {
 	int isAttak = false;                 // 攻撃中かどうか
 	int isShortAttak = false;
 	int isHit = false;
+
+	int imageWepon = Novice::LoadTexture("./Resources/images/shortWepon.png");
 };
 
 //連続攻撃
@@ -231,6 +237,8 @@ struct ShortDubleDistansAttak_ {
 	float baseSizeX = 128.0f;            // 元のX方向のサイズ
 	int isShortAttak = false;
 	int isHit = false;
+
+	int imageWepon = Novice::LoadTexture("./Resources/images/shortWepon.png");
 };
 
 // チャージ攻撃

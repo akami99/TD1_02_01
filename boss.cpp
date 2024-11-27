@@ -816,8 +816,9 @@ void Boss::ShortDistansAttak(Boss_& boss, ShortDistansAttak_& shortDist, Player_
 void Boss::DrawShortDistansAttak(ShortDistansAttak_ shortDist) {
 	if (!shortDist.isEase) {
 		if (shortDist.attakTime > 0) {
-			Novice::DrawBox(static_cast<int>(shortDist.pos.x), static_cast<int>(shortDist.pos.y),
-				static_cast<int>(shortDist.size.x), static_cast<int>(shortDist.size.y), 0.0f, BLUE, kFillModeSolid);
+			Novice::DrawSprite(static_cast<int>(shortDist.pos.x), static_cast<int>(shortDist.pos.y),
+				shortDist.imageWepon, 1.0f, 1.0f, 0.0f, WHITE
+			);
 		}
 	}
 }
@@ -898,8 +899,9 @@ void Boss::DoubleShortDistansAttak(Boss_& boss, ShortDubleDistansAttak_& shortDo
 void Boss::DrawDoubleShortDistansAttak(ShortDubleDistansAttak_ dobleShort) {
 	if (dobleShort.isShortAttak) {
 		if (dobleShort.attakTime > 0) {
-			Novice::DrawBox(static_cast<int>(dobleShort.pos.x), static_cast<int>(dobleShort.pos.y),
-				static_cast<int>(dobleShort.size.x), static_cast<int>(dobleShort.size.y), 0.0f, BLUE, kFillModeSolid);
+			Novice::DrawSprite(static_cast<int>(dobleShort.pos.x), static_cast<int>(dobleShort.pos.y),
+				dobleShort.imageWepon, 1.0f, 1.0f, 0.0f, WHITE
+			);
 		}
 	}
 }
@@ -1524,14 +1526,14 @@ void Boss::UpdateShockwaves(Shockwave* shockwaves, int maxShockwaves) {
 void Boss::DrawShockwaves(Shockwave* shockwaves, int maxShockwaves) {
 	for (int i = 0; i < maxShockwaves; i++) { // maxShockwavesを使ってループの上限を設定
 		if (shockwaves[i].isActive) {
-			Novice::DrawBox(
+			Novice::DrawSprite(
 				static_cast<int>(shockwaves[i].pos.x),
 				static_cast<int>(shockwaves[i].pos.y),
-				static_cast<int>(shockwaves[i].size.x),
-				static_cast<int>(shockwaves[i].size.y),
+				shockwaves->imageWave,
+				1.0f,
+				1.0f,
 				0.0f,
-				RED,
-				kFillModeSolid
+				WHITE
 			);
 		}
 	}
@@ -1601,14 +1603,17 @@ void Boss::DrawWarpAttak(WarpAttak& warp, ShortDistansAttak_& shortDist) {
 	if (warp.isAttak) {
 		if (shortDist.isAttak) {
 			if (warp.attakTime > 0 && warp.attakTime < 40) {
-				Novice::DrawBox(
-					static_cast<int>(shortDist.pos.x),
-					static_cast<int>(shortDist.pos.y),
-					static_cast<int>(shortDist.size.x),
-					static_cast<int>(shortDist.size.y), // エフェクトのサイズ
-					0.0f,
-					BLUE, // 緑色
-					kFillModeSolid
+				//Novice::DrawBox(
+				//	static_cast<int>(shortDist.pos.x),
+				//	static_cast<int>(shortDist.pos.y),
+				//	static_cast<int>(shortDist.size.x),
+				//	static_cast<int>(shortDist.size.y), // エフェクトのサイズ
+				//	0.0f,
+				//	BLUE, // 緑色
+				//	kFillModeSolid
+				//);
+				Novice::DrawSprite(static_cast<int>(shortDist.pos.x), static_cast<int>(shortDist.pos.y),
+					shortDist.imageWepon, 1.0f, 1.0f, 0.0f, WHITE
 				);
 			}
 		}
@@ -1723,14 +1728,14 @@ void Boss::DrawExplosive(BossExprosive& explosive) {
 
 		if (explosive.isAttak && explosive.attakTime > 0) {
 			// 全体攻撃の描画（全画面エフェクト）
-			Novice::DrawBox(
+			Novice::DrawSprite(
 				0,
 				0,
-				static_cast<int>(explosive.attakSize.x),
-				static_cast<int>(explosive.attakSize.y),
+				explosive.imageExplosive,
+				1.0f,
+				1.0f,
 				0.0f,
-				0xFF000080,
-				kFillModeSolid
+				0xffffffd0
 			);
 
 			// セーフゾーンの描画
