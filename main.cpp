@@ -461,17 +461,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				sounds.gameoverPlayHandle = Novice::PlayAudio(bgmHandles[GAMEOVER_BGM], true, 0.5f);
 			}
 
-			if (keys[DIK_W] && !preKeys[DIK_W] || keys[DIK_UP] && !preKeys[DIK_UP]) {
-				sceneNo--;
-			}
-
-			if (keys[DIK_S] && !preKeys[DIK_S] || keys[DIK_DOWN] && !preKeys[DIK_DOWN]) {
-				sceneNo++;
-			}
-
-			if (sceneNo < 0) {
-				sceneNo = 1;
-			}
 			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
 				scene = TITLE;
 			}
