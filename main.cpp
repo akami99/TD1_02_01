@@ -81,6 +81,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	int isFinish = false;
 	int sceneNo = 0;
 
+	int gameOverGb = Novice::LoadTexture("./Resources/images/gameOver.png");
+
 	while (Novice::ProcessMessage() == 0) {
 		Novice::BeginFrame();
 
@@ -239,6 +241,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				sounds.fastBattlePlayHandle = Novice::PlayAudio(bgmHandles[FIRST_BOSS_BGM], true, 0.5f); // 修正：ハンドルを使用
 			}
 
+			if (player_.hp <= 0) {
+				scene = GAMEOVER;
+			}
 
 			///
 			/// ↑更新処理ここまで
@@ -324,6 +329,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// プレイヤーの更新処理
 			player.Move(player_, line, keys, preKeys);
 
+			if (player_.hp <= 0) {
+				scene = GAMEOVER;
+			}
+
 			//======================
 			//描画処理
 			//======================
@@ -349,9 +358,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				sounds.secondBattlePlayHandle = Novice::PlayAudio(bgmHandles[SECOND_BOSS_BGM], true, 0.5f); // 修正：ハンドルを使用
 			}
 
-
-
-
 			if (boss_.hitStopTime > 0) boss_.hitStopTime--;
 			if (player_.hitStopTime > 0) player_.hitStopTime--;
 
@@ -362,7 +368,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			boss.SecondBossMove(boss_, shortDistAttak_, player_, shake, beam2, shockwaves, warp, explosive, projectiles);
 
 
-
+			if (player_.hp <= 0) {
+				scene = GAMEOVER;
+			}
 
 			if (boss_.hp <= 0) {
 				scene = FINISHBRO;
@@ -447,6 +455,50 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			}
 
 			break;
+		case GAMEOVER:
+			isFinish = false;
+
+			if (keys[DIK_W] && !preKeys[DIK_W] || keys[DIK_UP] && !preKeys[DIK_UP]) {
+				sceneNo--;
+			}
+
+			if (keys[DIK_S] && !preKeys[DIK_S] || keys[DIK_DOWN] && !preKeys[DIK_DOWN]) {
+				sceneNo++;
+			}
+
+			if (sceneNo < 0) {
+				sceneNo = 1;
+			}
+
+			if (sceneNo > 1) {
+				sceneNo = 0;
+			}
+
+			if (sceneNo == 1) {
+				isFinish = true;
+			}
+
+
+
+			//=====================
+			//描画処理
+			//=====================
+
+			Novice::DrawSprite(0, 0, gameOverGb, 1, 1, 0.0f, WHITE);
+
+			if (sceneNo == 0) {
+				ui.DrawFont(555, 325, line.start);
+				ui.DrawLightFont(580, 455, line.exit);
+			} else if (sceneNo == 1) {
+				ui.DrawLightFont(555, 325, line.start);
+				ui.DrawFont(580, 455, line.exit);
+			}
+
+			ui.DrawFont(410, 600, line.pressToSpace);
+
+
+			break;
+
 
 
 		case CLEAR:
