@@ -454,6 +454,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 		case GAMEOVER:
+
 			isFinish = false;
 			if (!Novice::IsPlayingAudio(sounds.gameoverPlayHandle) || sounds.gameoverPlayHandle == -1) {
 				Novice::StopAudio(sounds.secondBattlePlayHandle);
