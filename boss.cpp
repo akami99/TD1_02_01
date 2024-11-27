@@ -41,10 +41,10 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					if (boss.hp > 100) {
-						boss.attakNo = rand() % 3 + 1;
+						boss.attakNo = rand() % 4 + 1;
 					} else	if (boss.hp <= 100 && boss.hp > 50) {
 
-						boss.attakNo = rand() % 5 + 3;
+						boss.attakNo = rand() % 6 + 3;
 
 						//boss.attakNo = ;
 						/*if (boss.hp > 100) {
@@ -63,23 +63,23 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		boss.vanishTime--;
 	}
 
-	if (boss.vanishTime == 0) {
-		//HPが50%以上ならattakNo1~3
-		//%50%以下なら3~6(仮)
-		//25%以下なら5~8(仮)
-		if (!boss.isAttak) {
-			if (boss.attakNo == 0) {
-				if (boss.attakStandTime <= 0) {
-					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 50;
-					/*if (boss.hp > 100) {
-						boss.attakNo = 5;
-					}*/
-					boss.isEase = false;
-				}
-			}
-		}
-	}
+	//if (boss.vanishTime == 0) {
+	//	//HPが50%以上ならattakNo1~3
+	//	//%50%以下なら3~6(仮)
+	//	//25%以下なら5~8(仮)
+	//	if (!boss.isAttak) {
+	//		if (boss.attakNo == 0) {
+	//			if (boss.attakStandTime <= 0) {
+	//				//boss.attakNo = rand() % 5 + 1;
+	//				boss.attakNo = 50;
+	//				/*if (boss.hp > 100) {
+	//					boss.attakNo = 5;
+	//				}*/
+	//				boss.isEase = false;
+	//			}
+	//		}
+	//	}
+	//}
 
 	// 範囲攻撃処理
 	if (boss.attakNo == 1) {
