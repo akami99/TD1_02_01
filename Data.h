@@ -24,11 +24,11 @@ struct Whole {
 
 // プレイヤー
 struct Player_ {
-    Vector2 pos = { 32.0f,600.0f };
-    Vector2 direction = { 1.0f, 0.0f };//プレイヤーの向き(1だったら右、-1だったら左向き)
-    Vector2 velocity = { 0.0f, 0.0f };
-    Vector2 acceleration = { 0.0f, 0.5f };
-    float radius = 32;
+	Vector2 pos = { 32.0f,600.0f };
+	Vector2 direction = { 1.0f, 0.0f };//プレイヤーの向き(1だったら右、-1だったら左向き)
+	Vector2 velocity = { 0.0f, 0.0f };
+	Vector2 acceleration = { 0.0f, 0.5f };
+	float radius = 32;
 	int hp = 300;    // ゲージの描画はUi.cpp内で調整してるので注意
 	int energy = 600;// 同上
 	const int kMaxEnergy = 600;
@@ -130,7 +130,7 @@ struct Boss_ {
 	int localTimer = 0;
 	AllRange allRangeBeams[MAX_ALLRANGE_BEAMS];//オールレンジアタックの攻撃用配列
 
-	int isFall=false;//落下攻撃
+	int isFall = false;//落下攻撃
 	int isFallAttak = false;
 	int fallCount = 0;
 	int fallSpeed = 10;
@@ -139,7 +139,7 @@ struct Boss_ {
 	int hitStopTime = 0;
 
 	int warpAttak = false;
-	int image= Novice::LoadTexture("./Resources/images/boss_01.png");
+	int image = Novice::LoadTexture("./Resources/images/boss_01.png");
 	int imageLeft = Novice::LoadTexture("./Resources/images/boss_01.png");
 	int imageRight = Novice::LoadTexture("./Resources/images/boss_02.png");
 	int imageDown = Novice::LoadTexture("./Resources/images/boss_03.png");
@@ -169,7 +169,7 @@ struct Boss_ {
 
 //ワープ攻撃
 struct WarpAttak {
-	Vector2 pos = {-100.0f,-100.0f};//bossの位置をここに固定する
+	Vector2 pos = { -100.0f,-100.0f };//bossの位置をここに固定する
 	int attakTime = 0;//if(warp.attakTime>0)の場合プレイヤーの後ろに固定させる
 	int isAttak = false;//trueだったら近接攻撃(shortDirectionAttak)
 
@@ -177,11 +177,11 @@ struct WarpAttak {
 
 //落下攻撃の衝撃波
 struct Shockwave {
-	Vector2 pos = {-100.0f,-100.0f};       // 衝撃波の位置
-	Vector2 size = {32.0f,32.0f};      // 衝撃波のサイズ
+	Vector2 pos = { -100.0f,-100.0f };       // 衝撃波の位置
+	Vector2 size = { 32.0f,32.0f };      // 衝撃波のサイズ
 	Vector2 direction; // 衝撃波の進行方向
-	float speed=10.0f;       // 衝撃波のスピード
-	int isActive=false;      // 衝撃波が有効かどうか（1: 有効, 0: 無効）
+	float speed = 10.0f;       // 衝撃波のスピード
+	int isActive = false;      // 衝撃波が有効かどうか（1: 有効, 0: 無効）
 	int isFalling = false;               // 球が落下中かどうか（1: 落下, 0: 非落下）
 	int lifetime = 0;                    // 球の存在時間
 	int imageWave = Novice::LoadTexture("./Resources/images/wave.png");
@@ -291,10 +291,20 @@ struct Line {
 	int exit = Novice::LoadTexture("./Resources/images/exit.png");
 };
 
+struct Sounds {
+	int titlePlayHandle = -1;
+	int fastBattlePlayHandle = -1;
+	int secondBattlePlayHandle = -1;
+	int clearPlayHandle = -1;
+
+	int titleBgm = Novice::LoadAudio("./Resources/sounds/hu.mp3");
+	/*int fastBattleBgm = Novice::LoadAudio("./Resources/sounds/イルミ・ネオンシティ.mp3");
+	int secondBattleBgm = Novice::LoadAudio("./Resourcers/sounds/黒翼の魔女.mp3");
+	int clearBgm = Novice::LoadAudio("./Resources/sounds/路地裏と街路樹.mp3");*/
+};
 
 
 
 
 
-	
 
