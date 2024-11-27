@@ -45,6 +45,7 @@ struct Player_ {
 	int imageDown = Novice::LoadTexture("./Resources/images/player_04.png");
 	int isRight = true;
 	int isLeft = false;
+	int hitStopTime = 0;
 
 };
 
@@ -133,6 +134,8 @@ struct Boss_ {
 	int fallSpeed = 10;
 	int fallCoolTime = 0;
 
+	int hitStopTime = 0;
+
 	int warpAttak = false;
 	int image= Novice::LoadTexture("./Resources/images/boss_01.png");
 	int imageLeft = Novice::LoadTexture("./Resources/images/boss_01.png");
@@ -194,7 +197,7 @@ struct BossExprosive {
 // 範囲攻撃
 struct BossRengeAttak_ {
 	Vector2 pos = { -32.0f, 0.0f };
-	Vector2 size = { 480.0f, 700.0f };
+	Vector2 size = { 480.0f, 2000.0f };
 	int attakTime = 90;
 	int attakStandTime = 120;
 	int isAttak = false;

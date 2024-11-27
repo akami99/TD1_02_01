@@ -519,10 +519,12 @@ void Player::FlashHitBox(Player_& player, Boss_& boss, Flash_& flash) {
 	if (boss.isHitTop && boss.isHitRight && boss.isHitLeft) {
 		if (player.isFlash) {
 			if (boss.hp > 0) { // 敵へダメージ
+				boss.hitStopTime = 10;
 				boss.hp--;
 			}
 		} else if (player.isHighFlash) {
 			if (boss.hp > 0) { // 敵へダメージ
+				boss.hitStopTime = 20;
 				boss.hp -= 2;
 			}
 		}

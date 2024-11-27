@@ -152,13 +152,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			/// ↓更新処理ここから
 			///
 
-			// プレイヤーの更新処理
-			player.Move(player_, line, keys, preKeys);
-			player.Attack(player_, boss_, flash_, keys, preKeys);
+			if (boss_.hitStopTime > 0) {
+				boss_.hitStopTime--;
+			}
 
-			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, projectiles);
+			if (player_.hitStopTime > 0) {
+				player_.hitStopTime--;
+			}
 
+			if (boss_.hitStopTime <= 0) {
+				if (player_.hitStopTime <= 0) {
+					// プレイヤーの更新処理
+					player.Move(player_, line, keys, preKeys);
+					player.Attack(player_, boss_, flash_, keys, preKeys);
+
+					// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
+					boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, projectiles);
+
+				}
+			}
 			if (boss_.hp <= 0) {
 				scene = SECONDBOSS;
 				boss_.attakNo = 0;
@@ -231,11 +243,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//更新処理
 			//================================
 
-			// プレイヤーの更新処理
-			player.Move(player_, line, keys, preKeys);
-			player.Attack(player_, boss_, flash_, keys, preKeys);
+			if (boss_.hitStopTime > 0) {
+				boss_.hitStopTime--;
+			}
 
-			boss.SecondBossMove(boss_, shortDistAttak_, player_, shake, beam2, shockwaves, warp, explosive,projectiles);
+			if (player_.hitStopTime > 0) {
+				player_.hitStopTime--;
+			}
+			if (boss_.hitStopTime <= 0) {
+				if (player_.hitStopTime <= 0) {
+
+					// プレイヤーの更新処理
+					player.Move(player_, line, keys, preKeys);
+					player.Attack(player_, boss_, flash_, keys, preKeys);
+
+					boss.SecondBossMove(boss_, shortDistAttak_, player_, shake, beam2, shockwaves, warp, explosive, projectiles);
+
+				}
+			}
 
 			if (boss_.secondHp <= 0) {
 				scene = CLEAR;
