@@ -182,7 +182,8 @@ struct Shockwave {
 	Vector2 direction; // 衝撃波の進行方向
 	float speed=10.0f;       // 衝撃波のスピード
 	int isActive=false;      // 衝撃波が有効かどうか（1: 有効, 0: 無効）
-
+	int isFalling = false;               // 球が落下中かどうか（1: 落下, 0: 非落下）
+	int lifetime = 0;                    // 球の存在時間
 	int imageWave = Novice::LoadTexture("./Resources/images/wave.png");
 };
 

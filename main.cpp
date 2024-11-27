@@ -123,6 +123,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//更新処理
 			//====================
 
+			if (keys[DIK_Q]) {
+				scene = SECONDBOSS;
+			}
+
 			// プレイヤーの更新処理
 			player.Move(player_, line, keys, preKeys);
 			player.Attack(player_, boss_, flash_, keys, preKeys);
@@ -213,8 +217,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			boss.DrawBossChargeAttak(object_);
 
-
-
 			// UIの描画
 			ui.DrawGauge(340, 30, boss_.hp, 0);
 			ui.DrawGauge(100, 620, player_.hp, 1);
@@ -225,9 +227,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// 弾の描画
 			boss.DrawWhole();
-
-
-
 
 			//Novice::ScreenPrintf(0, 0, "%d",boss.time);
 			///
