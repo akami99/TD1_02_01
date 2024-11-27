@@ -29,8 +29,8 @@ enum {
 	FIRST_BOSS_BGM,
 	SECOND_BOSS_BGM,
 	CLEAR_BGM,
-	TOTAL_BGM,
-	GAMEOVER_BGM
+	GAMEOVER_BGM,
+	TOTAL_BGM
 };
 
 // オーディオハンドルを保存する配列
@@ -97,6 +97,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		switch (scene) {
 		case TITLE:
+			//クリアBGMを止める
+			Novice::StopAudio(sounds.clearPlayHandle);
+			Novice::StopAudio(sounds.gameoverPlayHandle);
+
 			isFinish = false;
 
 			if (keys[DIK_W] && !preKeys[DIK_W] || keys[DIK_UP] && !preKeys[DIK_UP]) {
@@ -158,6 +162,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			//クリアBGMを止める
 			Novice::StopAudio(sounds.clearPlayHandle);
+
+			Novice::StopAudio(sounds.gameoverPlayHandle);
 
 			//====================
 			//描画処理
@@ -233,9 +239,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				boss_.attakStandTime = 120;
 				boss_.isAttak = false;
 			}
+			Novice::StopAudio(sounds.titlePlayHandle);
 
 			if (!Novice::IsPlayingAudio(sounds.fastBattlePlayHandle) || sounds.fastBattlePlayHandle == -1) {
-				Novice::StopAudio(sounds.titlePlayHandle);
 				sounds.fastBattlePlayHandle = Novice::PlayAudio(bgmHandles[FIRST_BOSS_BGM], true, 0.5f); // 修正：ハンドルを使用
 			}
 
@@ -320,8 +326,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 			}
+			Novice::StopAudio(sounds.fastBattlePlayHandle);
+
 			if (!Novice::IsPlayingAudio(sounds.secondBattlePlayHandle) || sounds.secondBattlePlayHandle == -1) {
-				Novice::StopAudio(sounds.fastBattlePlayHandle);
 				sounds.secondBattlePlayHandle = Novice::PlayAudio(bgmHandles[SECOND_BOSS_BGM], true, 0.5f); // 修正：ハンドルを使用
 			}
 			// プレイヤーの更新処理
@@ -351,8 +358,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 
 		case SECONDBOSS:
+			Novice::StopAudio(sounds.fastBattlePlayHandle);
+
 			if (!Novice::IsPlayingAudio(sounds.secondBattlePlayHandle) || sounds.secondBattlePlayHandle == -1) {
-				Novice::StopAudio(sounds.fastBattlePlayHandle);
 				sounds.secondBattlePlayHandle = Novice::PlayAudio(bgmHandles[SECOND_BOSS_BGM], true, 0.5f); // 修正：ハンドルを使用
 			}
 
@@ -454,10 +462,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 		case GAMEOVER:
+			Novice::StopAudio(sounds.fastBattlePlayHandle);
+			Novice::StopAudio(sounds.secondBattlePlayHandle);
 
 			isFinish = false;
 			if (!Novice::IsPlayingAudio(sounds.gameoverPlayHandle) || sounds.gameoverPlayHandle == -1) {
-				Novice::StopAudio(sounds.secondBattlePlayHandle);
 				sounds.gameoverPlayHandle = Novice::PlayAudio(bgmHandles[GAMEOVER_BGM], true, 0.5f);
 			}
 
@@ -479,9 +488,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		case CLEAR:
+			Novice::StopAudio(sounds.secondBattlePlayHandle);
 
 			if (!Novice::IsPlayingAudio(sounds.clearPlayHandle) || sounds.clearPlayHandle == -1) {
-				Novice::StopAudio(sounds.secondBattlePlayHandle);
 				sounds.clearPlayHandle = Novice::PlayAudio(bgmHandles[CLEAR_BGM], true, 0.5f);
 			}
 
