@@ -6,7 +6,7 @@
 #include "boss.h"
 #include "Ui.h"
 #include <algorithm>
-#include "GameInitializer.h"
+
 
 const char kWindowTitle[] = "1221_霊障退治";
 
@@ -51,7 +51,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Beam2 beam2;
 	Projectile projectiles[10];
 	Boss::UpdateProjectiles(projectiles);
-	BossExprosive explosive;
+
 	WarpAttak warp;
 	Sounds sounds;
 //	Particle Particle;
@@ -62,8 +62,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	int scene = TITLE;
 
-	int sceneNo = 0;
-	int isFinish = false;
 
 	// ウィンドウの×ボタンが押されるまでループ
 	while (Novice::ProcessMessage() == 0) {
@@ -257,21 +255,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			Novice::DrawLine(0, 600, 1280, 600, WHITE);
 
-			// ボスの描画
-			boss.DrawParticles(boss_.particles, 50);
-			//boss.DrawAura(boss_);
-			boss.BossDraw(boss_, shake);
 			// フラッシュライトの描画
 			player.DrawFlash(player_, flash_);
 
 			// プレイヤーの描画
-			player.Draw(player_, flash_);
+			//player.Draw(player_);
 
 			//ボスのビーム攻撃
 			boss.DrawBeams(boss_);
 
+			//第二形態のボスのビーム攻撃
+			boss.DrawBeam2(beam2);
+
 			// ボスの範囲攻撃描画
 			boss.DrawBossRengeAttak(rengeAttak_);
+
+			// ボスの描画
+			boss.BossDraw(boss_, shake);
+
+			//オールレンジアタック
+			boss.DrawAllRangeAttack(boss_);
+
+			//衝撃波の描画
+			boss.DrawShockwaves(shockwaves, 10);
 
 			//近距離攻撃の描画
 			boss.DrawShortDistansAttak(shortDistAttak_);
@@ -455,22 +461,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				scene = TITLE;
 			}
 
-			player.DrawBackGround(line.clear);
-
-			ui.DrawFont(410, 600, line.pressToSpace);
 			break;
 		}
 
-
+		
 
 		// フレームの終了
 		Novice::EndFrame();
-
-		if (isFinish) {
-			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-				break;
-			}
-		}
 
 		// ESCキーが押されたらループを抜ける
 		if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
