@@ -423,26 +423,22 @@ void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist, Player_& p
 		}
 	}
 
-	if (!boss.isOneExtraAttak) {
-		if (boss.hp <= 100) {
-			boss.attakNo = 200;
-			boss.isOneExtraAttak = true;
-		}
+	if (!boss.isOneExtraAttak && boss.hp <= 100 && boss.attakNo == 0 && !boss.isAttak) {
+		boss.attakNo = 200;
+		boss.isOneExtraAttak = true;
+		boss.isAttak = true; // 攻撃中フラグを設定
+	}
+	if (!boss.isTwoExtraAttak && boss.hp <= 50 && boss.attakNo == 0 && !boss.isAttak) {
+		boss.attakNo = 200;
+		boss.isTwoExtraAttak = true;
+		boss.isAttak = true; // 攻撃中フラグを設定
+	}
+	if (!boss.isThreeExtraAttak && boss.hp <= 25 && boss.attakNo == 0 && !boss.isAttak) {
+		boss.attakNo = 200;
+		boss.isThreeExtraAttak = true;
+		boss.isAttak = true; // 攻撃中フラグを設定
 	}
 
-	if (!boss.isTwoExtraAttak) {
-		if (boss.hp <= 50) {
-			boss.attakNo = 200;
-			boss.isTwoExtraAttak = true;
-		}
-	}
-
-	if (!boss.isThreeExtraAttak) {
-		if (boss.hp <= 25) {
-			boss.attakNo = 200;
-			boss.isThreeExtraAttak = true;
-		}
-	}
 
 	if (boss.attakNo == 1) {
 		Beam2Attak(boss, beam2, shake);
