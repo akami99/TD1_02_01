@@ -96,7 +96,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			if (sceneNo == 0) {
 				if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-					player.Initialize(player_, flash_);
 					scene = GUIDE;
 				}
 			}

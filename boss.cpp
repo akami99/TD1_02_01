@@ -676,13 +676,13 @@ void Boss::DrawParticles(Particle particles[], int maxParticles) {
 		}
 	}
 
-	Novice::ScreenPrintf(0, 0, "Particle count: %d", maxParticles);
+	/*Novice::ScreenPrintf(0, 0, "Particle count: %d", maxParticles);
 	for (int i = 0; i < maxParticles; i++) {
 		if (particles[i].isActive) {
 			Novice::ScreenPrintf(0, 20 + i * 20, "Particle %d: x=%.2f, y=%.2f, size=%.2f, lifetime=%.2f",
 				i, particles[i].pos.x, particles[i].pos.y, particles[i].size, particles[i].lifetime);
 		}
-	}
+	}*/
 
 
 }

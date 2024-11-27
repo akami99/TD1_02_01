@@ -6,24 +6,6 @@
 const float leftWall = 0.0f;
 const float rightWall = 1280.0f;
 
-void Player::Initialize(Player_& player, Flash_& flash) {
-	player.pos = { 32.0f,600.0f };
-	player.direction = { 1.0f, 0.0f };
-	player.velocity = { 0.0f, 0.0f };
-	player.hp = 300;
-	player.energy = 600;
-	player.isFlash = false;
-	player.isHighFlash = false;
-	player.isJanp = false;
-	player.janpNum = 0;
-	player.speed = 2.0f;
-	player.isJanpSpeed = false;
-	player.isHit = false;
-
-	flash.pos = { 0.0f,0.0f };
-	flash.direction = { 0.0f, 0.0f };
-}
-
 void Player::Move(Player_& player, Line& line, const char* keys, const char* preKeys) {
 	player.direction = { 0.0 };
 
