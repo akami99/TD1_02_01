@@ -132,6 +132,9 @@ public:
 	//連続攻撃の当たり判定
 	void PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_& doubleAttak);
 
+	//チャージ攻撃当たり判定
+	//void PlayerBossChargeAttak(Player_& player, const Object& object);
+
 
 	void AllRengeAttakHitBox(Boss_& allRange,Player_& player);
 	

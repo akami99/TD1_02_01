@@ -4,6 +4,7 @@
 
 const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
 const int MAX_PROJECTILES = 3;
+const int MAX_PROJECTILES2 = 4;
 // 最大ビーム数
 const int MAX_ALLRANGE_BEAMS = 30;
 const int MAX_boll = 30; // 発射する弾の数
@@ -46,6 +47,7 @@ struct Player_ {
 	int isLeft = false;
 
 };
+
 
 //フラッシュライト
 struct Flash_ {
@@ -276,4 +278,8 @@ struct Line {
 
 
 
+
+
+
+	
 
