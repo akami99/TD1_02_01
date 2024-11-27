@@ -47,7 +47,7 @@ struct Player_ {
 	int isLeft = false;
 	int hitStopTime = 0;
 	int flashTime = 0;
-	int hightFlashTime = 0;
+	int highFlashTime = 0;
 
 };
 
