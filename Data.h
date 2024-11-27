@@ -309,9 +309,11 @@ struct Sounds {
 	int fastBattlePlayHandle = -1;
 	int secondBattlePlayHandle = -1;
 	int clearPlayHandle = -1;
+	int gameoverPlayHandle = -1;
 
 	int titleBgm = Novice::LoadAudio("./Resources/sounds/TitleBGM.mp3");
 	int fastBattleBgm = Novice::LoadAudio("./Resources/sounds/FirstBossBGM.mp3");
 	int secondBattleBgm = Novice::LoadAudio("./Resources/sounds/SecondBossBGM.mp3");
 	int clearBgm = Novice::LoadAudio("./Resources/sounds/ClearBGM.mp3");
+	int gameoverBgm = Novice::LoadAudio("./Resources/sounds/GameOverBGM.mp3");
 };

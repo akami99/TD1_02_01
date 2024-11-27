@@ -1,3 +1,4 @@
+
 #include <Novice.h>
 #include <math.h>
 #include "Data.h"
@@ -28,7 +29,8 @@ enum {
 	FIRST_BOSS_BGM,
 	SECOND_BOSS_BGM,
 	CLEAR_BGM,
-	TOTAL_BGM
+	TOTAL_BGM,
+	GAMEOVER_BGM
 };
 
 // オーディオハンドルを保存する配列
@@ -40,6 +42,7 @@ void LoadBgm() {
 	bgmHandles[FIRST_BOSS_BGM] = Novice::LoadAudio("./Resources/sounds/FirstBossBGM.mp3");
 	bgmHandles[SECOND_BOSS_BGM] = Novice::LoadAudio("./Resources/sounds/SecondBossBGM.mp3");
 	bgmHandles[CLEAR_BGM] = Novice::LoadAudio("./Resources/sounds/ClearBGM.mp3");
+	bgmHandles[GAMEOVER_BGM] = Novice::LoadAudio("./Resources/sounds/GameOverBGM.mp3");
 }
 
 
@@ -451,6 +454,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 		case GAMEOVER:
+			isFinish = false;
+			if (!Novice::IsPlayingAudio(sounds.gameoverPlayHandle) || sounds.gameoverPlayHandle == -1) {
+				Novice::StopAudio(sounds.secondBattlePlayHandle);
+				sounds.gameoverPlayHandle = Novice::PlayAudio(bgmHandles[GAMEOVER_BGM], true, 0.5f);
+			}
+
+			if (keys[DIK_W] && !preKeys[DIK_W] || keys[DIK_UP] && !preKeys[DIK_UP]) {
+				sceneNo--;
+			}
+
+			if (keys[DIK_S] && !preKeys[DIK_S] || keys[DIK_DOWN] && !preKeys[DIK_DOWN]) {
+				sceneNo++;
+			}
+
+			if (sceneNo < 0) {
+				sceneNo = 1;
 			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
 				scene = TITLE;
 			}
