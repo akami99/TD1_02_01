@@ -83,6 +83,7 @@ struct Beam2 {
 	int attakStandTime = 0;
 	int isAttak = false;                  // 攻撃中かどうか
 	int isEase = false;
+	
 };
 
 // 全方位攻撃用ビーム構造体
@@ -122,6 +123,7 @@ struct Boss_ {
 	int attakStandTime = 120;
 	int isAttak = false;
 	int secondHp = 200;
+
 	int explosiveTime = 600;
 	int isExplo = false;
 	int isEase = false;

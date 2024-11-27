@@ -1297,11 +1297,14 @@ void Boss::Beam2HitBox(Beam2& beam2, Player_& player) {
 
 //第2形態のビーム
 void Boss::DrawBeam2(Beam2& beam2) {
+	int imageBeam = Novice::LoadTexture("./Resources/images/beam.png");
 	if (beam2.attakStandTime <= 0) {
 		if (beam2.attakTime > 0) {
 			if (beam2.attakTime % 2 == 0) {
 				Novice::DrawBox(static_cast<int>(beam2.pos.x), static_cast<int>(beam2.pos.y),
 					static_cast<int>(beam2.size.x), static_cast<int>(beam2.size.y), 0.0f, RED, kFillModeSolid);
+				Novice::DrawSprite(static_cast<int>(beam2.pos.x), static_cast<int>(beam2.pos.y), imageBeam, 1, 1, 0.0f, WHITE);
+
 			}
 		}
 	}
