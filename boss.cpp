@@ -411,9 +411,9 @@ void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist, Player_& p
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
 					if (boss.hp > 100) {
-						boss.attakNo = rand()%3 + 1;
+						boss.attakNo = rand() % 3 + 1;
 					} else if (boss.hp <= 100) {
-						boss.attakNo =rand()% 5 + 1;
+						boss.attakNo = rand() % 5 + 1;
 					}
 
 					boss.isEase = false;
@@ -492,82 +492,82 @@ void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist, Player_& p
 
 	if (boss.attakNo == 4) {
 		BossWarpAttak(boss, player, warp, shortDist, shake);
-	if (boss.attakNo == 40) {
-		BossWarpAttak(boss, player, warp, shortDist, shake);
-	}
+		if (boss.attakNo == 40) {
+			BossWarpAttak(boss, player, warp, shortDist, shake);
+		}
 
-	if (boss.attakNo == 5) {
-		boss.localTimer++;
-		if (!boss.isFloating) {
-			if (boss.localTimer >= 5) {
-				boss.isFloating = true;
-				boss.localTimer = 0;
-			}
-		} else {
-			if (boss.pos.y > 400.0f && boss.attackCount < MAX_PROJECTILES2) {
-				boss.pos.y -= 2.0f;
-			} else if (boss.attackCount < MAX_PROJECTILES2) {
-				if (boss.localTimer >= 20) {
-					projectiles[boss.attackCount].pos = boss.pos;
-					Vector2 direction = { player.pos.x - boss.pos.x, player.pos.y - boss.pos.y };
-					float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
-					direction.x /= length;
-					direction.y /= length;
-
-					projectiles[boss.attackCount].velocity = { direction.x * 8.0f, direction.y * 8.0f };
-					projectiles[boss.attackCount].isActive = true;
-					boss.attackCount++;
+		if (boss.attakNo == 5) {
+			boss.localTimer++;
+			if (!boss.isFloating) {
+				if (boss.localTimer >= 5) {
+					boss.isFloating = true;
 					boss.localTimer = 0;
 				}
 			} else {
-				if (boss.pos.y < 598.0f) {
-					boss.pos.y += 2.0f;
+				if (boss.pos.y > 400.0f && boss.attackCount < MAX_PROJECTILES2) {
+					boss.pos.y -= 2.0f;
+				} else if (boss.attackCount < MAX_PROJECTILES2) {
+					if (boss.localTimer >= 20) {
+						projectiles[boss.attackCount].pos = boss.pos;
+						Vector2 direction = { player.pos.x - boss.pos.x, player.pos.y - boss.pos.y };
+						float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+						direction.x /= length;
+						direction.y /= length;
+
+						projectiles[boss.attackCount].velocity = { direction.x * 8.0f, direction.y * 8.0f };
+						projectiles[boss.attackCount].isActive = true;
+						boss.attackCount++;
+						boss.localTimer = 0;
+					}
 				} else {
-					boss.isFloating = false;
-					boss.attackCount = 0;
+					if (boss.pos.y < 598.0f) {
+						boss.pos.y += 2.0f;
+					} else {
+						boss.isFloating = false;
+						boss.attackCount = 0;
+					}
+				}
+			}
+			// プロジェクタイルの更新と当たり判定処理
+			for (int i = 0; i < MAX_PROJECTILES2; i++) {
+				if (projectiles[i].isActive) {
+					// プロジェクタイルを移動
+					projectiles[i].pos.x += projectiles[i].velocity.x;
+					projectiles[i].pos.y += projectiles[i].velocity.y;
+
+					// プレイヤーとの当たり判定
+					float dx = player.pos.x - projectiles[i].pos.x;
+					float dy = player.pos.y - projectiles[i].pos.y;
+					float distance = std::sqrt(dx * dx + dy * dy);
+
+					if (distance < player.radius + projectiles[i].radius) {
+						// ヒット処理
+						player.hp -= 10;  // プレイヤーのHPを減らす
+						player.isHit = true;  // ヒット状態をマーク
+
+						// プロジェクタイルを無効化
+						projectiles[i].isActive = false;
+					}
+
+					// 画面外に出た場合も無効化
+					float screenWidth = 1330.0f;  // 画面幅
+					float screenHeight = 770.0f; // 画面高さ
+					if (projectiles[i].pos.x < -50 || projectiles[i].pos.x > screenWidth ||
+						projectiles[i].pos.y < -50 || projectiles[i].pos.y > screenHeight) {
+						projectiles[i].isActive = false;
+					}
 				}
 			}
 		}
-		// プロジェクタイルの更新と当たり判定処理
-		for (int i = 0; i < MAX_PROJECTILES2; i++) {
-			if (projectiles[i].isActive) {
-				// プロジェクタイルを移動
-				projectiles[i].pos.x += projectiles[i].velocity.x;
-				projectiles[i].pos.y += projectiles[i].velocity.y;
 
-				// プレイヤーとの当たり判定
-				float dx = player.pos.x - projectiles[i].pos.x;
-				float dy = player.pos.y - projectiles[i].pos.y;
-				float distance = std::sqrt(dx * dx + dy * dy);
 
-				if (distance < player.radius + projectiles[i].radius) {
-					// ヒット処理
-					player.hp -= 10;  // プレイヤーのHPを減らす
-					player.isHit = true;  // ヒット状態をマーク
+		if (boss.attakNo == 200) {
+			BossExplosive(boss, explosive, player, shake);
 
-					// プロジェクタイルを無効化
-					projectiles[i].isActive = false;
-				}
-
-				// 画面外に出た場合も無効化
-				float screenWidth = 1330.0f;  // 画面幅
-				float screenHeight = 770.0f; // 画面高さ
-				if (projectiles[i].pos.x < -50 || projectiles[i].pos.x > screenWidth ||
-					projectiles[i].pos.y < -50 || projectiles[i].pos.y > screenHeight) {
-					projectiles[i].isActive = false;
-				}
-			}
 		}
+		Novice::ScreenPrintf(200, 500, "%d", player.isHit);
 	}
-
-
-	if (boss.attakNo == 200) {
-		BossExplosive(boss, explosive, player, shake);
-
-	}
-	Novice::ScreenPrintf(200, 500, "%d", player.isHit);
 }
-
 
 // ボスを描画する
 void Boss::BossDraw(Boss_ boss, Shake& shake) {
@@ -1413,10 +1413,20 @@ void Boss::DrawAllRangeAttack(Boss_& allRange) {
 					WHITE, // 色
 					kFillModeSolid // 塗りつぶし
 				);
+			} else {
+				// 通常の細い線を描画
+				Novice::DrawLine(
+					static_cast<int>(allRange.allRangeBeams[i].startPos.x),
+					static_cast<int>(allRange.allRangeBeams[i].startPos.y),
+					static_cast<int>(allRange.allRangeBeams[i].endPos.x),
+					static_cast<int>(allRange.allRangeBeams[i].endPos.y),
+					WHITE
+				);
 			}
 		}
 	}
 }
+
 
 // 全体攻撃の当たり判定
 void Boss::AllRengeAttakHitBox(Boss_& allRange, Player_& player) {
@@ -1839,6 +1849,68 @@ void Boss::DrawExplosive(BossExprosive& explosive) {
 				static_cast<int>(explosive.safeSize.y),
 				0.0f,
 				0x00FF0040,
+				kFillModeSolid
+			);
+		}
+	}
+}
+void Boss::BossFinishBro(Boss_& boss, Player_& player, Shake& shake) {
+	// 爆発状態を初期化
+	shake.pos.x = 0.0f;
+	shake.pos.y = 0.0f;
+
+	// 最終判定: ボスが全方向ヒットかつフラッシュライトが有効
+	if (boss.isHitTop && boss.isHitRight && boss.isHitLeft) {
+		if ((player.isFlash || player.isHighFlash) && !boss.isExplo) {
+			// 壁に反射する処理
+			boss.velocity.x *= -1.0f;
+			boss.velocity.y *= -1.0f;
+
+			// 爆発の開始
+			boss.isExplo = true;
+			boss.explosiveTime = 600; // 爆発エフェクトの初期時間を設定
+		}
+	}
+
+	// 爆発中の処理
+	if (boss.isExplo) {
+		// ボスの反射運動
+		boss.pos.x += boss.velocity.x;
+		boss.pos.y += boss.velocity.y;
+
+		// 壁の衝突判定（反射時に画面揺れを発生）
+		if (boss.pos.x <= 0 || boss.pos.x >= 1280 - boss.size.x) {
+			boss.velocity.x *= -1.0f; // 水平方向に反射
+			shake.pos.x = static_cast<float>(rand() % 61 - 30);
+			shake.pos.y = static_cast<float>(rand() % 61 - 30);
+		}
+		if (boss.pos.y <= 0 || boss.pos.y >= 720 - boss.size.y) {
+			boss.velocity.y *= -1.0f; // 垂直方向に反射
+			shake.pos.x = static_cast<float>(rand() % 61 - 30);
+			shake.pos.y = static_cast<float>(rand() % 61 - 30);
+		}
+
+		// 爆発エフェクトの時間を減少
+		boss.explosiveTime--;
+
+		// 爆発終了条件
+		if (boss.explosiveTime <= 0) {
+			boss.isExplo = false;
+			boss.hp = 0; // ボスのHPをゼロに設定（終了処理）
+		}
+	}
+}
+void Boss::DrawBossExplo(Boss_& boss) {
+	if (boss.isExplo) {
+		// 例えばボスの爆発エフェクトなどを描画
+		if (boss.explosiveTime % 4 == 0) {
+			Novice::DrawBox(
+				static_cast<int>(boss.pos.x) - 50,
+				static_cast<int>(boss.pos.y) - 50,
+				150,
+				150,
+				0.0f,
+				0xFF450080, // 爆発色
 				kFillModeSolid
 			);
 		}

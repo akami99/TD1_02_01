@@ -25,11 +25,11 @@ enum Scene {
 };
 
 enum {
-    TITLE_BGM,
-    FIRST_BOSS_BGM,
-    SECOND_BOSS_BGM,
-    CLEAR_BGM,
-    TOTAL_BGM
+	TITLE_BGM,
+	FIRST_BOSS_BGM,
+	SECOND_BOSS_BGM,
+	CLEAR_BGM,
+	TOTAL_BGM
 };
 
 // オーディオハンドルを保存する配列
@@ -37,19 +37,19 @@ int bgmHandles[TOTAL_BGM];
 
 // BGMファイルをロードする初期化処理を追加
 void LoadBgm() {
-    bgmHandles[TITLE_BGM] = Novice::LoadAudio("./Resources/sounds/TitleBGM.mp3");
-    bgmHandles[FIRST_BOSS_BGM] = Novice::LoadAudio("./Resources/sounds/FirstBossBGM.mp3");
-    bgmHandles[SECOND_BOSS_BGM] = Novice::LoadAudio("./Resources/sounds/SecondBossBGM.mp3");
-    bgmHandles[CLEAR_BGM] = Novice::LoadAudio("./Resources/sounds/ClearBGM.mp3");
+	bgmHandles[TITLE_BGM] = Novice::LoadAudio("./Resources/sounds/TitleBGM.mp3");
+	bgmHandles[FIRST_BOSS_BGM] = Novice::LoadAudio("./Resources/sounds/FirstBossBGM.mp3");
+	bgmHandles[SECOND_BOSS_BGM] = Novice::LoadAudio("./Resources/sounds/SecondBossBGM.mp3");
+	bgmHandles[CLEAR_BGM] = Novice::LoadAudio("./Resources/sounds/ClearBGM.mp3");
 }
 
 
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
-    Novice::Initialize(kWindowTitle, 1280, 720);
+	Novice::Initialize(kWindowTitle, 1280, 720);
 
-    char keys[256] = { 0 };
-    char preKeys[256] = { 0 };
+	char keys[256] = { 0 };
+	char preKeys[256] = { 0 };
 
 	Shockwave shockwaves[10]; // 衝撃波の配列
 
@@ -68,10 +68,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Beam2 beam2;
 	Projectile projectiles[10];
 	Boss::UpdateProjectiles(projectiles);
-
+	BossExprosive explosive;
 	WarpAttak warp;
 	Sounds sounds;
-//	Particle Particle;
+	//	Particle Particle;
 	Whole whole;
 
 	float easingSpeed = 0.05f;
@@ -79,75 +79,78 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 	int scene = TITLE;
 
-    while (Novice::ProcessMessage() == 0) {
-        Novice::BeginFrame();
+	int isFinish = false;
+	int sceneNo = 0;
 
-        memcpy(preKeys, keys, 256);
-        Novice::GetHitKeyStateAll(keys);
+	while (Novice::ProcessMessage() == 0) {
+		Novice::BeginFrame();
 
-        // BGMをロード
-        LoadBgm();
+		memcpy(preKeys, keys, 256);
+		Novice::GetHitKeyStateAll(keys);
 
-        switch (scene) {
-        case TITLE:
-            isFinish = false;
+		// BGMをロード
+		LoadBgm();
 
-            if (keys[DIK_W] && !preKeys[DIK_W] || keys[DIK_UP] && !preKeys[DIK_UP]) {
-                sceneNo--;
-            }
+		switch (scene) {
+		case TITLE:
+			isFinish = false;
 
-            if (keys[DIK_S] && !preKeys[DIK_S] || keys[DIK_DOWN] && !preKeys[DIK_DOWN]) {
-                sceneNo++;
-            }
+			if (keys[DIK_W] && !preKeys[DIK_W] || keys[DIK_UP] && !preKeys[DIK_UP]) {
+				sceneNo--;
+			}
 
-            if (sceneNo < 0) {
-                sceneNo = 1;
-            }
+			if (keys[DIK_S] && !preKeys[DIK_S] || keys[DIK_DOWN] && !preKeys[DIK_DOWN]) {
+				sceneNo++;
+			}
 
-            if (sceneNo > 1) {
-                sceneNo = 0;
-            }
+			if (sceneNo < 0) {
+				sceneNo = 1;
+			}
 
-            if (sceneNo == 1) {
-                isFinish = true;
-            }
+			if (sceneNo > 1) {
+				sceneNo = 0;
+			}
 
-            if (sceneNo == 0) {
-                if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-                    scene = GUIDE;
-                }
-            }
+			if (sceneNo == 1) {
+				isFinish = true;
+			}
 
-            InitializeGame(player_, flash_, boss_, line);
+			if (sceneNo == 0) {
+				if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+					scene = GUIDE;
+				}
+			}
+
+			InitializeGame(player_, flash_, boss_, line);
 
 
-            // TITLE BGMの再生
-            if (!Novice::IsPlayingAudio(sounds.titlePlayHandle) || sounds.titlePlayHandle == -1) {
-                sounds.titlePlayHandle = Novice::PlayAudio(bgmHandles[TITLE_BGM], true, 0.5f); // 修正：ハンドルを使用
-            }
-  
-            player.DrawBackGround(line.title);
+			// TITLE BGMの再生
+			if (!Novice::IsPlayingAudio(sounds.titlePlayHandle) || sounds.titlePlayHandle == -1) {
+				sounds.titlePlayHandle = Novice::PlayAudio(bgmHandles[TITLE_BGM], true, 0.5f); // 修正：ハンドルを使用
+			}
 
-            if (sceneNo == 0) {
-                ui.DrawFont(555, 325, line.start);
-                ui.DrawLightFont(580, 455, line.exit);
-            } else if (sceneNo == 1) {
-                ui.DrawLightFont(555, 325, line.start);
-                ui.DrawFont(580, 455, line.exit);
-            }
+			player.DrawBackGround(line.title);
 
-            ui.DrawFont(410, 600, line.pressToSpace);
-            break;
+			if (sceneNo == 0) {
+				ui.DrawFont(555, 325, line.start);
+				ui.DrawLightFont(580, 455, line.exit);
+			} else if (sceneNo == 1) {
+				ui.DrawLightFont(555, 325, line.start);
+				ui.DrawFont(580, 455, line.exit);
+			}
 
-        case GUIDE:
-            if (keys[DIK_Q]) {
-                scene = SECONDBOSS;
-            }
+			ui.DrawFont(410, 600, line.pressToSpace);
+			break;
 
-            player.Move(player_, line, keys, preKeys);
-            player.Attack(player_, boss_, flash_, keys, preKeys);
+		case GUIDE:
+			if (keys[DIK_Q]) {
+				scene = SECONDBOSS;
+			}
 
-			if (player_.pos.x > 1280.0f - player_.radius * 2-10.0f) {
+			player.Move(player_, line, keys, preKeys);
+			player.Attack(player_, boss_, flash_, keys, preKeys);
+
+			if (player_.pos.x > 1280.0f - player_.radius * 2 - 10.0f) {
 				scene = BOSSUP;
 				InitializeGame(player_, flash_, boss_, line);
 			}
@@ -164,10 +167,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				sounds.titlePlayHandle = Novice::PlayAudio(sounds.titleBgm, true, 0.5f);
 			}
 
-            player.DrawBackGround(line.guide);
-            player.DrawFlash(player_, flash_);
-            player.Draw(player_, flash_);
-            break;
+			player.DrawBackGround(line.guide);
+			player.DrawFlash(player_, flash_);
+			player.Draw(player_, flash_);
+			break;
 
 		case BOSSUP:
 
@@ -209,14 +212,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				boss_.hitStopTime--;
 			}
 
-            if (boss_.hitStopTime > 0) boss_.hitStopTime--;
-            if (player_.hitStopTime > 0) player_.hitStopTime--;
+			if (boss_.hitStopTime > 0) boss_.hitStopTime--;
+			if (player_.hitStopTime > 0) player_.hitStopTime--;
 
 			if (boss_.hitStopTime <= 0) {
 				if (player_.hitStopTime <= 0) {
 					// プレイヤーの更新処理
 					player.Move(player_, line, keys, preKeys);
-				
+
 
 					// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
 					boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, projectiles);
@@ -295,7 +298,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 
 		case SECONDBOSSUP:
-		
+
 			boss_.pos.x += (firstPos.x - boss_.pos.x) * easingSpeed;
 			boss_.pos.y += (firstPos.y - boss_.pos.y) * easingSpeed;
 
@@ -307,7 +310,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 					scene = SECONDBOSS;
 					boss_.hp = 200;
 				}
-				
+
 
 			}
 
@@ -333,32 +336,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			ui.DrawGauge(100, 670, player_.energy, 2);
 			break;
 
-        case SECONDBOSS:
-            if (!Novice::IsPlayingAudio(sounds.secondBattlePlayHandle) || sounds.secondBattlePlayHandle == -1) {
-                Novice::StopAudio(sounds.fastBattlePlayHandle);
-                sounds.secondBattlePlayHandle = Novice::PlayAudio(bgmHandles[SECOND_BOSS_BGM], true, 0.5f); // 修正：ハンドルを使用
-            }
-
-
-
-
-            if (boss_.hitStopTime > 0) boss_.hitStopTime--;
-            if (player_.hitStopTime > 0) player_.hitStopTime--;
-
-					// プレイヤーの更新処理
-					player.Move(player_, line, keys, preKeys);
-					player.Attack(player_, boss_, flash_, keys, preKeys);
-
-					boss.SecondBossMove(boss_, shortDistAttak_, player_, shake, beam2, shockwaves, warp, explosive, projectiles);
-
-				}
+		case SECONDBOSS:
+			if (!Novice::IsPlayingAudio(sounds.secondBattlePlayHandle) || sounds.secondBattlePlayHandle == -1) {
+				Novice::StopAudio(sounds.fastBattlePlayHandle);
+				sounds.secondBattlePlayHandle = Novice::PlayAudio(bgmHandles[SECOND_BOSS_BGM], true, 0.5f); // 修正：ハンドルを使用
 			}
+
+
+
+
+			if (boss_.hitStopTime > 0) boss_.hitStopTime--;
+			if (player_.hitStopTime > 0) player_.hitStopTime--;
+
+			// プレイヤーの更新処理
+			player.Move(player_, line, keys, preKeys);
+			player.Attack(player_, boss_, flash_, keys, preKeys);
+
+			boss.SecondBossMove(boss_, shortDistAttak_, player_, shake, beam2, shockwaves, warp, explosive, projectiles);
+
+
+
 
 			if (boss_.hp <= 0) {
 				scene = FINISHBRO;
 			}
 
-            if (boss_.secondHp <= 0) scene = CLEAR;
+			if (boss_.secondHp <= 0) scene = CLEAR;
 
 			player.DrawBackGround(line, shake);
 
@@ -374,7 +377,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			boss.DrawParticles(boss_.particles, 50);
 			//boss.DrawAura(boss_);
 			boss.BossDraw(boss_, shake);
-		
+
 			//第二形態のボスのビーム攻撃
 			boss.DrawBeam2(beam2);
 
@@ -406,7 +409,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//================
 
 			// ボスの終了処理（ライトが当たると反射しながら爆発）
-			boss.BossFinishBro(boss_, player_,shake);
+			boss.BossFinishBro(boss_, player_, shake);
 
 			// プレイヤーの移動処理（ライト操作や移動）
 			player.Move(player_, line, keys, preKeys);
@@ -429,10 +432,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			// プレイヤーの描画
 			player.Draw(player_, flash_);
 			// エフェクトが発生中の場合
-			
 
 
-			if(boss_.explosiveTime <= 0)		{
+
+			if (boss_.explosiveTime <= 0) {
 				scene = CLEAR;
 			}
 
@@ -445,24 +448,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				scene = TITLE;
 			}
 
-            player.DrawBackGround(line.clear);
-            ui.DrawFont(410, 600, line.pressToSpace);
-            break;
-        }
+			player.DrawBackGround(line.clear);
+			ui.DrawFont(410, 600, line.pressToSpace);
+			break;
+		}
 
-        Novice::EndFrame();
 
-        if (isFinish) {
-            if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
-                break;
-            }
-        }
+		Novice::EndFrame();
 
-        if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
-            break;
-        }
-    }
+		if (isFinish) {
+			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				break;
+			}
+		}
 
-    Novice::Finalize();
-    return 0;
+		if (preKeys[DIK_ESCAPE] == 0 && keys[DIK_ESCAPE] != 0) {
+			break;
+		}
+	}
+
+	Novice::Finalize();
+	return 0;
 }
