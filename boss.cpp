@@ -1298,7 +1298,7 @@ void Boss::DrawBeam2(Beam2& beam2) {
 			if (beam2.attakTime % 2 == 0) {
 				/*Novice::DrawBox(static_cast<int>(beam2.pos.x), static_cast<int>(beam2.pos.y),
 					static_cast<int>(beam2.size.x), static_cast<int>(beam2.size.y), 0.0f, RED, kFillModeSolid)*/
-				Novice::DrawSprite(static_cast<int>(beam2.pos.x-12.0f), static_cast<int>(beam2.pos.y), imageBeam, 1.7f, 1, 0.0f, WHITE);
+				Novice::DrawSprite(static_cast<int>(beam2.pos.x - 12.0f), static_cast<int>(beam2.pos.y), imageBeam, 1.7f, 1, 0.0f, WHITE);
 
 			}
 		}
@@ -1681,9 +1681,9 @@ void Boss::BossWarpAttak(Boss_& boss, Player_& player, WarpAttak& warp, ShortDis
 
 			// 当たり判定処理
 			if (player.pos.x < shortDist.pos.x + shortDist.size.x &&
-				player.pos.x + player.radius*2 > shortDist.pos.x &&
+				player.pos.x + player.radius * 2 > shortDist.pos.x &&
 				player.pos.y < shortDist.pos.y + shortDist.size.y &&
-				player.pos.y + player.radius*2 > shortDist.pos.y) {
+				player.pos.y + player.radius * 2 > shortDist.pos.y) {
 				player.hp -= 8;  // ダメージ
 				player.hitStopTime = 4; // ヒットストップ
 			}
@@ -1904,15 +1904,21 @@ void Boss::DrawBossExplo(Boss_& boss) {
 	if (boss.isExplo) {
 		// 例えばボスの爆発エフェクトなどを描画
 		if (boss.explosiveTime % 4 == 0) {
-			Novice::DrawBox(
-				static_cast<int>(boss.pos.x) - 50,
+			//Novice::DrawBox(
+			//	static_cast<int>(boss.pos.x) - 50,
+			//	static_cast<int>(boss.pos.y) - 50,
+			//	150,
+			//	150,
+			//	0.0f,
+			//	0xFF450080, // 爆発色
+			//	kFillModeSolid
+			//);
+
+			Novice::DrawSprite(static_cast<int>(boss.pos.x) - 50,
 				static_cast<int>(boss.pos.y) - 50,
-				150,
-				150,
-				0.0f,
-				0xFF450080, // 爆発色
-				kFillModeSolid
-			);
+				boss.exploBg,
+				1, 1, 0.0f, WHITE);
+
 		}
 	}
 }

@@ -157,6 +157,8 @@ struct Boss_ {
 
 	int imageBeam = Novice::LoadTexture("./Resources/images/beam.png");
 
+	int exploBg = Novice::LoadTexture("./Resources/images/finishBlow_3.png");
+
 	Whole bullets[MAX_boll];
 
 	Particle particles[MAX_PARTICLES]; // パーティクル管理配列
