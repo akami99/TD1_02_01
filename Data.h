@@ -47,7 +47,7 @@ struct Player_ {
 	int isLeft = false;
 	int hitStopTime = 0;
 	int flashTime = 0;
-	int hightFlashTime = 0;
+	int highFlashTime = 0;
 
 };
 
@@ -284,6 +284,7 @@ struct Line {
 
 	int title = Novice::LoadTexture("./Resources/images/title.png");
 	int backGround = Novice::LoadTexture("./Resources/images/backGround.png");
+	int guide = Novice::LoadTexture("./Resources/images/guideBackGround.png");
 	int clear = Novice::LoadTexture("./Resources/images/clear.png");
 	int pressToSpace = Novice::LoadTexture("./Resources/images/pressToSpace.png");
 	int start = Novice::LoadTexture("./Resources/images/start.png");

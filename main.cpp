@@ -79,11 +79,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//========================
 			isFinish = false;
 
-			if (keys[DIK_W] && !preKeys[DIK_W] || keys[DIK_UP] && preKeys[DIK_UP]) {
+			if (keys[DIK_W] && !preKeys[DIK_W] || keys[DIK_UP] && !preKeys[DIK_UP]) {
 				sceneNo--;
 			}
 
-			if (keys[DIK_S] && !preKeys[DIK_S] || keys[DIK_DOWN] && preKeys[DIK_DOWN]) {
+			if (keys[DIK_S] && !preKeys[DIK_S] || keys[DIK_DOWN] && !preKeys[DIK_DOWN]) {
 				sceneNo++;
 			}
 
@@ -164,6 +164,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (!Novice::IsPlayingAudio(sounds.titlePlayHandle) || sounds.titlePlayHandle == -1) {
 				sounds.titlePlayHandle = Novice::PlayAudio(sounds.titleBgm, true, 0.5f);
 			}
+
+			player.DrawBackGround(line.guide);
 
 			// フラッシュライトの描画
 			player.DrawFlash(player_, flash_);

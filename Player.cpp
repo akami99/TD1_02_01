@@ -18,8 +18,8 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 	if (player.flashTime > 0) {
 		player.flashTime--;
 	}
-	if (player.hightFlashTime > 0) {
-		player.hightFlashTime--;
+	if (player.highFlashTime > 0) {
+		player.highFlashTime--;
 	}
 
 	if (keys[DIK_D] || keys[DIK_RIGHT]) {
@@ -110,7 +110,7 @@ void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* key
 		if (!player.isFlash) {
 			player.isFlash = true;
 			player.isHighFlash = false;
-			player.hightFlashTime = 0;
+			player.highFlashTime = 0;
 			player.flashTime = 10;
 		} else {
 			player.isFlash = false;
@@ -123,10 +123,10 @@ void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* key
 			player.isHighFlash = true;
 			player.isFlash = false;
 			player.flashTime = 0;
-			player.hightFlashTime = 10;
+			player.highFlashTime = 10;
 		} else {
 			player.isHighFlash = false;
-			player.hightFlashTime = 0;
+			player.highFlashTime = 0;
 		}
 	}
 
@@ -137,8 +137,14 @@ void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* key
 	}
 
 	if (player.energy <= 0) {
+		player.energy = 0;
+
+		player.flashTime = 0;
+		player.highFlashTime = 0;
+
 		player.isFlash = false;
-	}
+		player.isHighFlash = false;
+	} 
 
 	if (player.energy < player.kMaxEnergy) {
 		player.energy++;
@@ -198,7 +204,7 @@ void Player::DrawFlash(Player_& player, Flash_& flash) {
 		}
 	}
 	// 強化ライト
-	if (player.hightFlashTime > 0) {
+	if (player.highFlashTime > 0) {
 		if (flash.direction.y > 0) {                                   //下
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x + flash.highWidth), static_cast<int>(flash.pos.y + flash.highRange),
