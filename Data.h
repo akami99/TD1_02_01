@@ -311,4 +311,3 @@ struct Sounds {
 	int secondBattleBgm = Novice::LoadAudio("./Resources/sounds/SecondBossBGM.mp3");
 	int clearBgm = Novice::LoadAudio("./Resources/sounds/ClearBGM.mp3");
 };
-

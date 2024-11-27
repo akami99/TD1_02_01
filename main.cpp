@@ -1,4 +1,3 @@
-
 #include <Novice.h>
 #include <math.h>
 #include "Data.h"
@@ -233,7 +232,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				boss_.isAttak = false;
 			}
 
-
+			if (!Novice::IsPlayingAudio(sounds.fastBattlePlayHandle) || sounds.fastBattlePlayHandle == -1) {
+				Novice::StopAudio(sounds.titlePlayHandle);
+				sounds.fastBattlePlayHandle = Novice::PlayAudio(bgmHandles[FIRST_BOSS_BGM], true, 0.5f); // 修正：ハンドルを使用
+			}
 
 
 			///
@@ -252,7 +254,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.DrawFlash(player_, flash_);
 
 			// プレイヤーの描画
-			//player.Draw(player_);
+			player.Draw(player_,flash_);
 
 			//ボスのビーム攻撃
 			boss.DrawBeams(boss_);
@@ -313,7 +315,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 			}
-
+			if (!Novice::IsPlayingAudio(sounds.secondBattlePlayHandle) || sounds.secondBattlePlayHandle == -1) {
+				Novice::StopAudio(sounds.fastBattlePlayHandle);
+				sounds.secondBattlePlayHandle = Novice::PlayAudio(bgmHandles[SECOND_BOSS_BGM], true, 0.5f); // 修正：ハンドルを使用
+			}
 			// プレイヤーの更新処理
 			player.Move(player_, line, keys, preKeys);
 
@@ -443,6 +448,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 
 		case CLEAR:
+
+			if (!Novice::IsPlayingAudio(sounds.clearPlayHandle) || sounds.clearPlayHandle == -1) {
+				Novice::StopAudio(sounds.secondBattlePlayHandle);
+				sounds.clearPlayHandle = Novice::PlayAudio(bgmHandles[CLEAR_BGM], true, 0.5f);
+			}
 
 			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
 				scene = TITLE;
