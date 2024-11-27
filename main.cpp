@@ -50,7 +50,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Boss::UpdateProjectiles(projectiles);
 	BossExprosive explosive;
 	WarpAttak warp;
-
+	Sounds sounds;
 
 	Whole whole;
 
@@ -71,7 +71,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 		switch (scene) {
 
+			
+
 		case TITLE:
+			//========================
+			//更新処理
+			//========================
 			isFinish = false;
 
 			if (keys[DIK_W] && !preKeys[DIK_W] || keys[DIK_UP] && preKeys[DIK_UP]) {
@@ -100,9 +105,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
+			//クリアBGMを止める
+			Novice::StopAudio(sounds.clearPlayHandle);
 
 			//初期化処理
 			InitializeGame(player_, flash_, boss_, line);
+
+			//==================
+			//描画処理
+			//==================
+
+
+			//BGMが鳴っていなかったらTitleを流す
+			if (!Novice::IsPlayingAudio(sounds.titlePlayHandle) || sounds.titlePlayHandle == -1) {
+				sounds.titlePlayHandle = Novice::PlayAudio(sounds.titleBgm, true, 0.5f);
+			}
 
 			player.DrawBackGround(line.title);
 
@@ -136,9 +153,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				InitializeGame(player_, flash_, boss_, line);
 			}
 
+			//クリアBGMを止める
+			Novice::StopAudio(sounds.clearPlayHandle);
+
 			//====================
 			//描画処理
 			//====================
+
+				//BGMが鳴っていなかったらTitleを流す
+			if (!Novice::IsPlayingAudio(sounds.titlePlayHandle) || sounds.titlePlayHandle == -1) {
+				sounds.titlePlayHandle = Novice::PlayAudio(sounds.titleBgm, true, 0.5f);
+			}
 
 			// フラッシュライトの描画
 			player.DrawFlash(player_, flash_);
