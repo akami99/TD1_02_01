@@ -38,7 +38,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 30;
+					boss.attakNo = 5;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -524,8 +524,9 @@ void Boss::ShortDistansAttak(Boss_& boss, ShortDistansAttak_& shortDist, Player_
 void Boss::DrawShortDistansAttak(ShortDistansAttak_ shortDist) {
 	if (!shortDist.isEase) {
 		if (shortDist.attakTime > 0) {
-			Novice::DrawBox(static_cast<int>(shortDist.pos.x), static_cast<int>(shortDist.pos.y),
-				static_cast<int>(shortDist.size.x), static_cast<int>(shortDist.size.y), 0.0f, BLUE, kFillModeSolid);
+			Novice::DrawSprite(static_cast<int>(shortDist.pos.x), static_cast<int>(shortDist.pos.y),
+				shortDist.imageWepon, 1.0f, 1.0f, 0.0f, WHITE
+			);
 		}
 	}
 }
@@ -534,8 +535,9 @@ void Boss::DrawShortDistansAttak(ShortDistansAttak_ shortDist) {
 void Boss::DrawDoubleShortDistansAttak(ShortDubleDistansAttak_ dobleShort) {
 	if (dobleShort.isShortAttak) {
 		if (dobleShort.attakTime > 0) {
-			Novice::DrawBox(static_cast<int>(dobleShort.pos.x), static_cast<int>(dobleShort.pos.y),
-				static_cast<int>(dobleShort.size.x), static_cast<int>(dobleShort.size.y), 0.0f, BLUE, kFillModeSolid);
+			Novice::DrawSprite(static_cast<int>(dobleShort.pos.x), static_cast<int>(dobleShort.pos.y),
+				dobleShort.imageWepon, 1.0f, 1.0f, 0.0f, WHITE
+			);
 		}
 	}
 }
@@ -1275,6 +1277,9 @@ void Boss::DrawWarpAttak(WarpAttak& warp, ShortDistansAttak_& shortDist) {
 					0.0f,
 					BLUE, // 緑色
 					kFillModeSolid
+				);
+				Novice::DrawSprite(static_cast<int>(shortDist.pos.x), static_cast<int>(shortDist.pos.y),
+					shortDist.imageWepon, 1.0f, 1.0f, 0.0f, WHITE
 				);
 			}
 		}

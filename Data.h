@@ -194,6 +194,8 @@ struct ShortDistansAttak_ {
 	int isAttak = false;                 // 攻撃中かどうか
 	int isShortAttak = false;
 	int isHit = false;
+
+	int imageWepon = Novice::LoadTexture("./Resources/images/shortWepon.png");
 };
 
 //連続攻撃
@@ -211,6 +213,8 @@ struct ShortDubleDistansAttak_ {
 	float baseSizeX = 128.0f;            // 元のX方向のサイズ
 	int isShortAttak = false;
 	int isHit = false;
+
+	int imageWepon = Novice::LoadTexture("./Resources/images/shortWepon.png");
 };
 
 // チャージ攻撃
