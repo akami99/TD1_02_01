@@ -144,11 +144,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			break;
 
 		case GUIDE:
-			if (keys[DIK_Q]) {
-				boss_.hp = 200;
-				scene = SECONDBOSS;
-
-			}
 
 			player.Move(player_, line, keys, preKeys);
 			player.Attack(player_, boss_, flash_, keys, preKeys);
@@ -456,43 +451,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 		case GAMEOVER:
-			isFinish = false;
-
-			if (keys[DIK_W] && !preKeys[DIK_W] || keys[DIK_UP] && !preKeys[DIK_UP]) {
-				sceneNo--;
+			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
+				scene = TITLE;
 			}
-
-			if (keys[DIK_S] && !preKeys[DIK_S] || keys[DIK_DOWN] && !preKeys[DIK_DOWN]) {
-				sceneNo++;
-			}
-
-			if (sceneNo < 0) {
-				sceneNo = 1;
-			}
-
-			if (sceneNo > 1) {
-				sceneNo = 0;
-			}
-
-			if (sceneNo == 1) {
-				isFinish = true;
-			}
-
-
 
 			//=====================
 			//描画処理
 			//=====================
 
 			Novice::DrawSprite(0, 0, gameOverGb, 1, 1, 0.0f, WHITE);
-
-			if (sceneNo == 0) {
-				ui.DrawFont(555, 325, line.start);
-				ui.DrawLightFont(580, 455, line.exit);
-			} else if (sceneNo == 1) {
-				ui.DrawLightFont(555, 325, line.start);
-				ui.DrawFont(580, 455, line.exit);
-			}
 
 			ui.DrawFont(410, 600, line.pressToSpace);
 
