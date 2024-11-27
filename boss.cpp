@@ -383,7 +383,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 //第二形態のボスの攻撃
 //==================================
 void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist, Player_& player, Shake& shake,
-	Beam2& beam2, Shockwave* shockwaves, WarpAttak& warp, BossExprosive& explosive,Projectile* projectiles) {
+	Beam2& beam2, Shockwave* shockwaves, WarpAttak& warp, BossExprosive& explosive, Projectile* projectiles) {
 
 	if (boss.attakStandTime > 0) {
 		boss.attakStandTime--;
@@ -1104,10 +1104,10 @@ void Boss::PlayerRengeHitBox(Player_& player, BossRengeAttak_& renge) {
 	if (renge.attakStandTime <= 0) {
 		if (renge.attakTime > 0) {
 			if (player.pos.x < renge.pos.x + renge.size.x && // プレイヤーの右端が範囲の左端より右
-				player.pos.x + player.radius > renge.pos.x && // プレイヤーの左端が範囲の右端より左
+				player.pos.x + player.radius*2 > renge.pos.x && // プレイヤーの左端が範囲の右端より左
 				player.pos.y < renge.pos.y + renge.size.y && // プレイヤーの下端が範囲の上端より下
-				player.pos.y + player.radius > renge.pos.y) { // プレイヤーの上端が範囲の下端より上
-				player.isHit = true;
+				player.pos.y + player.radius*2 > renge.pos.y) { // プレイヤーの上端が範囲の下端より上
+				player.hp--;
 			}
 		}
 	}
@@ -1121,10 +1121,11 @@ void Boss::PlayerShortAttakHitBox(Player_& player, ShortDistansAttak_& shortAtta
 	if (!shortAttak.isHit) {
 		if (shortAttak.attakTime > 0) {
 			if (player.pos.x < shortAttak.pos.x + shortAttak.size.x && // プレイヤーの右端が範囲の左端より右
-				player.pos.x + player.radius > shortAttak.pos.x && // プレイヤーの左端が範囲の右端より左
+				player.pos.x + player.radius*2 > shortAttak.pos.x && // プレイヤーの左端が範囲の右端より左
 				player.pos.y < shortAttak.pos.y + shortAttak.size.y && // プレイヤーの下端が範囲の上端より下
-				player.pos.y + player.radius > shortAttak.pos.y) { // プレイヤーの上端が範囲の下端より上
-				player.isHit = true;
+				player.pos.y + player.radius*2 > shortAttak.pos.y) { // プレイヤーの上端が範囲の下端より上
+				player.hitStopTime = 10;
+				player.hp -= 5;
 
 			}
 		}
@@ -1138,11 +1139,11 @@ void Boss::PlayerBeamsHitBox(Player_& player, Boss_& boss) {
 		if (boss.beams[i].attakStandTime <= 0) {
 			if (boss.beams[i].attakTime > 0) {
 				if (player.pos.x < boss.beams[i].pos.x + boss.beams[i].size.x && // プレイヤーの右端が範囲の左端より右
-					player.pos.x + player.radius > boss.beams[i].pos.x && // プレイヤーの左端が範囲の右端より左
+					player.pos.x + player.radius * 2 > boss.beams[i].pos.x && // プレイヤーの左端が範囲の右端より左
 					player.pos.y < boss.beams[i].pos.y + boss.beams[i].size.y && // プレイヤーの下端が範囲の上端より下
-					player.pos.y + player.radius > boss.beams[i].pos.y) { // プレイヤーの上端が範囲の下端より上
-
-					player.isHit = true;
+					player.pos.y + player.radius * 2 > boss.beams[i].pos.y) { // プレイヤーの上端が範囲の下端より上
+					player.hitStopTime = 5;
+					player.hp--;
 				}
 			}
 		}
@@ -1155,11 +1156,12 @@ void Boss::PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_&
 	if (doubleAttak.isShortAttak) {
 		if (doubleAttak.attakTime > 0) {
 			if (player.pos.x < doubleAttak.pos.x + doubleAttak.size.x && // プレイヤーの右端が範囲の左端より右
-				player.pos.x + player.radius > doubleAttak.pos.x && // プレイヤーの左端が範囲の右端より左
+				player.pos.x + player.radius*2 > doubleAttak.pos.x && // プレイヤーの左端が範囲の右端より左
 				player.pos.y < doubleAttak.pos.y + doubleAttak.size.y && // プレイヤーの下端が範囲の上端より下
-				player.pos.y + player.radius > doubleAttak.pos.y) { // プレイヤーの上端が範囲の下端より上
+				player.pos.y + player.radius*2 > doubleAttak.pos.y) { // プレイヤーの上端が範囲の下端より上
+				player.hitStopTime = 5;
 
-				player.isHit = true;
+				player.hp -= 5;
 
 				doubleAttak.isHit = true;
 
