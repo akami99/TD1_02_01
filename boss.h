@@ -7,11 +7,21 @@ public:
 	void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist,
 		Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,Projectile* projectiles);
 
-	void SecondBossMove(Boss_& boss,  ShortDistansAttak_& shortDist,
-		Player_& player, Shake& shake,Beam2& beam2,  Shockwave* shockwaves, WarpAttak& warp, BossExprosive& explosive);
+	void SecondBossMove(Boss_& boss,  ShortDistansAttak_& shortDist, 
+		Player_& player, Shake& shake,Beam2& beam2,  Shockwave* shockwaves, WarpAttak& warp, BossExprosive& explosive, Projectile* projectiles);
 
 	//ボスの描画
 	void BossDraw(Boss_ boss,Shake& shake);
+
+	//ボスがランダムに動く
+	void BossWalk(Boss_& boss);
+
+	void DrawAura(Boss_& boss);
+
+	void UpdateParticles(Particle particles[], int maxParticles, const Vector2& bossPos);
+
+	void DrawParticles(Particle particles[], int maxParticles);
+
 
 	//=====================
 	//範囲攻撃
@@ -122,13 +132,16 @@ public:
 	//連続攻撃の当たり判定
 	void PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_& doubleAttak);
 
+	//チャージ攻撃当たり判定
+	//void PlayerBossChargeAttak(Player_& player, const Object& object);
+
 
 	void AllRengeAttakHitBox(Boss_& allRange,Player_& player);
 	
 	//=========================================
 	//第2形態でボスのHPが75,50,25%になったらする攻撃
 	//=========================================
-	void BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player);
+	void BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player,Shake& shake);
 
 	void DrawExplosive(BossExprosive& explosive);
 

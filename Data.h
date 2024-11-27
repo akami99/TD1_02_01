@@ -4,9 +4,13 @@
 
 const int MAX_BEAMS = 10;  // 同時に存在できる最大ビーム数
 const int MAX_PROJECTILES = 3;
+const int MAX_PROJECTILES2 = 4;
 // 最大ビーム数
 const int MAX_ALLRANGE_BEAMS = 30;
 const int MAX_boll = 30; // 発射する弾の数
+
+const int MAX_PARTICLES = 50; // パーティクルの最大数
+
 
 // エリア全体
 struct Whole {
@@ -43,6 +47,7 @@ struct Player_ {
 	int isLeft = false;
 
 };
+
 
 //フラッシュライト
 struct Flash_ {
@@ -88,6 +93,15 @@ struct AllRange {
 	int lifeTime;       // ビームの寿命（フレーム単位で管理）
 };
 
+// パーティクル構造体
+struct Particle {
+	Vector2 pos;       // パーティクルの位置
+	Vector2 velocity;  // パーティクルの速度
+	float lifetime;    // パーティクルの寿命
+	float size;        // パーティクルのサイズ
+	bool isActive;     // パーティクルが有効か
+};
+
 // ボス
 struct Boss_ {
 	Vector2 pos = { 1000.0f, 472.0f };    // ボスの初期位置
@@ -129,6 +143,8 @@ struct Boss_ {
 
 	Whole bullets[MAX_boll];
 
+	Particle particles[MAX_PARTICLES]; // パーティクル管理配列
+
 	bool hasMovedToCenter = false;    // ボスが上中央に移動したか
 	bool isReturning = false;         // ボスが降りている状態か
 
@@ -142,8 +158,11 @@ struct Boss_ {
 		return true;
 	}
 
+	float auraTimer = 0.0f; // オーラのフェードイン・アウト用タイマー
+
 };
 
+//ワープ攻撃
 struct WarpAttak {
 	Vector2 pos = {-100.0f,-100.0f};//bossの位置をここに固定する
 	int attakTime = 0;//if(warp.attakTime>0)の場合プレイヤーの後ろに固定させる
@@ -267,4 +286,8 @@ struct Line {
 
 
 
+
+
+
+	
 
