@@ -147,6 +147,10 @@ public:
 
 	void DrawExplosive(BossExprosive& explosive);
 
+	void BossFinishBro(Boss_& boss,Player_& player,Shake& shake);
+
+	void DrawBossExplo(Boss_& boss);
+
 private:
 
 };

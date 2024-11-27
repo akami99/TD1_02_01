@@ -15,9 +15,12 @@ enum Scene {
 	TITLE,
 	SELECT,
 	GUIDE,
+	BOSSUP,
+	SECONDBOSSUP,
 	FASTBOSS,
 	SECONDBOSS,
 	CLEAR,
+	FINISHBRO,
 	GAMEOVER,
 };
 
@@ -51,9 +54,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	BossExprosive explosive;
 	WarpAttak warp;
 	Sounds sounds;
-
+//	Particle Particle;
 	Whole whole;
 
+	float easingSpeed = 0.05f;
+	Vector2 firstPos = { 600.0f,50.0f };
 
 	int scene = TITLE;
 
@@ -149,7 +154,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, boss_, flash_, keys, preKeys);
 
 			if (player_.pos.x > 1280.0f - player_.radius * 2-10.0f) {
-				scene = FASTBOSS;
+				scene = BOSSUP;
 				InitializeGame(player_, flash_, boss_, line);
 			}
 
@@ -175,6 +180,35 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 
+		case BOSSUP:
+
+			boss_.hp++;
+
+			if (boss_.hp > 200) {
+				scene = FASTBOSS;
+				boss_.hp = 200;
+			}
+
+			// プレイヤーの更新処理
+			player.Move(player_, line, keys, preKeys);
+
+			//======================
+			//描画処理
+			//======================
+
+			player.DrawBackGround(line, shake);
+
+			// フラッシュライトの描画
+			player.DrawFlash(player_, flash_);
+
+			// プレイヤーの描画
+			player.Draw(player_, flash_);
+
+			boss.BossDraw(boss_, shake);
+			// UIの描画
+			ui.DrawGauge(340, 30, boss_.hp, 0);
+
+			break;
 
 		case FASTBOSS:
 
@@ -202,11 +236,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 			if (boss_.hp <= 0) {
-				scene = SECONDBOSS;
+				scene = SECONDBOSSUP;
 				boss_.attakNo = 0;
 				boss_.attakStandTime = 120;
 				boss_.isAttak = false;
 			}
+
+
+
 
 			///
 			/// ↑更新処理ここまで
@@ -262,6 +299,45 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			break;
 
+		case SECONDBOSSUP:
+		
+			boss_.pos.x += (firstPos.x - boss_.pos.x) * easingSpeed;
+			boss_.pos.y += (firstPos.y - boss_.pos.y) * easingSpeed;
+
+			if (std::abs(firstPos.x - boss_.pos.x) < 0.5f && std::abs(firstPos.y - boss_.pos.y) < 0.5f) {
+				boss_.pos = firstPos;
+
+				boss_.hp++;
+				if (boss_.hp > 200) {
+					scene = SECONDBOSS;
+					boss_.hp = 200;
+				}
+				
+
+			}
+
+			// プレイヤーの更新処理
+			player.Move(player_, line, keys, preKeys);
+
+			//======================
+			//描画処理
+			//======================
+
+			player.DrawBackGround(line, shake);
+
+			// フラッシュライトの描画
+			player.DrawFlash(player_, flash_);
+
+			// プレイヤーの描画
+			player.Draw(player_, flash_);
+
+			boss.BossDraw(boss_, shake);
+			// UIの描画
+			ui.DrawGauge(340, 30, boss_.hp, 0);
+
+
+			break;
+
 		case SECONDBOSS:
 
 			//================================
@@ -287,8 +363,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				}
 			}
 
-			if (boss_.secondHp <= 0) {
-				scene = CLEAR;
+			if (boss_.hp <= 0) {
+				scene = FINISHBRO;
 			}
 
 			//========================
@@ -327,8 +403,51 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			boss.DrawExplosive(explosive);
 
+			// UIの描画
+			ui.DrawGauge(340, 30, boss_.hp, 0);
 
 			break;
+
+		case FINISHBRO:
+
+			//================
+			// 更新処理
+			//================
+
+			// ボスの終了処理（ライトが当たると反射しながら爆発）
+			boss.BossFinishBro(boss_, player_,shake);
+
+			// プレイヤーの移動処理（ライト操作や移動）
+			player.Move(player_, line, keys, preKeys);
+			player.Attack(player_, boss_, flash_, keys, preKeys);
+			//======================
+			// 描画処理
+			//======================
+
+			// 背景描画（揺れの演出込み）
+			player.DrawBackGround(line, shake);
+
+			// ボスの描画
+			boss.DrawParticles(boss_.particles, 50);  // ボスのパーティクル
+			boss.BossDraw(boss_, shake);              // ボス本体の描画
+
+			boss.DrawBossExplo(boss_);
+
+			// フラッシュライトの描画
+			player.DrawFlash(player_, flash_);
+			// プレイヤーの描画
+			player.Draw(player_, flash_);
+			// エフェクトが発生中の場合
+			
+
+
+			if(boss_.explosiveTime <= 0)		{
+				scene = CLEAR;
+			}
+
+			break;
+
+
 		case CLEAR:
 
 			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
