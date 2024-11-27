@@ -38,7 +38,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo = 5;
+					boss.attakNo = 200;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -1269,15 +1269,15 @@ void Boss::DrawWarpAttak(WarpAttak& warp, ShortDistansAttak_& shortDist) {
 	if (warp.isAttak) {
 		if (shortDist.isAttak) {
 			if (warp.attakTime > 0 && warp.attakTime < 40) {
-				Novice::DrawBox(
-					static_cast<int>(shortDist.pos.x),
-					static_cast<int>(shortDist.pos.y),
-					static_cast<int>(shortDist.size.x),
-					static_cast<int>(shortDist.size.y), // エフェクトのサイズ
-					0.0f,
-					BLUE, // 緑色
-					kFillModeSolid
-				);
+				//Novice::DrawBox(
+				//	static_cast<int>(shortDist.pos.x),
+				//	static_cast<int>(shortDist.pos.y),
+				//	static_cast<int>(shortDist.size.x),
+				//	static_cast<int>(shortDist.size.y), // エフェクトのサイズ
+				//	0.0f,
+				//	BLUE, // 緑色
+				//	kFillModeSolid
+				//);
 				Novice::DrawSprite(static_cast<int>(shortDist.pos.x), static_cast<int>(shortDist.pos.y),
 					shortDist.imageWepon, 1.0f, 1.0f, 0.0f, WHITE
 				);
@@ -1389,14 +1389,14 @@ void Boss::DrawExplosive(BossExprosive& explosive) {
 
 		if (explosive.isAttak && explosive.attakTime > 0) {
 			// 全体攻撃の描画（全画面エフェクト）
-			Novice::DrawBox(
+			Novice::DrawSprite(
 				0,
 				0,
-				static_cast<int>(explosive.attakSize.x),
-				static_cast<int>(explosive.attakSize.y),
+				explosive.imageExplosive,
+				1.0f,
+				1.0f,
 				0.0f,
-				0xFF000080,
-				kFillModeSolid
+				0xffffffd0
 			);
 
 			// セーフゾーンの描画

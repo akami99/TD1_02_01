@@ -172,6 +172,8 @@ struct BossExprosive {
 	int isAttak = false;
 	int isEase = false;
 	int isDraw = false;
+
+	int imageExplosive = Novice::LoadTexture("./Resources/images/explosiveAttak.png");
 };
 
 // 範囲攻撃
