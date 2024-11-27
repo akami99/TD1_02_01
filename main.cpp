@@ -161,6 +161,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			if (boss_.hp <= 0) {
 				scene = SECONDBOSS;
+				boss_.attakNo = 0;
+				boss_.attakStandTime = 120;
+				boss_.isAttak = false;
 			}
 
 			///
@@ -232,7 +235,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Move(player_, line, keys, preKeys);
 			player.Attack(player_, boss_, flash_, keys, preKeys);
 
-			boss.SecondBossMove(boss_, shortDistAttak_, player_, shake, beam2, shockwaves, warp, explosive);
+			boss.SecondBossMove(boss_, shortDistAttak_, player_, shake, beam2, shockwaves, warp, explosive,projectiles);
 
 			if (boss_.secondHp <= 0) {
 				scene = CLEAR;
@@ -241,6 +244,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//========================
 			//描画処理
 			//========================
+
+			player.DrawBackGround(line, shake);
+
+			Novice::DrawLine(0, 600, 1280, 600, WHITE);
+
+
+			player.DrawFlash(player_, flash_);
+
+			// プレイヤーの描画
+			player.Draw(player_, flash_);
 
 			// ボスの描画
 			boss.DrawParticles(boss_.particles, 50);

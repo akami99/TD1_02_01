@@ -30,6 +30,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		boss.vanishTime--;
 	}
 
+	//パーティクルの設定
 	UpdateParticles(boss.particles, 50, boss.pos);
 
 	if (boss.vanishTime == 0) {
@@ -66,7 +67,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 			if (boss.attakNo == 0) {
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
-					boss.attakNo =50;
+					boss.attakNo = 50;
 					/*if (boss.hp > 100) {
 						boss.attakNo = 5;
 					}*/
@@ -247,11 +248,6 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 	}
 
-	if (boss.attakNo == 10) {
-		Beam2Attak(boss, beam2, shake);
-
-	}
-
 	if (boss.attakNo == 11) {
 		boss.localTimer++;
 		if (!boss.isFloating) {
@@ -386,9 +382,8 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 //==================================
 //第二形態のボスの攻撃
 //==================================
-void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist,
-	Player_& player, Shake& shake,
-	Beam2& beam2, Shockwave* shockwaves, WarpAttak& warp, BossExprosive& explosive) {
+void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist, Player_& player, Shake& shake,
+	Beam2& beam2, Shockwave* shockwaves, WarpAttak& warp, BossExprosive& explosive,Projectile* projectiles) {
 
 	if (boss.attakStandTime > 0) {
 		boss.attakStandTime--;
@@ -399,6 +394,9 @@ void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist,
 	if (boss.vanishTime > 0) {
 		boss.vanishTime--;
 	}
+
+	//パーティクルの設定
+	UpdateParticles(boss.particles, 80, boss.pos);
 
 	if (boss.vanishTime == 0) {
 		//HPが50%以上ならattakNo1~3
@@ -452,13 +450,12 @@ void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist,
 			boss.attakStandTime = 120; // クールダウン時間
 			boss.isAttak = false;
 		}
-	}
-	for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
-		if (boss.allRangeBeams[i].lifeTime <= 10) {
-			AllRengeAttakHitBox(boss, player);
+		for (int i = 0; i < MAX_ALLRANGE_BEAMS; i++) {
+			if (boss.allRangeBeams[i].lifeTime <= 10) {
+				AllRengeAttakHitBox(boss, player);
+			}
 		}
 	}
-
 	//落下攻撃
 	if (boss.attakNo == 30) {
 		BossFallAttak(boss, player, shake, shockwaves, 10);
@@ -534,7 +531,10 @@ void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist,
 			}
 		}
 	}
-		BossExplosive(boss, explosive, player);
+
+
+	if (boss.attakNo == 200) {
+		BossExplosive(boss, explosive, player, shake);
 
 	}
 	Novice::ScreenPrintf(200, 500, "%d", player.isHit);
@@ -665,8 +665,8 @@ void Boss::DrawParticles(Particle particles[], int maxParticles) {
 	for (int i = 0; i < maxParticles; i++) {
 		if (particles[i].isActive) {
 			Novice::DrawEllipse(
-				static_cast<int>(particles[i].pos.x+16.0f),
-				static_cast<int>(particles[i].pos.y+64.0f),
+				static_cast<int>(particles[i].pos.x + 16.0f),
+				static_cast<int>(particles[i].pos.y + 64.0f),
 				static_cast<int>(particles[i].size),
 				static_cast<int>(particles[i].size),
 				0.0f,
@@ -1081,7 +1081,7 @@ void Boss::UpdateProjectiles(Projectile* projectiles) {
 void Boss::DrawWhole() {
 	for (int i = 0; i < MAX_boll; i++) {
 		if (bossData.bullets[i].isAttak) {
-			
+
 
 			Novice::DrawBox(
 				static_cast<int>(bossData.bullets[i].pos.x) - 5,
@@ -1144,80 +1144,6 @@ void Boss::PlayerBeamsHitBox(Player_& player, Boss_& boss) {
 
 					player.isHit = true;
 				}
-			}
-		}
-	}
-}
-
-void Boss::DoubleShortDistansAttak(Boss_& boss, ShortDubleDistansAttak_& shortDobleDist, Player_ player) {
-	shortDobleDist.isAttak = true;
-
-	if (shortDobleDist.isAttak) {
-		if (shortDobleDist.attakCount == 0) {
-			// 最初の攻撃: プレイヤーにイージングで近づく
-			float distanceX = player.pos.x - boss.pos.x;
-			float stopDistance = 100.0f; // プレイヤーからこの距離で停止
-
-			if (std::abs(distanceX) > stopDistance) {
-				// プレイヤーに近づく
-				if (shortDobleDist.isEase) {
-					boss.pos.x += distanceX * shortDobleDist.easeSpeed;
-				}
-				shortDobleDist.attakTime = 10; // 攻撃判定をリセット
-				shortDobleDist.isShortAttak = false;
-			} else {
-				// 一定距離まで近づいたら攻撃
-				if (shortDobleDist.attakTime == 10) {
-					if (player.pos.x < boss.pos.x) {
-						shortDobleDist.pos.x = boss.pos.x - shortDobleDist.size.x;
-						shortDobleDist.expandDirection = -1; // 左方向
-					} else {
-						shortDobleDist.pos.x = boss.pos.x + boss.size.x;
-						shortDobleDist.expandDirection = 1;  // 右方向
-					}
-					shortDobleDist.pos.y = boss.pos.y + boss.size.y / 2 - shortDobleDist.size.y / 2;
-				}
-
-				if (shortDobleDist.attakTime > 0) {
-					shortDobleDist.isShortAttak = true;
-					shortDobleDist.attakTime--;
-				} else {
-					shortDobleDist.attakCount++;
-					shortDobleDist.isHit = false;
-					shortDobleDist.attakTime = 10; // 次回攻撃の準備
-				}
-			}
-
-		} else if (shortDobleDist.attakCount == 1) {
-			// 2回目の攻撃: 横方向に攻撃範囲を拡大
-			if (shortDobleDist.attakTime == 10) {
-				shortDobleDist.size.x = shortDobleDist.baseSizeX; // サイズをリセットして拡大開始
-			}
-
-			if (shortDobleDist.size.x < shortDobleDist.maxExpandSize) {
-				shortDobleDist.size.x += 20.0f; // 攻撃範囲を拡大
-				if (shortDobleDist.expandDirection == -1) {
-					// 左方向に拡大
-					shortDobleDist.pos.x = boss.pos.x - shortDobleDist.size.x;
-				} else {
-					// 右方向に拡大
-					shortDobleDist.pos.x = boss.pos.x + boss.size.x;
-				}
-			}
-
-			if (shortDobleDist.attakTime > 0) {
-				shortDobleDist.isShortAttak = true;
-				shortDobleDist.attakTime--;
-			} else {
-				// 攻撃終了
-				shortDobleDist.isHit = false;
-				shortDobleDist.isShortAttak = false;
-				shortDobleDist.isAttak = false;
-				shortDobleDist.attakCount = 0;
-				shortDobleDist.size.x = shortDobleDist.baseSizeX; // サイズをリセット
-				boss.isAttak = false;
-				boss.attakNo = 0;
-				boss.attakStandTime = 120; // クールダウン
 			}
 		}
 	}
@@ -1690,7 +1616,7 @@ void Boss::DrawWarpAttak(WarpAttak& warp, ShortDistansAttak_& shortDist) {
 //=====================================
 //ボスの渾身の全体攻撃
 //=====================================
-void Boss::BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player) {
+void Boss::BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player, Shake& shake) {
 
 	player.isHit = false;
 
@@ -1715,6 +1641,9 @@ void Boss::BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player)
 	if (explosive.isEase && explosive.attakCoolTime > 0) {
 		explosive.attakCoolTime--;
 
+		shake.pos.x = static_cast<float>(rand() % 41 - 20);
+		shake.pos.y = static_cast<float>(rand() % 41 - 20);
+
 		// クールタイム終了後に攻撃を開始
 		if (explosive.attakCoolTime == 0) {
 			explosive.isAttak = true;
@@ -1725,6 +1654,9 @@ void Boss::BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player)
 	// 攻撃時間中の処理
 	if (explosive.isAttak && explosive.attakTime > 0) {
 		explosive.attakTime--;
+
+		shake.pos.x = static_cast<float>(rand() % 61 - 30);
+		shake.pos.y = static_cast<float>(rand() % 61 - 30);
 
 		// プレイヤーがセーフゾーン外にいるかを確認
 		if (player.pos.x < explosive.safePos.x ||
@@ -1757,7 +1689,6 @@ void Boss::BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player)
 			explosive.attakCoolTime = 120; // クールタイムをリセット
 		}
 	}
-
 }
 
 

@@ -7,8 +7,8 @@ public:
 	void BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& shortDist,
 		Player_& player, Object& object, ShortDubleDistansAttak_& doubleShort, Shake& shake,Projectile* projectiles);
 
-	void SecondBossMove(Boss_& boss,  ShortDistansAttak_& shortDist,
-		Player_& player, Shake& shake,Beam2& beam2,  Shockwave* shockwaves, WarpAttak& warp, BossExprosive& explosive);
+	void SecondBossMove(Boss_& boss,  ShortDistansAttak_& shortDist, 
+		Player_& player, Shake& shake,Beam2& beam2,  Shockwave* shockwaves, WarpAttak& warp, BossExprosive& explosive, Projectile* projectiles);
 
 	//ボスの描画
 	void BossDraw(Boss_ boss,Shake& shake);
@@ -141,7 +141,7 @@ public:
 	//=========================================
 	//第2形態でボスのHPが75,50,25%になったらする攻撃
 	//=========================================
-	void BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player);
+	void BossExplosive(Boss_& boss, BossExprosive& explosive, Player_& player,Shake& shake);
 
 	void DrawExplosive(BossExprosive& explosive);
 
