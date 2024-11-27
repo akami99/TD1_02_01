@@ -110,7 +110,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		}
 
 		PlayerBeamsHitBox(player, boss);
-		Novice::ScreenPrintf(200, 500, "%d", player.isHit);
+		//Novice::ScreenPrintf(200, 500, "%d", player.isHit);
 	}
 
 	// 連続近距離攻撃処理
@@ -119,12 +119,12 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 		DoubleShortDistansAttak(boss, doubleShort, player);
 
 		PlayerShortDobleAttakHitBox(player, doubleShort);
-		Novice::ScreenPrintf(200, 500, "%d", player.isHit);
+	//	Novice::ScreenPrintf(200, 500, "%d", player.isHit);
 	}
 
-	// デバッグ用出力
-	Novice::ScreenPrintf(32, 32, "attakNo::%d", boss.attakNo);
-	Novice::ScreenPrintf(32, 64, "bossStandTime::%d", boss.attakStandTime);
+	//// デバッグ用出力
+	//Novice::ScreenPrintf(32, 32, "attakNo::%d", boss.attakNo);
+	//Novice::ScreenPrintf(32, 64, "bossStandTime::%d", boss.attakStandTime);
 
 	if (boss.attakNo == 3) {
 
