@@ -1091,7 +1091,7 @@ void Boss::PlayerShortAttakHitBox(Player_& player, ShortDistansAttak_& shortAtta
 				player.pos.y < shortAttak.pos.y + shortAttak.size.y && // プレイヤーの下端が範囲の上端より下
 				player.pos.y + player.radius> shortAttak.pos.y) { // プレイヤーの上端が範囲の下端より上
 				player.hitStopTime = 3;
-				player.hp -= 5;
+				player.hp -= 10;
 				shortAttak.isHit = true;
 			}
 		}
@@ -1108,7 +1108,7 @@ void Boss::PlayerBeamsHitBox(Player_& player, Boss_& boss) {
 					player.pos.x + player.radius > boss.beams[i].pos.x && // プレイヤーの左端が範囲の右端より左
 					player.pos.y < boss.beams[i].pos.y + boss.beams[i].size.y && // プレイヤーの下端が範囲の上端より下
 					player.pos.y + player.radius > boss.beams[i].pos.y) { // プレイヤーの上端が範囲の下端より上
-					player.hitStopTime = 3;
+					player.hitStopTime = 1;
 					player.hp--;
 				}
 			}
@@ -1127,7 +1127,7 @@ void Boss::PlayerShortDobleAttakHitBox(Player_& player, ShortDubleDistansAttak_&
 				player.pos.y + player.radius > doubleAttak.pos.y) { // プレイヤーの上端が範囲の下端より上
 				player.hitStopTime = 3;
 
-				player.hp -= 5;
+				player.hp -= 10;
 
 				doubleAttak.isHit = true;
 
