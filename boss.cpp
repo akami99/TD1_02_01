@@ -411,9 +411,9 @@ void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist, Player_& p
 				if (boss.attakStandTime <= 0) {
 					//boss.attakNo = rand() % 5 + 1;
 					if (boss.hp > 100) {
-						boss.attakNo = 3 + 1;
+						boss.attakNo = rand()%3 + 1;
 					} else if (boss.hp <= 100) {
-						boss.attakNo = 5 + 1;
+						boss.attakNo =rand()% 5 + 1;
 					}
 
 					boss.isEase = false;
@@ -425,21 +425,21 @@ void Boss::SecondBossMove(Boss_& boss, ShortDistansAttak_& shortDist, Player_& p
 	if (!boss.isOneExtraAttak) {
 		if (boss.hp <= 100) {
 			boss.attakNo = 200;
-			boss.isOneExtraAttak = false;
+			boss.isOneExtraAttak = true;
 		}
 	}
 
 	if (!boss.isTwoExtraAttak) {
 		if (boss.hp <= 100) {
 			boss.attakNo = 200;
-			boss.isTwoExtraAttak = false;
+			boss.isTwoExtraAttak = true;
 		}
 	}
 
 	if (!boss.isThreeExtraAttak) {
 		if (boss.hp <= 100) {
 			boss.attakNo = 200;
-			boss.isThreeExtraAttak = false;
+			boss.isThreeExtraAttak = true;
 		}
 	}
 
@@ -1404,6 +1404,15 @@ void Boss::DrawAllRangeAttack(Boss_& allRange) {
 					WHITE, // 色
 					kFillModeSolid // 塗りつぶし
 				);
+			} else {
+				// 通常の細い線を描画
+				Novice::DrawLine(
+					static_cast<int>(allRange.allRangeBeams[i].startPos.x),
+					static_cast<int>(allRange.allRangeBeams[i].startPos.y),
+					static_cast<int>(allRange.allRangeBeams[i].endPos.x),
+					static_cast<int>(allRange.allRangeBeams[i].endPos.y),
+					WHITE
+				);
 			}
 		}
 	}
@@ -1454,7 +1463,7 @@ void Boss::AllRengeAttakHitBox(Boss_& allRange, Player_& player) {
 
 			// プレイヤーが当たり判定内にいるかチェック
 			if (distanceSquared <= hitRadius * hitRadius) {
-				player.isHit = true;
+				player.hp -= 15;
 				break; // 一つのビームでも当たれば処理を終了
 			}
 		}

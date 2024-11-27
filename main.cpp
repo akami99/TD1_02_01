@@ -288,7 +288,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			boss.UpdateProjectiles(projectiles);
 
-
 			// 弾の描画
 			boss.DrawWhole();
 
@@ -334,8 +333,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			boss.BossDraw(boss_, shake);
 			// UIの描画
 			ui.DrawGauge(340, 30, boss_.hp, 0);
-
-
+			ui.DrawGauge(100, 620, player_.hp, 1);
+			ui.DrawGauge(100, 670, player_.energy, 2);
 			break;
 
 		case SECONDBOSS:
@@ -405,6 +404,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// UIの描画
 			ui.DrawGauge(340, 30, boss_.hp, 0);
+			ui.DrawGauge(100, 620, player_.hp, 1);
+			ui.DrawGauge(100, 670, player_.energy, 2);
 
 			break;
 
