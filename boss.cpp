@@ -215,7 +215,7 @@ void Boss::BossMove(Boss_& boss, BossRengeAttak_& renge, ShortDistansAttak_& sho
 
 		if (distanceToPlayer < player.radius) {
 			// プレイヤーにヒット
-			player.hp -= 50; // HPを減らす
+			player.hp -= 30; // HPを減らす
 			player.isHit = true;
 
 			// 攻撃終了処理
