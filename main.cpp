@@ -50,7 +50,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 	Boss::UpdateProjectiles(projectiles);
 	BossExprosive explosive;
 	WarpAttak warp;
-	
+
 
 	Whole whole;
 
@@ -97,12 +97,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			if (sceneNo == 0) {
 				if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
 					player.Initialize(player_, flash_);
-					scene = FASTBOSS;
+					scene = GUIDE;
 				}
 			}
 
 
-
+			//初期化処理
 			InitializeGame(player_, flash_, boss_, line);
 
 			player.DrawBackGround(line.title);
@@ -114,9 +114,37 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 				ui.DrawLightFont(555, 325, line.start);
 				ui.DrawFont(580, 455, line.exit);
 			}
-			
+
 			ui.DrawFont(410, 600, line.pressToSpace);
 			break;
+
+		case GUIDE:
+
+			//====================
+			//更新処理
+			//====================
+
+			// プレイヤーの更新処理
+			player.Move(player_, line, keys, preKeys);
+			player.Attack(player_, boss_, flash_, keys, preKeys);
+
+			if (player_.pos.x > 1280.0f - player_.radius * 2-10.0f) {
+				scene = FASTBOSS;
+				InitializeGame(player_, flash_, boss_, line);
+			}
+
+			//====================
+			//描画処理
+			//====================
+
+			// フラッシュライトの描画
+			player.DrawFlash(player_, flash_);
+			// プレイヤーの描画
+			player.Draw(player_, flash_);
+
+
+			break;
+
 
 		case FASTBOSS:
 
@@ -129,7 +157,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			player.Attack(player_, boss_, flash_, keys, preKeys);
 
 			// ボスの更新処理（範囲攻撃と近距離攻撃を含む）
-			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake,projectiles);
+			boss.BossMove(boss_, rengeAttak_, shortDistAttak_, player_, object_, doubleShort, shake, projectiles);
 
 			if (boss_.hp <= 0) {
 				scene = SECONDBOSS;
@@ -149,7 +177,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			// ボスの描画
 			boss.DrawParticles(boss_.particles, 50);
-			boss.DrawAura(boss_);
+			//boss.DrawAura(boss_);
 			boss.BossDraw(boss_, shake);
 			// フラッシュライトの描画
 			player.DrawFlash(player_, flash_);
@@ -160,8 +188,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//ボスのビーム攻撃
 			boss.DrawBeams(boss_);
 
-			//オールレンジアタック
-			boss.DrawAllRangeAttack(boss_);
+			// ボスの範囲攻撃描画
+			boss.DrawBossRengeAttak(rengeAttak_);
 
 			//近距離攻撃の描画
 			boss.DrawShortDistansAttak(shortDistAttak_);
@@ -171,7 +199,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			boss.DrawBossChargeAttak(object_);
 
-	
+
 
 			// UIの描画
 			ui.DrawGauge(340, 30, boss_.hp, 0);
@@ -199,13 +227,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//================================
 			//更新処理
 			//================================
-			
+
 			// プレイヤーの更新処理
 			player.Move(player_, line, keys, preKeys);
 			player.Attack(player_, boss_, flash_, keys, preKeys);
 
 			boss.SecondBossMove(boss_, shortDistAttak_, player_, shake, beam2, shockwaves, warp, explosive);
-			
+
 			if (boss_.secondHp <= 0) {
 				scene = CLEAR;
 			}
@@ -215,13 +243,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 			//========================
 
 			// ボスの描画
+			boss.DrawParticles(boss_.particles, 50);
+			//boss.DrawAura(boss_);
 			boss.BossDraw(boss_, shake);
-			boss.DrawAura(boss_);
+		
 			//第二形態のボスのビーム攻撃
 			boss.DrawBeam2(beam2);
 
-			// ボスの範囲攻撃描画
-			boss.DrawBossRengeAttak(rengeAttak_);
+			//オールレンジアタック
+			boss.DrawAllRangeAttack(boss_);
+
 
 			//近距離攻撃の描画
 			boss.DrawShortDistansAttak(shortDistAttak_);
