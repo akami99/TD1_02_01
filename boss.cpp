@@ -687,7 +687,7 @@ void Boss::DrawParticles(Particle particles[], int maxParticles) {
 				i, particles[i].pos.x, particles[i].pos.y, particles[i].size, particles[i].lifetime);
 		}
 	}*/
-
+}
 
 void Boss::DrawAura(Boss_& boss) {
 
