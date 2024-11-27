@@ -27,6 +27,19 @@ void Player::Initialize(Player_& player, Flash_& flash) {
 void Player::Move(Player_& player, Line& line, const char* keys, const char* preKeys) {
 	player.direction = { 0.0 };
 
+	if (player.isFlash) {
+		player.isFlash = false;
+	} else if (player.isHighFlash) {
+		player.isHighFlash = false;
+	}
+
+	if (player.flashTime > 0) {
+		player.flashTime--;
+	}
+	if (player.hightFlashTime > 0) {
+		player.hightFlashTime--;
+	}
+
 	if (keys[DIK_D] || keys[DIK_RIGHT]) {
 		player.pos.x += player.speed;
 		player.direction.x = 1;
@@ -46,7 +59,7 @@ void Player::Move(Player_& player, Line& line, const char* keys, const char* pre
 
 		player.isRight = false;
 		player.isLeft = true;
-	
+
 	}
 
 	if (keys[DIK_S] || keys[DIK_DOWN]) {
@@ -115,8 +128,11 @@ void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* key
 		if (!player.isFlash) {
 			player.isFlash = true;
 			player.isHighFlash = false;
+			player.hightFlashTime = 0;
+			player.flashTime = 10;
 		} else {
 			player.isFlash = false;
+			player.flashTime = 0;
 		}
 	}
 	// 強化ライト
@@ -124,20 +140,22 @@ void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* key
 		if (!player.isHighFlash) {
 			player.isHighFlash = true;
 			player.isFlash = false;
+			player.flashTime = 0;
+			player.hightFlashTime = 10;
 		} else {
 			player.isHighFlash = false;
+			player.hightFlashTime = 0;
 		}
 	}
 
 	if (player.isFlash) {
-		player.energy -= 2;;
+		player.energy -= 25;
 	} else if (player.isHighFlash) {
-		player.energy -= 3;
+		player.energy -= 50;
 	}
 
 	if (player.energy <= 0) {
 		player.isFlash = false;
-		player.isHighFlash = false;
 	}
 
 	if (player.energy < player.kMaxEnergy) {
@@ -174,7 +192,7 @@ void Player::Draw(Player_& player, Flash_& flash) {
 
 void Player::DrawFlash(Player_& player, Flash_& flash) {
 	// 通常ライト
-	if (player.isFlash) {
+	if (player.flashTime > 0) {
 		if (flash.direction.y > 0) {                                   //下
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x + flash.width), static_cast<int>(flash.pos.y + flash.range),
@@ -198,7 +216,7 @@ void Player::DrawFlash(Player_& player, Flash_& flash) {
 		}
 	}
 	// 強化ライト
-	if (player.isHighFlash) {
+	if (player.hightFlashTime > 0) {
 		if (flash.direction.y > 0) {                                   //下
 			Novice::DrawTriangle(static_cast<int>(flash.pos.x), static_cast<int>(flash.pos.y),
 				static_cast<int>(flash.pos.x + flash.highWidth), static_cast<int>(flash.pos.y + flash.highRange),
@@ -519,13 +537,15 @@ void Player::FlashHitBox(Player_& player, Boss_& boss, Flash_& flash) {
 	if (boss.isHitTop && boss.isHitRight && boss.isHitLeft) {
 		if (player.isFlash) {
 			if (boss.hp > 0) { // 敵へダメージ
-				boss.hitStopTime = 10;
+				boss.hitStopTime = 4;
 				boss.hp--;
+				player.isFlash = false;
 			}
 		} else if (player.isHighFlash) {
 			if (boss.hp > 0) { // 敵へダメージ
-				boss.hitStopTime = 20;
+				boss.hitStopTime = 5;
 				boss.hp -= 2;
+				player.isHighFlash = false;
 			}
 		}
 	}
@@ -540,5 +560,5 @@ void Player::DrawBackGround(int backGround) {
 //背景の描画
 void Player::DrawBackGround(Line& backGround, Shake shake) {
 	Novice::DrawBox(0, 0, 1280, 720, 0.0f, BLACK, kFillModeSolid);
-	Novice::DrawSprite(static_cast<int>(0 + shake.pos.x+shake.bgPos.x), static_cast<int>(0 + shake.pos.y+shake.bgPos.y),backGround.backGround ,1, 1, 0.0f, WHITE);
+	Novice::DrawSprite(static_cast<int>(0 + shake.pos.x + shake.bgPos.x), static_cast<int>(0 + shake.pos.y + shake.bgPos.y), backGround.backGround, 1, 1, 0.0f, WHITE);
 }
