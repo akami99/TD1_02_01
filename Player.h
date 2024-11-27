@@ -5,13 +5,6 @@
 class Player {
 public:
 	/// <summary>
-	/// 初期化
-	/// </summary>
-	/// <param name="player">プレイヤー</param>
-	/// <param name="flash">ライト</param>
-	void Initialize(Player_& player, Flash_& flash);
-
-	/// <summary>
 	/// Function for moving the player
 	/// </summary>
 	/// <param name="player">Player's values</param>
@@ -61,5 +54,4 @@ public:
 	/// <param name="shake">シェイク</param>
 	void DrawBackGround(Line& backGround, Shake shake);
 };
-
 

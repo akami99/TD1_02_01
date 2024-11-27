@@ -144,7 +144,7 @@ void Player::Attack(Player_& player, Boss_& boss, Flash_& flash, const char* key
 
 		player.isFlash = false;
 		player.isHighFlash = false;
-	} 
+	}
 
 	if (player.energy < player.kMaxEnergy) {
 		player.energy++;
@@ -176,6 +176,18 @@ void Player::Draw(Player_& player, Flash_& flash) {
 	} else {                             //最初
 		Novice::DrawSprite(static_cast<int>(player.pos.x), static_cast<int>(player.pos.y), player.imageRight, 1, 1, 0.0f, WHITE);
 	}
+	if (player.isHit) {
+		player.flashTime++;
+		if (player.flashTime % 10 < 5) {
+			// 点滅中（描画しない）
+		} else {
+			// 通常描画
+		}
+		if (player.flashTime > 30) {
+			player.flashTime = 0;
+		}
+	}
+
 }
 
 void Player::DrawFlash(Player_& player, Flash_& flash) {
@@ -525,13 +537,13 @@ void Player::FlashHitBox(Player_& player, Boss_& boss, Flash_& flash) {
 	if (boss.isHitTop && boss.isHitRight && boss.isHitLeft) {
 		if (player.isFlash) {
 			if (boss.hp > 0) { // 敵へダメージ
-				boss.hitStopTime = 10;
+				boss.hitStopTime = 4;
 				boss.hp--;
 				player.isFlash = false;
 			}
 		} else if (player.isHighFlash) {
 			if (boss.hp > 0) { // 敵へダメージ
-				boss.hitStopTime = 20;
+				boss.hitStopTime = 5;
 				boss.hp -= 2;
 				player.isHighFlash = false;
 			}

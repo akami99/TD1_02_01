@@ -46,6 +46,8 @@ struct Player_ {
 	int isRight = true;
 	int isLeft = false;
 	int hitStopTime = 0;
+	int flashTime = 0;
+	int highFlashTime = 0;
 
 };
 
@@ -165,13 +167,13 @@ struct Boss_ {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
 	float auraTimer = 0.0f; // オーラのフェードイン・アウト用タイマー
 
 };
-
 //ワープ攻撃
 struct WarpAttak {
 	Vector2 pos = { -100.0f,-100.0f };//bossの位置をここに固定する
@@ -187,6 +189,9 @@ struct Shockwave {
 	Vector2 direction; // 衝撃波の進行方向
 	float speed = 10.0f;       // 衝撃波のスピード
 	int isActive = false;      // 衝撃波が有効かどうか（1: 有効, 0: 無効）
+	int isFalling = false;               // 球が落下中かどうか（1: 落下, 0: 非落下）
+	int lifetime = 0;                    // 球の存在時間
+	int imageWave = Novice::LoadTexture("./Resources/images/wave.png");
 };
 
 struct BossExprosive {
@@ -298,4 +303,10 @@ struct Sounds {
 	int fastBattlePlayHandle = -1;
 	int secondBattlePlayHandle = -1;
 	int clearPlayHandle = -1;
+
+	int titleBgm = Novice::LoadAudio("./Resources/sounds/TitleBGM.mp3");
+	int fastBattleBgm = Novice::LoadAudio("./Resources/sounds/FirstBossBGM.mp3");
+	int secondBattleBgm = Novice::LoadAudio("./Resources/sounds/SecondBossBGM.mp3");
+	int clearBgm = Novice::LoadAudio("./Resources/sounds/ClearBGM.mp3");
+};
 
