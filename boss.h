@@ -63,6 +63,8 @@ public:
 	//==========================
 	void Beam2Attak(Boss_& boss, Beam2& beam2, Shake& sheke);
 
+	void Beam2HitBox(Beam2& beam2, Player_& player);
+
 	void DrawBeam2(Beam2& beam2);
 
 
@@ -105,7 +107,7 @@ public:
 	//=====================
 	//落下攻撃に出る衝撃波
 	//=====================
-	void UpdateShockwaves(Shockwave* shockwaves, int maxShockwaves);
+	void UpdateShockwaves(Shockwave* shockwaves, int maxShockwaves, Player_& player);
 
 	void DrawShockwaves(Shockwave* shockwaves, int maxShockwaves);
 
