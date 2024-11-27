@@ -471,6 +471,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
 			if (sceneNo < 0) {
 				sceneNo = 1;
+			}
 			if (keys[DIK_SPACE] && !preKeys[DIK_SPACE]) {
 				scene = TITLE;
 			}
